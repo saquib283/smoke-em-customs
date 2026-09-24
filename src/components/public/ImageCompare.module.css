@@ -1,0 +1,125 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xl);
+  user-select: none;
+  touch-action: pan-y;
+  background-color: var(--color-bg-secondary);
+}
+
+.aspectRatioBox {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+}
+
+.beforeImage,
+.afterImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.afterWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sliderLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--color-accent-primary);
+  box-shadow: 0 0 10px rgba(212, 168, 83, 0.8);
+  pointer-events: none;
+}
+
+.sliderHandle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-gold);
+  color: #0A0A0A;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.7), 0 0 12px rgba(212, 168, 83, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: ew-resize;
+  pointer-events: auto;
+  transition: transform var(--transition-fast);
+}
+
+.sliderHandle:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.handleIcon {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: -2px;
+}
+
+.pillBefore,
+.pillAfter {
+  position: absolute;
+  top: var(--space-4);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-wider);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: var(--z-raised);
+  pointer-events: none;
+}
+
+.pillBefore {
+  left: var(--space-4);
+  background-color: rgba(0, 0, 0, 0.65);
+  color: var(--color-text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pillAfter {
+  right: var(--space-4);
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.85), rgba(184, 134, 11, 0.85));
+  color: #0A0A0A;
+  border: 1px solid var(--color-accent-border);
+  box-shadow: 0 0 10px rgba(212, 168, 83, 0.4);
+}
+
+.instructions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-bg-secondary);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+}
+
+.instructionIcon {
+  color: var(--color-accent-primary);
+}

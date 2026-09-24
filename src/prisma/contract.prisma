@@ -1,0 +1,598 @@
+// use prisma-8
+// Smoke M Customs — Full data contract
+// Reconciled from ARCHITECTURE.md §6.3, adapted for Prisma 8
+
+// ───────────────────────── Enums ─────────────────────────
+
+enum AdminRole {
+  @@type("pg/text@1")
+  ADMIN = "ADMIN"
+}
+
+enum VehicleType {
+  @@type("pg/text@1")
+  HATCHBACK    = "HATCHBACK"
+  SEDAN        = "SEDAN"
+  SUV          = "SUV"
+  MUV          = "MUV"
+  LUXURY       = "LUXURY"
+  TWO_WHEELER  = "TWO_WHEELER"
+  OTHER        = "OTHER"
+}
+
+enum ContactMethod {
+  @@type("pg/text@1")
+  CALL     = "CALL"
+  WHATSAPP = "WHATSAPP"
+  EMAIL    = "EMAIL"
+}
+
+enum LeadStatus {
+  @@type("pg/text@1")
+  NEW        = "NEW"
+  CONTACTED  = "CONTACTED"
+  QUOTE_SENT = "QUOTE_SENT"
+  FOLLOW_UP  = "FOLLOW_UP"
+  BOOKED     = "BOOKED"
+  COMPLETED  = "COMPLETED"
+  LOST       = "LOST"
+}
+
+enum QuoteStatus {
+  @@type("pg/text@1")
+  DRAFT    = "DRAFT"
+  SENT     = "SENT"
+  ACCEPTED = "ACCEPTED"
+  DECLINED = "DECLINED"
+  EXPIRED  = "EXPIRED"
+}
+
+enum BookingStatus {
+  @@type("pg/text@1")
+  PENDING_CONFIRMATION = "PENDING_CONFIRMATION"
+  CONFIRMED            = "CONFIRMED"
+  RESCHEDULED          = "RESCHEDULED"
+  CANCELLED            = "CANCELLED"
+  COMPLETED            = "COMPLETED"
+  NO_SHOW              = "NO_SHOW"
+}
+
+enum PaymentStatus {
+  @@type("pg/text@1")
+  NOT_APPLICABLE = "NOT_APPLICABLE"
+  PENDING        = "PENDING"
+  PARTIALLY_PAID = "PARTIALLY_PAID"
+  PAID           = "PAID"
+}
+
+enum MediaType {
+  @@type("pg/text@1")
+  IMAGE = "IMAGE"
+  VIDEO = "VIDEO"
+}
+
+enum CommunicationChannel {
+  @@type("pg/text@1")
+  WHATSAPP = "WHATSAPP"
+  CALL     = "CALL"
+  EMAIL    = "EMAIL"
+  SMS      = "SMS"
+}
+
+enum CommunicationDirection {
+  @@type("pg/text@1")
+  OUTBOUND = "OUTBOUND"
+  INBOUND  = "INBOUND"
+}
+
+enum NotificationType {
+  @@type("pg/text@1")
+  NEW_LEAD            = "NEW_LEAD"
+  NEW_BOOKING_PENDING = "NEW_BOOKING_PENDING"
+  BOOKING_CANCELLED   = "BOOKING_CANCELLED"
+  LEAD_NEEDS_FOLLOWUP = "LEAD_NEEDS_FOLLOWUP"
+  QUOTE_EXPIRING      = "QUOTE_EXPIRING"
+}
+
+// ───────────────────────── Auth ─────────────────────────
+
+model AdminUser {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         AdminRole @default(ADMIN)
+  isActive     Boolean   @default(false)
+  createdAt    TimestamptzString @default(now())
+  updatedAt    temporal.updatedAtString()
+
+  auditLogs       AuditLog[]
+  leadNotes       LeadNote[]
+  assignedLeads   Lead[]    @relation("LeadAssignee")
+  quotesIssued    Quote[]
+  bookingsCreated Booking[] @relation("BookingCreatedBy")
+  sessions        Session[]
+
+  @@map("admin_users")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  sessionToken String    @unique
+  userId       String
+  user         AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      TimestamptzString
+
+  @@map("sessions")
+}
+
+// ───────────────────────── CRM Core ─────────────────────────
+
+model Customer {
+  id                     String        @id @default(uuid())
+  name                   String
+  phone                  String        @unique
+  email                  String?
+  preferredContactMethod ContactMethod @default(WHATSAPP)
+  createdAt              TimestamptzString @default(now())
+  updatedAt              temporal.updatedAtString()
+
+  vehicles       Vehicle[]
+  leads          Lead[]
+  quotes         Quote[]
+  bookings       Booking[]
+  communications Communication[]
+
+  @@index([phone])
+  @@map("customers")
+}
+
+model Vehicle {
+  id              String       @id @default(uuid())
+  customerId      String
+  customer        Customer     @relation(fields: [customerId], references: [id])
+  brand           String
+  model           String
+  variant         String?
+  manufactureYear Int?
+  vehicleType     VehicleType?
+  createdAt       TimestamptzString @default(now())
+  updatedAt       temporal.updatedAtString()
+
+  leads    Lead[]
+  quotes   Quote[]
+  bookings Booking[]
+
+  @@index([customerId])
+  @@map("vehicles")
+}
+
+model Lead {
+  id                    String     @id @default(uuid())
+  customerId            String
+  customer              Customer   @relation(fields: [customerId], references: [id])
+  vehicleId             String?
+  vehicle               Vehicle?   @relation(fields: [vehicleId], references: [id])
+  status                LeadStatus @default(NEW)
+  assignedToId          String?
+  assignedTo            AdminUser? @relation("LeadAssignee", fields: [assignedToId], references: [id])
+
+  serviceInterestId     String?
+  serviceInterest       Service?   @relation(fields: [serviceInterestId], references: [id])
+  vehicleCondition      String?
+  existingScratches     Boolean?
+  paintCondition        String?
+  existingCoatingOrPpf  String?
+  desiredResult         String?
+  budgetRangeMin        Decimal?
+  budgetRangeMax        Decimal?
+  preferredDate         TimestamptzString?
+  additionalNotes       String?
+  possibleDuplicateOfId String?
+
+  source                String?
+
+  createdAt             TimestamptzString @default(now())
+  updatedAt             temporal.updatedAtString()
+
+  photos         LeadPhoto[]
+  notes          LeadNote[]
+  statusHistory  LeadStatusHistory[]
+  quotes         Quote[]
+  bookings       Booking[]
+  communications Communication[]
+
+  @@index([status])
+  @@index([customerId])
+  @@map("leads")
+}
+
+model LeadNote {
+  id        String    @id @default(uuid())
+  leadId    String
+  lead      Lead      @relation(fields: [leadId], references: [id])
+  authorId  String
+  author    AdminUser @relation(fields: [authorId], references: [id])
+  body      String
+  createdAt TimestamptzString @default(now())
+
+  @@index([leadId])
+  @@map("lead_notes")
+}
+
+model LeadStatusHistory {
+  id         String      @id @default(uuid())
+  leadId     String
+  lead       Lead        @relation(fields: [leadId], references: [id])
+  fromStatus LeadStatus?
+  toStatus   LeadStatus
+  changedAt  TimestamptzString @default(now())
+
+  @@index([leadId])
+  @@map("lead_status_history")
+}
+
+// ───────────────────────── Catalogue ─────────────────────────
+
+model Service {
+  id                    String    @id @default(uuid())
+  slug                  String    @unique
+  name                  String
+  description           String
+  category              String?
+  startingPrice         Decimal
+  durationMinutes       Int
+  warrantyText          String?
+  benefits              String[]
+  isEnabled             Boolean   @default(false)
+  isBookable            Boolean   @default(false)
+  bufferMinutesOverride Int?
+  sortOrder             Int       @default(0)
+  createdAt             TimestamptzString @default(now())
+  updatedAt             temporal.updatedAtString()
+  deletedAt             TimestamptzString?
+
+  media        Media[]
+  packages     PackageService[]
+  leads        Lead[]
+  quoteItems   QuoteItem[]
+  bookings     Booking[]
+  galleryItems GalleryItem[]
+  reviews      Review[]
+  offers       Offer[]
+
+  @@index([isEnabled])
+  @@map("services")
+}
+
+model Package {
+  id              String    @id @default(uuid())
+  slug            String    @unique
+  name            String
+  description     String
+  price           Decimal?
+  startingPrice   Decimal?
+  durationMinutes Int
+  benefits        String[]
+  warrantyText    String?
+  validityText    String?
+  terms           String?
+  isEnabled       Boolean   @default(false)
+  isBookable      Boolean   @default(false)
+  sortOrder       Int       @default(0)
+  createdAt       TimestamptzString @default(now())
+  updatedAt       temporal.updatedAtString()
+  deletedAt       TimestamptzString?
+
+  media      Media[]
+  services   PackageService[]
+  quoteItems QuoteItem[]
+  bookings   Booking[]
+  offers     Offer[]
+
+  @@index([isEnabled])
+  @@map("packages")
+}
+
+model PackageService {
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id])
+
+  @@id([packageId, serviceId])
+  @@map("package_services")
+}
+
+// ───────────────────────── Quoting ─────────────────────────
+
+model Quote {
+  id         String      @id @default(uuid())
+  leadId     String
+  lead       Lead        @relation(fields: [leadId], references: [id])
+  customerId String
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  vehicleId  String?
+  vehicle    Vehicle?    @relation(fields: [vehicleId], references: [id])
+  status     QuoteStatus @default(DRAFT)
+  issuedById String?
+  issuedBy   AdminUser?  @relation(fields: [issuedById], references: [id])
+  subtotal   Decimal
+  discount   Decimal @default("0")
+  tax        Decimal @default("0")
+  total      Decimal
+  validUntil TimestamptzString?
+  notes      String?
+  terms      String?
+  createdAt  TimestamptzString @default(now())
+  updatedAt  temporal.updatedAtString()
+
+  items    QuoteItem[]
+  bookings Booking[]
+
+  @@index([leadId])
+  @@index([status])
+  @@map("quotes")
+}
+
+model QuoteItem {
+  id          String   @id @default(uuid())
+  quoteId     String
+  quote       Quote    @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  serviceId   String?
+  service     Service? @relation(fields: [serviceId], references: [id])
+  packageId   String?
+  package     Package? @relation(fields: [packageId], references: [id])
+  description String
+  quantity    Int      @default(1)
+  unitPrice   Decimal
+  lineTotal   Decimal
+
+  @@index([quoteId])
+  @@map("quote_items")
+}
+
+// ───────────────────────── Booking Engine ─────────────────────────
+
+model Resource {
+  id        String    @id @default(uuid())
+  name      String
+  isActive  Boolean   @default(false)
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+
+  bookings      Booking[]
+  blockedRanges BlockedTimeRange[]
+
+  @@map("resources")
+}
+
+model BusinessHours {
+  id        String    @id @default(uuid())
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+
+  @@index([dayOfWeek])
+  @@map("business_hours")
+}
+
+model BlockedDate {
+  id        String    @id @default(uuid())
+  date      DateString
+  reason    String?
+  createdAt TimestamptzString @default(now())
+
+  @@unique([date])
+  @@map("blocked_dates")
+}
+
+model BlockedTimeRange {
+  id         String    @id @default(uuid())
+  resourceId String?
+  resource   Resource? @relation(fields: [resourceId], references: [id])
+  startAt    TimestamptzString
+  endAt      TimestamptzString
+  reason     String?
+  createdAt  TimestamptzString @default(now())
+
+  @@index([resourceId, startAt, endAt])
+  @@map("blocked_time_ranges")
+}
+
+model Booking {
+  id              String        @id @default(uuid())
+  customerId      String
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  vehicleId       String?
+  vehicle         Vehicle?      @relation(fields: [vehicleId], references: [id])
+  leadId          String?
+  lead            Lead?         @relation(fields: [leadId], references: [id])
+  quoteId         String?
+  quote           Quote?        @relation(fields: [quoteId], references: [id])
+
+  serviceId       String?
+  service         Service?      @relation(fields: [serviceId], references: [id])
+  packageId       String?
+  package         Package?      @relation(fields: [packageId], references: [id])
+
+  resourceId      String
+  resource        Resource      @relation(fields: [resourceId], references: [id])
+
+  startAt         TimestamptzString
+  endAt           TimestamptzString
+  durationMinutes Int
+  status          BookingStatus @default(PENDING_CONFIRMATION)
+  paymentStatus   PaymentStatus @default(NOT_APPLICABLE)
+  priceQuoted     Decimal?
+
+  createdById     String?
+  createdBy       AdminUser?    @relation("BookingCreatedBy", fields: [createdById], references: [id])
+  source          String
+  customerNotes   String?
+  internalNotes   String?
+  cancellationReason String?
+
+  createdAt       TimestamptzString @default(now())
+  updatedAt       temporal.updatedAtString()
+
+  @@index([resourceId, startAt, endAt])
+  @@index([status])
+  @@index([customerId])
+  @@map("bookings")
+}
+
+// ───────────────────────── Content ─────────────────────────
+
+model Media {
+  id          String    @id @default(uuid())
+  url         String
+  type        MediaType
+  altText     String?
+  width       Int?
+  height      Int?
+  provider    String
+  providerKey String?
+  createdAt   TimestamptzString @default(now())
+
+  serviceId  String?
+  service    Service?  @relation(fields: [serviceId], references: [id])
+  packageId  String?
+  package    Package?  @relation(fields: [packageId], references: [id])
+  reviewId   String?
+  review     Review?   @relation(fields: [reviewId], references: [id])
+
+  leadPhotos     LeadPhoto[]
+  galleryBefore  GalleryItem[] @relation("GalleryBefore")
+  galleryAfter   GalleryItem[] @relation("GalleryAfter")
+  galleryVideo   GalleryItem[] @relation("GalleryVideo")
+
+  @@map("media")
+}
+
+model LeadPhoto {
+  leadId  String
+  lead    Lead   @relation(fields: [leadId], references: [id])
+  mediaId String
+  media   Media  @relation(fields: [mediaId], references: [id])
+
+  @@id([leadId, mediaId])
+  @@map("lead_photos")
+}
+
+model GalleryItem {
+  id              String    @id @default(uuid())
+  title           String
+  slug            String    @unique
+  description     String?
+  serviceCategory String?
+  vehicleBrand    String?
+  vehicleModel    String?
+  tags            String[]
+  isFeatured      Boolean   @default(false)
+  isPublished     Boolean   @default(false)
+  beforeMediaId   String?
+  beforeMedia     Media?    @relation("GalleryBefore", fields: [beforeMediaId], references: [id])
+  afterMediaId    String?
+  afterMedia      Media?    @relation("GalleryAfter", fields: [afterMediaId], references: [id])
+  videoMediaId    String?
+  videoMedia      Media?    @relation("GalleryVideo", fields: [videoMediaId], references: [id])
+  serviceId       String?
+  service         Service?  @relation(fields: [serviceId], references: [id])
+  createdAt       TimestamptzString @default(now())
+  updatedAt       temporal.updatedAtString()
+  deletedAt       TimestamptzString?
+
+  @@index([isPublished, isFeatured])
+  @@map("gallery_items")
+}
+
+model Review {
+  id           String    @id @default(uuid())
+  customerName String
+  rating       Int
+  body         String
+  vehicleText  String?
+  serviceId    String?
+  service      Service?  @relation(fields: [serviceId], references: [id])
+  reviewDate   TimestamptzString?
+  isFeatured   Boolean   @default(false)
+  isPublished  Boolean   @default(false)
+  createdAt    TimestamptzString @default(now())
+  updatedAt    temporal.updatedAtString()
+  deletedAt    TimestamptzString?
+
+  media Media[]
+
+  @@index([isPublished, isFeatured])
+  @@map("reviews")
+}
+
+model Offer {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  startAt     TimestamptzString
+  endAt       TimestamptzString
+  isEnabled   Boolean   @default(false)
+  serviceId   String?
+  service     Service?  @relation(fields: [serviceId], references: [id])
+  packageId   String?
+  package     Package?  @relation(fields: [packageId], references: [id])
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+  deletedAt   TimestamptzString?
+
+  @@index([isEnabled, startAt, endAt])
+  @@map("offers")
+}
+
+// ───────────────────────── Comms / Notifications / Audit ─────────────────────────
+
+model Communication {
+  id         String                 @id @default(uuid())
+  customerId String
+  customer   Customer               @relation(fields: [customerId], references: [id])
+  leadId     String?
+  lead       Lead?                  @relation(fields: [leadId], references: [id])
+  channel    CommunicationChannel
+  direction  CommunicationDirection
+  summary    String
+  createdAt  TimestamptzString @default(now())
+
+  @@index([customerId])
+  @@index([leadId])
+  @@map("communications")
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  type       NotificationType
+  title      String
+  body       String
+  entityType String?
+  entityId   String?
+  isRead     Boolean          @default(false)
+  createdAt  TimestamptzString @default(now())
+
+  @@index([isRead, createdAt])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id         String     @id @default(uuid())
+  actorId    String?
+  actor      AdminUser? @relation(fields: [actorId], references: [id])
+  action     String
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  createdAt  TimestamptzString @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

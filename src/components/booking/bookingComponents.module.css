@@ -1,0 +1,273 @@
+/* DatePicker and SlotPicker Luxury Styles */
+
+.datePickerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.datePickerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.datePickerLabel {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-gold);
+}
+
+.datePickerDirectInput {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.datePickerDirectInput:focus {
+  border-color: var(--color-gold);
+}
+
+.dateScroller {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.dateScroller::-webkit-scrollbar {
+  height: 6px;
+}
+
+.dateScroller::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.dateCard {
+  flex: 0 0 76px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.dateCard:hover:not(:disabled) {
+  border-color: rgba(212, 168, 83, 0.5);
+  background: var(--color-surface-hover);
+  transform: translateY(-2px);
+}
+
+.dateCardSelected {
+  border-color: var(--color-gold) !important;
+  background: rgba(212, 168, 83, 0.12) !important;
+  box-shadow: 0 0 16px rgba(212, 168, 83, 0.25);
+}
+
+.dateCardDisabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.dayName {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.dayNumber {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+}
+
+.dateCardSelected .dayNumber {
+  color: var(--color-gold);
+}
+
+.monthName {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.todayBadge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--color-gold);
+  color: #000;
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  margin-top: 2px;
+}
+
+/* SlotPicker Styles */
+.slotPickerContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.slotGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.slotGroupTitle {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.slotGroupTitle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.slotCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.slotCard:hover {
+  border-color: rgba(212, 168, 83, 0.6);
+  background: var(--color-surface-hover);
+  transform: translateY(-1px);
+}
+
+.slotCardSelected {
+  border-color: var(--color-gold) !important;
+  background: rgba(212, 168, 83, 0.12) !important;
+  box-shadow: 0 0 20px rgba(212, 168, 83, 0.2);
+}
+
+.slotCardSelected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--color-gold);
+}
+
+.slotTimeRange {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.slotCardSelected .slotTimeRange {
+  color: var(--color-gold);
+}
+
+.slotBayTag {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.slotBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  margin-top: 2px;
+}
+
+.loadingSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.skeletonCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  height: 78px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+
+.emptySlotsNotice {
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.emptyNoticeTitle {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}

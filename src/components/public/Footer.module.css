@@ -1,0 +1,236 @@
+.footer {
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-8) 0 var(--space-5);
+  margin-top: auto;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1.5fr;
+  gap: var(--space-6);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ── Brand Col ── */
+
+.colBrand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+}
+
+.logoBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
+  color: var(--color-text-inverse);
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.05em;
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logoSmoke {
+  font-weight: var(--font-extrabold);
+  font-size: var(--text-base);
+  letter-spacing: 0.1em;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+}
+
+.logoCustoms {
+  font-size: var(--text-xs);
+  letter-spacing: 0.25em;
+  color: var(--color-accent-primary);
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+}
+
+.brandDesc {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  max-width: 380px;
+}
+
+.socialLinks {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.socialIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-size: 16px;
+  transition: all var(--transition-fast);
+}
+
+.socialIcon:hover {
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+}
+
+/* ── Standard Col ── */
+
+.heading {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.linkList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.linkList a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  transition: color var(--transition-fast);
+}
+
+.linkList a:hover {
+  color: var(--color-accent-primary);
+}
+
+/* ── Contact Col ── */
+
+.contactList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.contactList li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  line-height: var(--leading-normal);
+}
+
+.contactIcon {
+  font-size: var(--text-base);
+  line-height: 1.2;
+}
+
+.contactList a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-medium);
+  transition: color var(--transition-fast);
+}
+
+.contactList a:hover {
+  color: var(--color-accent-primary);
+}
+
+.closed {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.waHighlight {
+  color: #25D366 !important;
+}
+
+/* ── Bottom Bar ── */
+
+.bottomBar {
+  padding-top: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.copy {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
+.bottomLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.bottomLinks a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.bottomLinks a:hover {
+  color: var(--color-accent-primary);
+}
+
+.dot {
+  color: var(--color-text-muted);
+}
+
+.adminLink {
+  color: var(--color-accent-primary) !important;
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
