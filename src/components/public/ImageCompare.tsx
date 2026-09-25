@@ -84,18 +84,12 @@ export function ImageCompare({
         {/* After Image (Clipped Overlay Layer) */}
         <div
           className={styles.afterWrapper}
-          style={{ width: `${sliderPosition}%` }}
+          style={{ width: '100%', clipPath: `inset(0 calc(100% - ${sliderPosition}%) 0 0)` }}
         >
           <img
             src={afterUrl}
             alt={afterAlt}
             className={styles.afterImage}
-            style={{
-              width: containerRef.current
-                ? `${containerRef.current.clientWidth}px`
-                : '100%',
-              maxWidth: 'none',
-            }}
             loading="lazy"
           />
         </div>

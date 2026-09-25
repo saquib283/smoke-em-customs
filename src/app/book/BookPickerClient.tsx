@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { Icon } from '@/components/common/Icons';
 import styles from './booking.module.css';
 
 interface ServiceItem {
@@ -161,9 +162,12 @@ export function BookPickerClient({ services, packages }: BookPickerClientProps) 
                       padding: '2px 8px',
                       borderRadius: 'var(--radius-full)',
                       border: '1px solid rgba(212, 168, 83, 0.3)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
                     }}
                   >
-                    🛡️ {item.warranty}
+                    <Icon.Shield size={12} color="var(--color-gold)" /> {item.warranty}
                   </span>
                 )}
               </div>
@@ -211,7 +215,7 @@ export function BookPickerClient({ services, packages }: BookPickerClientProps) 
                         gap: '6px',
                       }}
                     >
-                      <span style={{ color: 'var(--color-gold)' }}>✓</span> {b}
+                      <Icon.Check size={12} color="var(--color-gold)" /> {b}
                     </div>
                   ))}
                 </div>
@@ -241,8 +245,8 @@ export function BookPickerClient({ services, packages }: BookPickerClientProps) 
                 >
                   ₹{Number(item.price).toLocaleString('en-IN')}
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
-                  ⏱ ~{item.durationHours} Hours Detailing
+                <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Clock size={12} color="var(--color-gold)" /> ~{item.durationHours} Hours Detailing
                 </div>
               </div>
 
@@ -268,7 +272,9 @@ export function BookPickerClient({ services, packages }: BookPickerClientProps) 
         }}
       >
         <div>
-          <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>🏛️</div>
+          <div style={{ marginBottom: 'var(--space-2)', display: 'flex', justifyContent: 'center' }}>
+            <Icon.Bay size={28} color="var(--color-gold)" />
+          </div>
           <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
             Dust-Free Bays
           </h3>
@@ -277,7 +283,9 @@ export function BookPickerClient({ services, packages }: BookPickerClientProps) 
           </p>
         </div>
         <div>
-          <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>⚡</div>
+          <div style={{ marginBottom: 'var(--space-2)', display: 'flex', justifyContent: 'center' }}>
+            <Icon.Zap size={28} color="var(--color-gold)" />
+          </div>
           <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
             Zero Upfront Deposit
           </h3>
@@ -286,7 +294,9 @@ export function BookPickerClient({ services, packages }: BookPickerClientProps) 
           </p>
         </div>
         <div>
-          <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>🔬</div>
+          <div style={{ marginBottom: 'var(--space-2)', display: 'flex', justifyContent: 'center' }}>
+            <Icon.Microscope size={28} color="var(--color-gold)" />
+          </div>
           <h3 style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
             Certified Masters
           </h3>

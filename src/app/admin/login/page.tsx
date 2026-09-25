@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function AdminLoginPage() {
@@ -41,10 +42,20 @@ export default function AdminLoginPage() {
     <main className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
+          <div className={styles.logoWrapper}>
+            <Image
+              src="/logo.png"
+              alt="Smoke 'Em Customs"
+              width={76}
+              height={76}
+              priority
+              className={styles.loginLogo}
+            />
+          </div>
           <h1 className={styles.title}>
-            <span className="gradient-text">SMOKE M</span>
+            <span className="gradient-text">SMOKE &apos;EM</span>
           </h1>
-          <p className={styles.subtitle}>Admin Panel</p>
+          <p className={styles.subtitle}>Studio Admin Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>

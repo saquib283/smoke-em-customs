@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
       customerId: customer.id,
       vehicleId: vehicleId ?? undefined,
       leadId: body.leadId || undefined,
+      quoteId: body.quoteId || undefined,
       serviceId: resolvedServiceId || undefined,
       packageId: resolvedPackageId || undefined,
       resourceId: body.resourceId,

@@ -2,14 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { storageProvider } from '@/modules/storage';
 import { contentService } from '@/modules/content';
 
-const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/avif',
+  'video/mp4',
+  'video/webm',
+];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
-    const folder = (formData.get('folder') as string) || 'leads';
+    const folder = (formData.get('folder') as string) || 'gallery';
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided in form data' }, { status: 400 });
@@ -17,14 +25,14 @@ export async function POST(req: NextRequest) {
 
     if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
       return NextResponse.json(
-        { error: 'Invalid file format. Only JPEG, PNG, and WebP images are allowed.' },
+        { error: 'Invalid file format. Supported: JPEG, PNG, WebP, AVIF, MP4, WebM.' },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: 'File size exceeds maximum permitted limit of 10MB.' },
+        { error: 'File size exceeds maximum permitted limit of 50MB.' },
         { status: 400 }
       );
     }
@@ -40,10 +48,12 @@ export async function POST(req: NextRequest) {
       folder,
     });
 
+    const isVideo = file.type.toLowerCase().startsWith('video/');
+
     // Create database Media entity
     const media = await contentService.createMedia({
       url: uploadResult.publicUrl,
-      type: 'IMAGE',
+      type: isVideo ? 'VIDEO' : 'IMAGE',
       altText: file.name,
       provider: 'local',
       providerKey: uploadResult.providerKey,
@@ -53,6 +63,7 @@ export async function POST(req: NextRequest) {
       success: true,
       mediaId: media.id,
       url: media.url,
+      type: media.type,
       filename: file.name,
     });
   } catch (err: any) {

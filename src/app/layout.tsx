@@ -3,6 +3,7 @@ import './globals.css';
 import { Navbar } from '@/components/public/Navbar';
 import { Footer } from '@/components/public/Footer';
 import { MobileStickyBar } from '@/components/public/MobileStickyBar';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: {
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0A0A0A',
+  themeColor: '#FFFFFF',
 };
 
 export default function RootLayout({
@@ -49,12 +50,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
-        <Navbar />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {children}
-        </div>
-        <MobileStickyBar />
-        <Footer />
+        <Providers>
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
+          <Navbar />
+          <main id="main-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {children}
+          </main>
+          <MobileStickyBar />
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

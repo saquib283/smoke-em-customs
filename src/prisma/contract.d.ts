@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'38325e44069cc88667b53580996ef5b394d4daf642031b810dd29d9c54c59214'>;
+  StorageHashBase<'948f0490830373b9feca06fdeed6423806b9674e20df6ddad31f3cf6d8a7038a'>;
 export type ExecutionHash =
   ExecutionHashBase<'4a6481c746a7d72aa0284c90fdfa5b333fa701a529af203a35d58ba7f7107157'>;
 export type ProfileHash =
@@ -291,6 +291,7 @@ export type FieldOutputTypes = {
       readonly status:
         | 'PENDING_CONFIRMATION'
         | 'CONFIRMED'
+        | 'IN_PROGRESS'
         | 'RESCHEDULED'
         | 'CANCELLED'
         | 'COMPLETED'
@@ -594,6 +595,7 @@ export type FieldInputTypes = {
       readonly status:
         | 'PENDING_CONFIRMATION'
         | 'CONFIRMED'
+        | 'IN_PROGRESS'
         | 'RESCHEDULED'
         | 'CANCELLED'
         | 'COMPLETED'
@@ -904,6 +906,7 @@ export type StorageColumnTypes = {
       readonly status:
         | 'PENDING_CONFIRMATION'
         | 'CONFIRMED'
+        | 'IN_PROGRESS'
         | 'RESCHEDULED'
         | 'CANCELLED'
         | 'COMPLETED'
@@ -1207,6 +1210,7 @@ export type StorageColumnInputTypes = {
       readonly status:
         | 'PENDING_CONFIRMATION'
         | 'CONFIRMED'
+        | 'IN_PROGRESS'
         | 'RESCHEDULED'
         | 'CANCELLED'
         | 'COMPLETED'
@@ -1727,7 +1731,13 @@ export namespace Models {
     endAt: CodecTypes['pg/timestamptz-string@1']['output'];
     durationMinutes: CodecTypes['pg/int4@1']['output'];
     status:
-      'PENDING_CONFIRMATION' | 'CONFIRMED' | 'RESCHEDULED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
+      | 'PENDING_CONFIRMATION'
+      | 'CONFIRMED'
+      | 'IN_PROGRESS'
+      | 'RESCHEDULED'
+      | 'CANCELLED'
+      | 'COMPLETED'
+      | 'NO_SHOW';
     paymentStatus: 'NOT_APPLICABLE' | 'PENDING' | 'PARTIALLY_PAID' | 'PAID';
     priceQuoted: CodecTypes['pg/numeric@1']['output'] | null;
     createdById: CodecTypes['pg/text@1']['output'] | null;
@@ -4307,6 +4317,7 @@ type ContractBase = Omit<
               readonly values: readonly [
                 'PENDING_CONFIRMATION',
                 'CONFIRMED',
+                'IN_PROGRESS',
                 'RESCHEDULED',
                 'CANCELLED',
                 'COMPLETED',
@@ -7051,6 +7062,7 @@ type ContractBase = Omit<
             readonly members: readonly [
               { readonly name: 'PENDING_CONFIRMATION'; readonly value: 'PENDING_CONFIRMATION' },
               { readonly name: 'CONFIRMED'; readonly value: 'CONFIRMED' },
+              { readonly name: 'IN_PROGRESS'; readonly value: 'IN_PROGRESS' },
               { readonly name: 'RESCHEDULED'; readonly value: 'RESCHEDULED' },
               { readonly name: 'CANCELLED'; readonly value: 'CANCELLED' },
               { readonly name: 'COMPLETED'; readonly value: 'COMPLETED' },

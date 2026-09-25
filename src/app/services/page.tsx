@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { catalogueService } from '@/modules/catalogue';
+import { Icon } from '@/components/common/Icons';
 import styles from './services.module.css';
 
 export const metadata: Metadata = {
@@ -44,8 +45,12 @@ export default async function ServicesPage() {
               </div>
               <h2 className={styles.name}>{service.name}</h2>
               <div className={styles.metaRow}>
-                <span>⏱️ Duration: ~{Math.round(service.durationMinutes / 60)} Hours</span>
-                <span>🛡️ Professional Warranty</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Clock size={14} color="var(--color-gold)" /> Duration: ~{Math.round(service.durationMinutes / 60)} Hours
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Shield size={14} color="var(--color-gold)" /> Professional Warranty
+                </span>
               </div>
               <p className={styles.desc}>
                 Engineered for maximum optical clarity, hydrophobic self-cleaning properties,
@@ -80,8 +85,9 @@ export default async function ServicesPage() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary btn-lg"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
             >
-              💬 WhatsApp Chat
+              <Icon.WhatsApp size={18} /> WhatsApp Chat
             </a>
           </div>
         </div>

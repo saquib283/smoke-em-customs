@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ContactForm } from './ContactForm';
+import { Icon } from '@/components/common/Icons';
 import styles from './contact.module.css';
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function ContactPage() {
               
               <ul className={styles.infoList}>
                 <li className={styles.infoItem}>
-                  <span className={styles.icon}>📍</span>
+                  <span className={styles.icon}><Icon.MapPin size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.itemTitle}>Workshop Address</h4>
                     <p className={styles.itemText}>
@@ -43,7 +44,7 @@ export default function ContactPage() {
                 </li>
 
                 <li className={styles.infoItem}>
-                  <span className={styles.icon}>⏰</span>
+                  <span className={styles.icon}><Icon.Clock size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.itemTitle}>Operating Hours</h4>
                     <p className={styles.itemText}>
@@ -54,7 +55,7 @@ export default function ContactPage() {
                 </li>
 
                 <li className={styles.infoItem}>
-                  <span className={styles.icon}>📞</span>
+                  <span className={styles.icon}><Icon.Phone size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.itemTitle}>Direct Phone</h4>
                     <a href="tel:+919876543210" className={styles.link}>
@@ -64,7 +65,7 @@ export default function ContactPage() {
                 </li>
 
                 <li className={styles.infoItem}>
-                  <span className={styles.icon}>💬</span>
+                  <span className={styles.icon}><Icon.WhatsApp size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.itemTitle}>WhatsApp Support (Fastest Response)</h4>
                     <a
@@ -79,7 +80,7 @@ export default function ContactPage() {
                 </li>
 
                 <li className={styles.infoItem}>
-                  <span className={styles.icon}>✉️</span>
+                  <span className={styles.icon}><Icon.Mail size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.itemTitle}>Email Concierge</h4>
                     <a href="mailto:care@smokecustoms.com" className={styles.link}>

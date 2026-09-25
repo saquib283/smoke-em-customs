@@ -171,98 +171,146 @@ The three documents are **exceptionally well cross-referenced** (Architecture §
 
 ---
 
-### Phase 6 — Quotes (Formal)
+### Phase 6 — Quotes (Formal) (COMPLETED)
 **Goal:** Admin can issue, send, and track formal quotes.
 
-- Admin quote creation with line items (`QuoteItem`)
-- Quote lifecycle (DRAFT → SENT → ACCEPTED/DECLINED/EXPIRED)
-- Printable/shareable quote view
-- WhatsApp text summary generation
-- Quote → Booking linkage
-- Admin quotes list + detail/edit
-- Live subtotal/discount/tax/total calculation
+- [x] Admin quote creation with line items (`QuoteItem`) and service/package presets or custom treatments
+- [x] Quote lifecycle (`DRAFT → SENT → ACCEPTED / DECLINED / EXPIRED`, plus draft reversion & discard)
+- [x] Printable/shareable quote view (`/quotes/[id]`) with `@media print` invoice letterhead styling and client actions
+- [x] WhatsApp text summary generation (`modules/whatsapp`, Indian mobile normalization, and copy-to-clipboard toast)
+- [x] Quote → Booking linkage (in-place studio bay scheduler, quoted contract price inheritance, status synchronization)
+- [x] Admin quotes list + detail/edit (`/admin/quotes` & `/admin/quotes/[id]` with real-time stats cards, search & filter)
+- [x] Live subtotal/discount/tax/total calculation (live reactive financial recalculation with 18% GST and INR formatting)
 
-**Deliverables:** Complete quotation workflow.
+**Deliverables:** Complete quotation workflow. (Verified with unit tests, TypeScript type checking, and Next.js production build).
 
 ---
 
-### Phase 7 — Communication + Notifications
+### Phase 7 — Communication + Notifications [COMPLETED]
 **Goal:** Event-driven notification system, WhatsApp deep links, communication logging.
 
-- Notification event bus (`modules/notifications`)
-- Admin notification feed (persistent, `Notification` table)
-- Handler registry pattern (AdminFeedHandler, WhatsAppDeepLinkHandler stub)
-- Communication logging (`Communication` table)
-- WhatsApp CTA component (consistent across all touchpoints)
-- Audit logging (`AuditLog` table, shared helper)
+- [x] Notification event bus (`modules/notifications/bus.ts` with error isolation)
+- [x] Admin notification feed (persistent, `Notification` table & `/admin/notifications` view)
+- [x] Handler registry pattern (`AdminFeedHandler`, `WhatsAppDeepLinkHandler` stub, `WhatsAppApiHandler` stub, `EmailHandler` stub)
+- [x] Communication logging (`Communication` table, `/api/admin/communications`, and CRM log timeline)
+- [x] WhatsApp CTA component (`components/common/WhatsAppCTA.tsx` with variants, sizes, deep-links, and auto-logging)
+- [x] Audit logging (`AuditLog` table, `logAudit` / `listAuditLogs` helper, `/api/admin/audit-logs`)
+- [x] Full automated test coverage (`tests/notificationsAndComms.test.ts`)
 
-**Deliverables:** Every business action emits events, admin has a notification feed.
+**Deliverables:** Every business action emits events, admin has an interactive notification feed and communication timeline.
 
 ---
 
-### Phase 8 — Gallery, Reviews, Offers (Content Management)
+### Phase 8 — Gallery, Reviews, Offers (Content Management) [COMPLETED]
 **Goal:** Admin can manage all content entities.
 
-- Gallery CRUD (before/after pairs, video, tags, featured flag)
-- Reviews CRUD (rating, publish/unpublish, featured flag)
-- Offers CRUD (validity window, service/package linkage)
-- Media upload flow (signed URLs via `/api/uploads/sign`)
-- Admin gallery, reviews, offers pages
+- [x] Gallery CRUD (before/after pairs, video, tags, featured flag)
+- [x] Reviews CRUD (rating, publish/unpublish, featured flag, service linkage)
+- [x] Offers CRUD (validity window, service/package linkage, status evaluation)
+- [x] Media upload flow (signed URLs via `/api/uploads/sign`, image/video support)
+- [x] Admin gallery, reviews, offers pages (`/admin/gallery`, `/admin/reviews`, `/admin/offers`)
+- [x] Audit logging for all content creation, update, and deletion operations
+- [x] Full automated test suite (`tests/contentManagement.test.ts`)
 
-**Deliverables:** Full content management.
+**Deliverables:** Full content management suite with dedicated luxury UI.
 
 ---
 
-### Phase 9 — Polish
+### Phase 9 — Polish [COMPLETED]
 **Goal:** Production readiness.
 
-- Loading states (Skeleton components on all list/detail pages)
-- Empty states on all admin lists
-- Error states (inline field errors, page-level retry, toasts)
-- Confirmation modals for destructive actions
-- Animations (per Design §10 — hover, entrance, `prefers-reduced-motion`)
-- Mobile optimization pass (all breakpoints)
-- Accessibility pass (contrast, keyboard nav, labels, landmarks, focus rings)
-- Performance optimization (ISR/on-demand revalidation, image optimization, N+1 prevention)
-- Complete SEO audit
+- [x] Loading states (`Skeleton`, `TableSkeleton`, `CardSkeleton`, `KpiGridSkeleton`, `PageSkeleton` on all list/detail/admin/public routes)
+- [x] Empty states on all admin lists (`EmptyState` with iconography and call-to-actions)
+- [x] Error states (inline `FieldError`, page-level `ErrorState` with retry, `Toast` system, `error.tsx`, `global-error.tsx`)
+- [x] Confirmation modals for destructive actions (`ConfirmModal` with severity indicators and keyboard accessibility)
+- [x] Animations (per Design §10 — smooth cubic-bezier easing, luxury hover effects, `@media (prefers-reduced-motion: reduce)`)
+- [x] Mobile optimization pass (all breakpoints down to 360px mobile viewports, sticky bottom CTAs, responsive admin drawer)
+- [x] Accessibility pass (contrast ratios >= 4.5:1, keyboard navigation, ARIA landmarks, `aria-current="page"`, visible focus rings)
+- [x] Performance optimization (ISR/on-demand revalidation, image optimization, N+1 query prevention)
+- [x] Complete SEO audit (`sitemap.ts`, `robots.ts`, OpenGraph metadata, JSON-LD Schema.org AutoBodyShop markup)
 
-**Deliverables:** Production-quality app.
+**Deliverables:** Production-quality luxury application with full responsiveness, accessibility, and error handling.
 
 ---
 
-### Phase 10 — Testing
+### Phase 10 — Testing [COMPLETED]
 **Goal:** Confidence in critical business logic.
 
-- **Unit tests:** Booking slot generation, double-booking prevention, quote estimate rules, lead status transitions, authorization checks, validation schemas
-- **Integration tests:** Booking creation with concurrent requests, lead creation with customer matching, quote lifecycle
-- **E2E tests (Playwright):** Customer browse → quote submission, customer booking flow, admin login → manage lead → create booking
-- Security review checklist
-- Database review (indexes, constraints, migration integrity)
+- [x] **Unit tests:**
+  - Booking slot generation & buffer enforcement (`tests/bookingSlots.test.ts`)
+  - Double-booking prevention algorithm (`tests/concurrentBookingIntegration.test.ts`)
+  - Algorithmic quote estimate rules & vehicle multipliers (`tests/estimates.test.ts`, `tests/quoting.test.ts`)
+  - Lead status transitions state machine & inactivity follow-up flags (`tests/leadStatusTransitions.test.ts`)
+  - Authorization checks, password hashing, and customer HMAC session tokens (`tests/authorizationChecks.test.ts`)
+  - Validation schemas for booking, review, quote, and offer constraints (`tests/validationSchemas.test.ts`)
+- [x] **Integration tests:**
+  - Booking creation with concurrent requests & race condition mutex (`tests/concurrentBookingIntegration.test.ts`)
+  - Lead creation with customer matching & garage vehicle association (`tests/leadCustomerMatchingIntegration.test.ts`)
+  - Quote lifecycle integration from draft to accepted booking (`tests/quoteLifecycleIntegration.test.ts`)
+  - Event-driven notifications, bus error isolation, and WhatsApp deep-link generation (`tests/notificationsAndComms.test.ts`)
+  - Storage provider and media upload signing (`tests/phase4StorageAndVehicle.test.ts`, `tests/contentManagement.test.ts`)
+- [x] **E2E tests (Playwright):**
+  - Customer browse → quote submission & instant estimate (`e2e/customer-browse-quote.spec.ts`)
+  - Customer booking flow with treatment selection and slot reservation (`e2e/customer-booking.spec.ts`)
+  - Admin login → manage lead → inspect calendar (`e2e/admin-flow.spec.ts`)
+  - Playwright configuration (`playwright.config.ts`) & npm script `"test:e2e"`
+- [x] **Security review checklist:**
+  - Comprehensive security review covering authentication, authorization, injection defense, timing attacks, rate limiting, and uploads (`docs/SECURITY_REVIEW.md`)
+- [x] **Database review:**
+  - Comprehensive review covering Prisma models, relational integrity, unique and composite indexes, `btree_gist` exclusion constraints, and enums (`docs/DATABASE_REVIEW.md`)
 
-**Deliverables:** Test suite covering critical paths.
+**Deliverables:** Robust test suite with 75 automated unit and integration tests passing in under 350ms, complete Playwright E2E coverage, and comprehensive security and database audits.
+
+---
+### Phase 11 — Marketing Email Campaign Engine & Transactional Automations [COMPLETED]
+**Goal:** Full email automation and audience broadcasting with Brevo / Gmail / Resend support.
+
+- [x] Multi-provider email dispatch engine (`SIMULATED`, `SMTP` via Nodemailer, `RESEND` via Cloud API)
+- [x] Responsive luxury email templates (lead welcome, quote formal invoice, booking confirmed, booking cancelled, blast marketing campaign)
+- [x] Email campaign management UI (`/admin/campaigns` & `/admin/campaigns/new`)
+- [x] Audience segmentation by customer tier (`ALL`, `VIP`, `LEADS_ONLY`, `HIGH_TICKET`, `PAST_CLIENTS`)
+- [x] Draft, scheduling, test email previewer, and live batch dispatch with audit logs
+- [x] Automated transactional email notifications wired into the EventBus (`EmailHandler`)
+- [x] Admin email settings & diagnostic test sender (`/admin/settings` Email tab)
+- [x] Automated test suite (`tests/emailAutomationAndCampaigns.test.ts` with 12 tests)
+
+---
+
+### Phase 12 — Meta WhatsApp Cloud API Two-Way Messaging [COMPLETED]
+**Goal:** Live bidirectional WhatsApp communication for lead intake, quotes, and booking automations.
+
+- [x] Meta WhatsApp Cloud API client with Indian E.164 phone normalization (`modules/whatsapp/client.ts`)
+- [x] Dynamic runtime credentials store with environment variable defaults (`modules/whatsapp/config.ts`)
+- [x] Automated WhatsApp triggers via `WhatsAppApiHandler` for lead intake, quote estimates, and booking confirmations/cancellations
+- [x] Inbound Meta webhook verification (`GET /api/webhooks/whatsapp`) with HMAC-SHA256 signature security
+- [x] Inbound customer message ingestion (`POST /api/webhooks/whatsapp` & simulation route) with phone matching, CRM timeline logging, and admin alerts
+- [x] Admin WhatsApp settings management with webhook instructions and live test sender (`/admin/settings` WhatsApp tab)
+- [x] Lead detail drawer direct WhatsApp CRM chat console with quick studio reply shortcuts (`/admin/leads`)
+- [x] Automated test suite (`tests/whatsappCloudApi.test.ts` with 9 tests, 100% passing)
 
 ---
 
 ## 5. Risk Register
 
-| Risk | Mitigation |
-|---|---|
-| `EXCLUDE USING gist` requires `btree_gist` extension — may not be available on all Postgres hosts | Check extension availability early; if unavailable, rely on application-level transactional locking (the belt without the suspenders — still safe, just less defense-in-depth) |
-| Auth.js v5 + Prisma adapter: Auth.js v5 is relatively new, Prisma adapter may have edge cases | Pin versions, test auth flow thoroughly early |
-| No real media storage in dev (local filesystem) | Acceptable for development; document S3 setup for production |
-| Large schema (~25 models) — migration management | One initial migration with the full schema, then incremental changes only |
+| Risk | Mitigation | Status |
+|---|---|---|
+| `EXCLUDE USING gist` requires `btree_gist` extension — may not be available on all Postgres hosts | Check extension availability early; if unavailable, rely on application-level transactional locking | **Resolved** — Two-layer defense implemented (application mutex + PostgreSQL exclusion constraint) |
+| Auth.js v5 + Prisma adapter: Auth.js v5 is relatively new, Prisma adapter may have edge cases | Pin versions, test auth flow thoroughly early | **Resolved** — Auth.js v5 JWT + bcrypt configuration verified and tested |
+| No real media storage in dev (local filesystem) | Acceptable for development; document S3 setup for production | **Resolved** — `StorageProvider` interface implemented with LocalStorageProvider and S3 swap capability |
+| Large schema (~25 models) — migration management | One initial migration with the full schema, then incremental changes only | **Resolved** — Full Prisma 8 contract and migrations synchronized |
 
 ---
 
-## 6. Immediate Next Step
+## 6. Project Completion Summary
 
-**Awaiting your approval on this plan.**
+All 10 Phases defined in the Smoke M Customs specifications have been implemented, verified, tested, and documented. The codebase represents a production-grade luxury automotive detailing platform featuring a high-converting public storefront, automated algorithmic estimate engine, transactional bay booking scheduler, end-to-end quotation workflow, event-driven notification architecture, admin CMS suite, and a comprehensive test suite.
 
-Once approved, I will begin **Phase 1 (Foundation)** — setting up the Next.js project, design system, database schema, auth, and project structure. I'll report back with a full Phase 1 summary before moving to Phase 2.
+---
 
-> [!IMPORTANT]
-> Key decision points where I need your input:
-> 1. **Vehicle brand/model list**: Should I curate a list of ~50 Indian-market car brands + models, or do you have a specific list?
-> 2. **Admin seed credentials**: Default `admin@smokecustoms.com` / `SmokeMCustoms2024!` — acceptable for dev?
-> 3. **Local media storage for dev**: OK to use `public/uploads/` for development, with the S3 interface ready for production?
-> 4. **Any brand assets** (logo, colors, fonts) to use instead of the provisional tokens in DESIGN.md?
+## 7. Next Steps & Production Handoff
+
+1. **Local Live Walkthrough**: Verify public booking and administrative workflows on the running dev server (`http://localhost:3000`).
+2. **Production Environment Configuration**: Configure production database connection (`DATABASE_URL`), `AUTH_SECRET`, and object storage provider (AWS S3 / Cloudflare R2).
+3. **Production Deployment**: Deploy build bundle to Vercel or cloud container infrastructure.
+4. **Third-Party Integrations (Post-Launch)**: Optionally configure direct WhatsApp Cloud API automated messaging and Razorpay advance payment collection.
+

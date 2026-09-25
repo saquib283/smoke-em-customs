@@ -1,11 +1,14 @@
 .main {
   padding-bottom: var(--space-16);
+  background-color: var(--color-bg-primary);
 }
 
 .header {
-  background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, rgba(10, 10, 10, 0.95) 75%);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(180, 83, 9, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-12) 0 var(--space-10);
+  padding: var(--space-14) 0 var(--space-10);
   text-align: center;
 }
 
@@ -26,16 +29,17 @@
 }
 
 .title {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
   font-weight: var(--font-extrabold);
   color: var(--color-text-primary);
   margin-bottom: var(--space-3);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   font-size: var(--text-base);
   color: var(--color-text-secondary);
-  max-width: 620px;
+  max-width: 640px;
   margin: 0 auto;
   line-height: var(--leading-relaxed);
 }
@@ -50,16 +54,16 @@
 /* ── Scorecard ── */
 
 .scorecard {
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   padding: var(--space-6) var(--space-8);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-6);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 .scoreLeft {
@@ -71,7 +75,7 @@
 .scoreNumber {
   font-size: 3rem;
   font-weight: var(--font-extrabold);
-  color: var(--color-accent-primary);
+  color: var(--color-text-primary);
   line-height: 1;
 }
 
@@ -85,6 +89,7 @@
 .scoreLabel {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
+  font-weight: 500;
 }
 
 .scoreDivider {
@@ -119,9 +124,9 @@
 }
 
 .successBanner {
-  background-color: var(--color-success-subtle);
-  border: 1px solid var(--color-success);
-  color: var(--color-success);
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #059669;
   padding: var(--space-4);
   border-radius: var(--radius-md);
   text-align: center;
@@ -132,19 +137,21 @@
 /* ── Form ── */
 
 .reviewForm {
-  background-color: var(--color-bg-elevated);
-  border: 1px solid rgba(212, 168, 83, 0.4);
-  border-radius: var(--radius-lg);
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
   padding: var(--space-6);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  box-shadow: var(--shadow-md);
 }
 
 .formTitle {
   font-size: var(--text-lg);
   font-weight: var(--font-bold);
   color: var(--color-text-primary);
+  letter-spacing: -0.01em;
 }
 
 .ratingSelectRow {
@@ -162,7 +169,7 @@
   background: transparent;
   border: none;
   font-size: 24px;
-  color: var(--color-border);
+  color: #CBD5E1;
   cursor: pointer;
   transition: color var(--transition-fast);
 }
@@ -186,24 +193,27 @@
 .formLabel {
   font-size: var(--text-xs);
   font-weight: var(--font-semibold);
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
 }
 
 .input,
 .textarea {
-  background-color: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
   border-radius: var(--radius-md);
   padding: var(--space-3);
   color: var(--color-text-primary);
   font-family: inherit;
   font-size: var(--text-sm);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .input:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--color-accent-primary);
+  border-color: #0F172A;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
 .formActions {
@@ -228,13 +238,21 @@
 }
 
 .card {
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   padding: var(--space-6);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.card:hover {
+  border-color: #CBD5E1;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .cardStars {
@@ -263,7 +281,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-bg-surface));
+  background: #F1F5F9;
+  border: 1px solid var(--color-border);
   color: var(--color-text-primary);
   display: flex;
   align-items: center;

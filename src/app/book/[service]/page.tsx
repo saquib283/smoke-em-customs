@@ -7,7 +7,7 @@ import styles from '../booking.module.css';
 
 interface BookServicePageProps {
   params: Promise<{ service: string }>;
-  searchParams: Promise<{ leadId?: string }>;
+  searchParams: Promise<{ leadId?: string; quoteId?: string }>;
 }
 
 export async function generateMetadata({
@@ -47,7 +47,7 @@ export default async function BookServicePage({
   searchParams,
 }: BookServicePageProps) {
   const { service: slugOrId } = await params;
-  const { leadId } = await searchParams;
+  const { leadId, quoteId } = await searchParams;
 
   // Resolve service or package
   let service = await catalogueService.getServiceBySlug(slugOrId);
@@ -114,6 +114,7 @@ export default async function BookServicePage({
           treatment={treatment}
           blockedDates={blockedDates}
           leadId={leadId}
+          quoteId={quoteId}
         />
       </div>
     </main>

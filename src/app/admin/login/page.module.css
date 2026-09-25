@@ -10,17 +10,29 @@
 .card {
   width: 100%;
   max-width: 400px;
-  background-color: var(--color-bg-elevated);
+  background-color: #FFFFFF;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
   animation: fadeIn var(--transition-slow) ease-out;
 }
 
 .header {
   text-align: center;
-  padding: var(--space-10) var(--space-8) var(--space-6);
+  padding: var(--space-8) var(--space-8) var(--space-4);
+}
+
+.logoWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+}
+
+.loginLogo {
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--color-border);
 }
 
 .title {

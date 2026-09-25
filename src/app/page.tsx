@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { catalogueService } from '@/modules/catalogue';
 import { contentService } from '@/modules/content';
 import { JsonLd } from '@/components/public/JsonLd';
+import { Icon } from '@/components/common/Icons';
 import styles from './page.module.css';
 
 export const revalidate = 60; // Revalidate every minute
@@ -80,8 +81,9 @@ export default async function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.heroWaBtn}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
               >
-                💬 WhatsApp Us
+                <Icon.WhatsApp size={18} /> WhatsApp Us
               </a>
             </div>
           </div>
@@ -94,7 +96,9 @@ export default async function HomePage() {
             </div>
             <div className={styles.statDivider} />
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>4.9★</span>
+              <span className={styles.statNumber} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                4.9 <Icon.Star size={18} color="var(--color-gold)" fill="var(--color-gold)" />
+              </span>
               <span className={styles.statLabel}>Google Rating (40+ Reviews)</span>
             </div>
             <div className={styles.statDivider} />
@@ -117,7 +121,9 @@ export default async function HomePage() {
           <div className={styles.container}>
             <div className={styles.offersBannerInner}>
               <div className={styles.offersBannerLeft}>
-                <span className={styles.offersBadge}>⚡ LIMITED PRIVILEGE</span>
+                <span className={styles.offersBadge} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Icon.Zap size={14} /> LIMITED PRIVILEGE
+                </span>
                 <div>
                   <h3 className={styles.offersTitle}>{offers[0].title}</h3>
                   <span className={styles.offersDesc}>{offers[0].description}</span>
@@ -156,8 +162,12 @@ export default async function HomePage() {
                 </div>
                 <h3 className={styles.serviceName}>{service.name}</h3>
                 <div className={styles.serviceMeta}>
-                  <span>⏱️ ~{Math.round(service.durationMinutes / 60)} Hours</span>
-                  <span>🛡️ Professional Grade</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon.Clock size={14} color="var(--color-gold)" /> ~{Math.round(service.durationMinutes / 60)} Hours
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon.Shield size={14} color="var(--color-gold)" /> Professional Grade
+                  </span>
                 </div>
                 <div className={styles.serviceActions}>
                   <Link href={`/services/${service.slug}`} className="btn btn-secondary btn-sm">
@@ -250,7 +260,7 @@ export default async function HomePage() {
 
           <div className={styles.featuresGrid}>
             <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>🌪️</div>
+              <div className={styles.featureIcon}><Icon.Wind size={24} /></div>
               <h3 className={styles.featureTitle}>Dust-Free Climate Bay</h3>
               <p className={styles.featureDesc}>
                 Ceramic coatings and PPF require precise temperature and zero airborne contaminants.
@@ -259,7 +269,7 @@ export default async function HomePage() {
             </div>
 
             <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>🛡️</div>
+              <div className={styles.featureIcon}><Icon.Shield size={24} /></div>
               <h3 className={styles.featureTitle}>Self-Healing TPU Film</h3>
               <p className={styles.featureDesc}>
                 We exclusively install premium aliphatic TPU films that heal micro-scratches with sunlight or warm water.
@@ -268,7 +278,7 @@ export default async function HomePage() {
             </div>
 
             <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>🔬</div>
+              <div className={styles.featureIcon}><Icon.Microscope size={24} /></div>
               <h3 className={styles.featureTitle}>Digital Paint Depth Gauge</h3>
               <p className={styles.featureDesc}>
                 Before any machine touches your clear coat, we map paint thickness across all panels
@@ -277,7 +287,7 @@ export default async function HomePage() {
             </div>
 
             <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>📜</div>
+              <div className={styles.featureIcon}><Icon.Certificate size={24} /></div>
               <h3 className={styles.featureTitle}>Documented Warranty</h3>
               <p className={styles.featureDesc}>
                 Receive a physical and digital warranty card with scheduled free 6-month inspection
@@ -303,7 +313,7 @@ export default async function HomePage() {
             <div className={styles.stepCard}>
               <div className={styles.stepHeader}>
                 <span className={styles.stepNumber}>01</span>
-                <span className={styles.stepIcon}>📋</span>
+                <span className={styles.stepIcon}><Icon.Clipboard size={22} /></span>
               </div>
               <h3 className={styles.stepTitle}>Intake & Digital Paint Gauge Mapping</h3>
               <p className={styles.stepDesc}>
@@ -314,7 +324,7 @@ export default async function HomePage() {
             <div className={styles.stepCard}>
               <div className={styles.stepHeader}>
                 <span className={styles.stepNumber}>02</span>
-                <span className={styles.stepIcon}>🧼</span>
+                <span className={styles.stepIcon}><Icon.Soap size={22} /></span>
               </div>
               <h3 className={styles.stepTitle}>Multi-Stage Chemical Decontamination</h3>
               <p className={styles.stepDesc}>
@@ -325,7 +335,7 @@ export default async function HomePage() {
             <div className={styles.stepCard}>
               <div className={styles.stepHeader}>
                 <span className={styles.stepNumber}>03</span>
-                <span className={styles.stepIcon}>🛡️</span>
+                <span className={styles.stepIcon}><Icon.Shield size={22} /></span>
               </div>
               <h3 className={styles.stepTitle}>Climate-Controlled Application</h3>
               <p className={styles.stepDesc}>
@@ -336,7 +346,7 @@ export default async function HomePage() {
             <div className={styles.stepCard}>
               <div className={styles.stepHeader}>
                 <span className={styles.stepNumber}>04</span>
-                <span className={styles.stepIcon}>✨</span>
+                <span className={styles.stepIcon}><Icon.Sparkles size={22} /></span>
               </div>
               <h3 className={styles.stepTitle}>Infrared Curing & Warranty Handover</h3>
               <p className={styles.stepDesc}>
@@ -371,13 +381,19 @@ export default async function HomePage() {
                   <span className={styles.pricePeriod}> / package</span>
                 </p>
                 <div className={styles.packageMeta}>
-                  <span>⏱️ ~{Math.round(pkg.durationMinutes / 60)} Hours</span>
-                  <span>🛡️ Multi-Year Warranty</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon.Clock size={14} color="var(--color-gold)" /> ~{Math.round(pkg.durationMinutes / 60)} Hours
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon.Shield size={14} color="var(--color-gold)" /> Multi-Year Warranty
+                  </span>
                 </div>
                 <ul className={styles.packageBenefits}>
                   {pkg.benefits.map((b, i) => (
                     <li key={i}>
-                      <span className={styles.checkIcon}>✓</span> {b}
+                      <span className={styles.checkIcon} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Icon.Check size={12} color="var(--color-gold)" />
+                      </span> {b}
                     </li>
                   ))}
                 </ul>
@@ -409,8 +425,15 @@ export default async function HomePage() {
           <div className={styles.reviewsGrid}>
             {reviews.map((r) => (
               <div key={r.id} className={styles.reviewCard}>
-                <div className={styles.reviewStars}>
-                  {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                <div className={styles.reviewStars} style={{ display: 'flex', gap: 2 }}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Icon.Star
+                      key={i}
+                      size={14}
+                      color={i < r.rating ? 'var(--color-gold)' : 'var(--color-border)'}
+                      fill={i < r.rating ? 'var(--color-gold)' : 'transparent'}
+                    />
+                  ))}
                 </div>
                 <p className={styles.reviewBody}>&ldquo;{r.body}&rdquo;</p>
                 <div className={styles.reviewAuthor}>
@@ -457,8 +480,9 @@ export default async function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.heroWaBtn}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
                 >
-                  💬 Chat on WhatsApp
+                  <Icon.WhatsApp size={18} /> Chat on WhatsApp
                 </a>
               </div>
             </div>

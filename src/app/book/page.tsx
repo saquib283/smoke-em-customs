@@ -4,6 +4,8 @@ import { catalogueService } from '@/modules/catalogue';
 import { BookPickerClient } from './BookPickerClient';
 import styles from './booking.module.css';
 
+import { quotingService } from '@/modules/quoting';
+
 export const metadata: Metadata = {
   title: 'Choose Detailing Treatment — Smoke M Customs',
   description:
@@ -11,13 +13,40 @@ export const metadata: Metadata = {
 };
 
 interface BookPageProps {
-  searchParams: Promise<{ service?: string; package?: string }>;
+  searchParams: Promise<{ service?: string; package?: string; quoteId?: string }>;
 }
 
 export const revalidate = 60;
 
 export default async function BookPage({ searchParams }: BookPageProps) {
-  const { service: queryService, package: queryPackage } = await searchParams;
+  const { service: queryService, package: queryPackage, quoteId: queryQuoteId } = await searchParams;
+
+  if (queryQuoteId) {
+    try {
+      const quote = await quotingService.getQuote(queryQuoteId);
+      if (quote && quote.items.length > 0) {
+        const firstItem = quote.items[0];
+        if (firstItem.serviceId) {
+          const s = await catalogueService.getServiceById(firstItem.serviceId);
+          if (s) {
+            redirect(`/book/${s.slug}?quoteId=${queryQuoteId}`);
+          }
+        } else if (firstItem.packageId) {
+          const p = await catalogueService.getPackageById(firstItem.packageId);
+          if (p) {
+            redirect(`/book/${p.slug}?quoteId=${queryQuoteId}`);
+          }
+        }
+      }
+    } catch {
+      // Fallback
+    }
+
+    const availableServices = await catalogueService.listServices({ enabledOnly: true });
+    if (availableServices.length > 0) {
+      redirect(`/book/${availableServices[0].slug}?quoteId=${queryQuoteId}`);
+    }
+  }
 
   if (queryService) {
     redirect(`/book/${queryService}`);

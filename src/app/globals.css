@@ -1,8 +1,14 @@
 /* Smoke M Customs — Global Styles Entry Point */
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Google Fonts: Plus Jakarta Sans (Headings/Display/Body) & Inter */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* Design System */
 @import '../styles/tokens.css';
 @import '../styles/components.css';
+
+html, body, button, input, select, textarea {
+  font-family: var(--font-body, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -2,7 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { Icon } from '@/components/common/Icons';
 import styles from './Footer.module.css';
 
 export function Footer() {
@@ -20,9 +22,15 @@ export function Footer() {
           {/* Brand Col */}
           <div className={styles.colBrand}>
             <Link href="/" className={styles.logo}>
-              <span className={styles.logoBadge}>SMC</span>
+              <Image
+                src="/logo.png"
+                alt="Smoke 'Em Customs Logo"
+                width={40}
+                height={40}
+                className={styles.logoImage}
+              />
               <span className={styles.logoText}>
-                <span className={styles.logoSmoke}>SMOKE M</span>{' '}
+                <span className={styles.logoSmoke}>SMOKE &apos;EM</span>{' '}
                 <span className={styles.logoCustoms}>CUSTOMS</span>
               </span>
             </Link>
@@ -39,7 +47,7 @@ export function Footer() {
                 className={styles.socialIcon}
                 aria-label="Instagram"
               >
-                📸
+                <Icon.Instagram size={18} />
               </a>
               <a
                 href="https://youtube.com"
@@ -48,7 +56,7 @@ export function Footer() {
                 className={styles.socialIcon}
                 aria-label="YouTube"
               >
-                ▶️
+                <Icon.YouTube size={18} />
               </a>
               <a
                 href="https://wa.me/919876543210"
@@ -57,7 +65,7 @@ export function Footer() {
                 className={styles.socialIcon}
                 aria-label="WhatsApp"
               >
-                💬
+                <Icon.WhatsApp size={18} />
               </a>
             </div>
           </div>
@@ -95,19 +103,19 @@ export function Footer() {
             <h4 className={styles.heading}>Studio</h4>
             <ul className={styles.contactList}>
               <li>
-                <span className={styles.contactIcon}>📍</span>
+                <span className={styles.contactIcon}><Icon.MapPin size={16} /></span>
                 <span>42 Detailing Boulevard, Phase II, Auto Zone, India</span>
               </li>
               <li>
-                <span className={styles.contactIcon}>⏰</span>
+                <span className={styles.contactIcon}><Icon.Clock size={16} /></span>
                 <span>Mon – Sat: 10:00 AM – 7:00 PM<br /><small className={styles.closed}>Sunday: Closed for deep bay cleaning</small></span>
               </li>
               <li>
-                <span className={styles.contactIcon}>📞</span>
+                <span className={styles.contactIcon}><Icon.Phone size={16} /></span>
                 <a href="tel:+919876543210">+91 98765 43210</a>
               </li>
               <li>
-                <span className={styles.contactIcon}>💬</span>
+                <span className={styles.contactIcon}><Icon.WhatsApp size={16} /></span>
                 <a
                   href="https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs"
                   target="_blank"

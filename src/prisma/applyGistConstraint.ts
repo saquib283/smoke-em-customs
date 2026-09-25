@@ -6,7 +6,7 @@ async function main() {
   try {
     // 1. Enable btree_gist extension
     await (db as any).raw.sql`CREATE EXTENSION IF NOT EXISTS btree_gist;`;
-    console.log('✓ btree_gist extension verified/enabled.');
+    console.log('[OK] btree_gist extension verified/enabled.');
 
     // 2. Add an index or constraint if not exists
     try {
@@ -23,7 +23,7 @@ async function main() {
           tstzrange("startAt", "endAt", '[)') WITH &&
         ) WHERE (status != 'CANCELLED');
       `;
-      console.log('✓ EXCLUDE USING gist constraint (no_overlapping_bookings) successfully created on bookings table.');
+      console.log('[OK] EXCLUDE USING gist constraint (no_overlapping_bookings) successfully created on bookings table.');
     } catch (constraintErr: any) {
       console.warn('Note on constraint creation:', constraintErr.message);
     }

@@ -258,7 +258,7 @@ export class CRMService {
   }
 
   async listCustomers(options?: ListCustomersOptions): Promise<CustomerListItem[]> {
-    let query = db.orm.public.Customer;
+    const query = db.orm.public.Customer;
 
     const customers = await query.orderBy((c) => c.createdAt.desc()).all();
 
@@ -605,17 +605,21 @@ export class CRMService {
       toStatus: 'NEW',
     });
 
-    // 7. Notify admin feed
+    // 7. Dispatch event through notification event bus (Architecture §13)
     try {
-      await notificationsService.createNotification({
-        type: 'NEW_LEAD',
-        title: 'New Lead Inbound',
-        body: `${data.customerName} submitted a detailing request for ${data.vehicleBrand ?? ''} ${data.vehicleModel ?? 'Vehicle'}.`,
-        entityType: 'lead',
-        entityId: lead.id,
+      await notificationsService.emitEvent({
+        type: 'lead.created',
+        leadId: lead.id,
+        customerId: customer.id,
+        customerName: customer.name,
+        customerPhone: customer.phone,
+        vehicleText: data.vehicleBrand
+          ? `${data.vehicleBrand} ${data.vehicleModel ?? ''}`.trim()
+          : null,
+        serviceInterest: data.serviceInterestId ?? null,
       });
-    } catch {
-      // Continue even if notification delivery fails
+    } catch (err) {
+      console.warn('Note: Event emission failed for lead creation:', err);
     }
 
     return (await this.getLead(lead.id))!;
@@ -828,6 +832,20 @@ export class CRMService {
       if (admin) {
         await this.addLeadNote(id, admin.id, `[Status -> ${status}] ${notes}`);
       }
+    }
+
+    try {
+      const customer = await db.orm.public.Customer.where({ id: lead.customerId }).first();
+      await notificationsService.emitEvent({
+        type: 'lead.status_changed',
+        leadId: id,
+        customerId: lead.customerId,
+        customerName: customer?.name ?? 'Client',
+        fromStatus: oldStatus,
+        toStatus: status,
+      });
+    } catch {
+      // Non-blocking
     }
 
     return (await this.getLead(id))!;

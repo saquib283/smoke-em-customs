@@ -256,13 +256,33 @@ export class BookingService {
 
     const defaultStatus = data.source === 'admin' ? 'CONFIRMED' : 'PENDING_CONFIRMATION';
 
+    let priceQuoted = data.priceQuoted ?? null;
+    let linkedLeadId = data.leadId ?? null;
+
+    // Quote -> Booking linkage: inherit quoted price and lead if not supplied
+    if (data.quoteId) {
+      try {
+        const linkedQuote = await db.orm.public.Quote.where({ id: data.quoteId }).first();
+        if (linkedQuote) {
+          if (!priceQuoted) {
+            priceQuoted = String(linkedQuote.total);
+          }
+          if (!linkedLeadId && linkedQuote.leadId) {
+            linkedLeadId = linkedQuote.leadId;
+          }
+        }
+      } catch (qErr) {
+        console.warn('Note: Could not inspect linked quote:', qErr);
+      }
+    }
+
     let bookingId: string;
     try {
       // Tier 2: PostgreSQL EXCLUDE USING gist ("resourceId" WITH =, tstzrange("startAt", "endAt", '[)') WITH &&)
       const booking = await db.orm.public.Booking.create({
         customerId: data.customerId,
         vehicleId: data.vehicleId ?? null,
-        leadId: data.leadId ?? null,
+        leadId: linkedLeadId,
         quoteId: data.quoteId ?? null,
         serviceId: data.serviceId ?? null,
         packageId: data.packageId ?? null,
@@ -272,7 +292,7 @@ export class BookingService {
         durationMinutes: data.durationMinutes,
         status: defaultStatus,
         paymentStatus: 'NOT_APPLICABLE',
-        priceQuoted: data.priceQuoted ?? null,
+        priceQuoted,
         source: data.source,
         customerNotes: data.customerNotes ?? null,
         internalNotes: data.internalNotes ?? null,
@@ -292,27 +312,42 @@ export class BookingService {
       throw dbErr;
     }
 
-    // If linked to lead, update lead status to BOOKED (Booking -> Lead lineage)
-    if (data.leadId) {
+    // If linked to quote, mark Quote status as ACCEPTED
+    if (data.quoteId) {
       try {
-        await db.orm.public.Lead.where({ id: data.leadId }).update({ status: 'BOOKED' });
+        await db.orm.public.Quote.where({ id: data.quoteId }).update({ status: 'ACCEPTED' });
+      } catch (quoteErr) {
+        console.warn('Note: Could not update linked quote status:', quoteErr);
+      }
+    }
+
+    // If linked to lead, update lead status to BOOKED (Booking -> Lead lineage)
+    if (linkedLeadId) {
+      try {
+        await db.orm.public.Lead.where({ id: linkedLeadId }).update({ status: 'BOOKED' });
       } catch (leadErr) {
         console.warn('Note: Could not update linked lead status:', leadErr);
       }
     }
 
-    // Trigger admin notification
+    // Dispatch event through notification event bus (Architecture §13)
     try {
-      const customer = await db.orm.public.Customer.where({ id: data.customerId }).first();
-      await notificationsService.createNotification({
-        type: 'NEW_BOOKING_PENDING',
-        title: 'New Booking Created',
-        body: `Booking for ${customer?.name ?? 'Customer'} on ${new Date(data.startAt).toLocaleString('en-IN')}`,
-        entityType: 'booking',
-        entityId: bookingId,
+      const [customer, res] = await Promise.all([
+        db.orm.public.Customer.where({ id: data.customerId }).first(),
+        db.orm.public.Resource.where({ id: data.resourceId }).first(),
+      ]);
+      await notificationsService.emitEvent({
+        type: 'booking.created',
+        bookingId,
+        customerId: data.customerId,
+        customerName: customer?.name ?? 'Customer',
+        customerPhone: customer?.phone,
+        startAt: data.startAt,
+        resourceName: res?.name ?? 'Bay 1',
+        priceQuoted,
       });
-    } catch {
-      // Continue
+    } catch (evtErr) {
+      console.warn('Note: Event emission failed for booking creation:', evtErr);
     }
 
     return (await this.getBooking(bookingId))!;
@@ -379,12 +414,34 @@ export class BookingService {
     const bookings = await query.orderBy((b) => b.startAt.desc()).all();
 
     const result: BookingListItem[] = [];
+    const customerCache = new Map<string, any>();
+    const vehicleCache = new Map<string, any>();
+    const serviceCache = new Map<string, any>();
+    const packageCache = new Map<string, any>();
+    const resourceCache = new Map<string, any>();
+
     for (const b of bookings) {
-      const customer = await db.orm.public.Customer.where({ id: b.customerId }).first();
-      const vehicle = b.vehicleId ? await db.orm.public.Vehicle.where({ id: b.vehicleId }).first() : null;
-      const service = b.serviceId ? await db.orm.public.Service.where({ id: b.serviceId }).first() : null;
-      const pkg = b.packageId ? await db.orm.public.Package.where({ id: b.packageId }).first() : null;
-      const resource = await db.orm.public.Resource.where({ id: b.resourceId }).first();
+      if (!customerCache.has(b.customerId)) {
+        customerCache.set(b.customerId, await db.orm.public.Customer.where({ id: b.customerId }).first());
+      }
+      if (b.vehicleId && !vehicleCache.has(b.vehicleId)) {
+        vehicleCache.set(b.vehicleId, await db.orm.public.Vehicle.where({ id: b.vehicleId }).first());
+      }
+      if (b.serviceId && !serviceCache.has(b.serviceId)) {
+        serviceCache.set(b.serviceId, await db.orm.public.Service.where({ id: b.serviceId }).first());
+      }
+      if (b.packageId && !packageCache.has(b.packageId)) {
+        packageCache.set(b.packageId, await db.orm.public.Package.where({ id: b.packageId }).first());
+      }
+      if (!resourceCache.has(b.resourceId)) {
+        resourceCache.set(b.resourceId, await db.orm.public.Resource.where({ id: b.resourceId }).first());
+      }
+
+      const customer = customerCache.get(b.customerId);
+      const vehicle = b.vehicleId ? vehicleCache.get(b.vehicleId) : null;
+      const service = b.serviceId ? serviceCache.get(b.serviceId) : null;
+      const pkg = b.packageId ? packageCache.get(b.packageId) : null;
+      const resource = resourceCache.get(b.resourceId);
 
       result.push({
         id: b.id,
@@ -408,26 +465,48 @@ export class BookingService {
   }
 
   async confirmBooking(id: string): Promise<BookingDetail> {
+    const booking = await db.orm.public.Booking.where({ id }).first();
+    const oldStatus = booking?.status ?? 'PENDING_CONFIRMATION';
     await db.orm.public.Booking.where({ id }).update({ status: 'CONFIRMED' });
+
+    try {
+      const customer = booking ? await db.orm.public.Customer.where({ id: booking.customerId }).first() : null;
+      await notificationsService.emitEvent({
+        type: 'booking.status_changed',
+        bookingId: id,
+        customerId: booking?.customerId ?? '',
+        customerName: customer?.name ?? 'Client',
+        fromStatus: oldStatus,
+        toStatus: 'CONFIRMED',
+      });
+    } catch {
+      // Non-blocking
+    }
+
     return (await this.getBooking(id))!;
   }
 
   async cancelBooking(id: string, reason?: string): Promise<BookingDetail> {
+    const booking = await db.orm.public.Booking.where({ id }).first();
+    const oldStatus = booking?.status ?? 'CONFIRMED';
     await db.orm.public.Booking.where({ id }).update({
       status: 'CANCELLED',
       cancellationReason: reason ?? 'Cancelled by admin',
     });
 
     try {
-      await notificationsService.createNotification({
-        type: 'BOOKING_CANCELLED',
-        title: 'Booking Cancelled',
-        body: `Booking ${id} was cancelled. ${reason ? `Reason: ${reason}` : ''}`,
-        entityType: 'booking',
-        entityId: id,
+      const customer = booking ? await db.orm.public.Customer.where({ id: booking.customerId }).first() : null;
+      await notificationsService.emitEvent({
+        type: 'booking.status_changed',
+        bookingId: id,
+        customerId: booking?.customerId ?? '',
+        customerName: customer?.name ?? 'Client',
+        fromStatus: oldStatus,
+        toStatus: 'CANCELLED',
+        reason,
       });
     } catch {
-      // Continue
+      // Non-blocking
     }
 
     return (await this.getBooking(id))!;
@@ -456,7 +535,106 @@ export class BookingService {
   }
 
   async completeBooking(id: string): Promise<BookingDetail> {
+    const booking = await db.orm.public.Booking.where({ id }).first();
+    const oldStatus = booking?.status ?? 'IN_PROGRESS';
     await db.orm.public.Booking.where({ id }).update({ status: 'COMPLETED' });
+
+    try {
+      const customer = booking ? await db.orm.public.Customer.where({ id: booking.customerId }).first() : null;
+      await notificationsService.emitEvent({
+        type: 'booking.status_changed',
+        bookingId: id,
+        customerId: booking?.customerId ?? '',
+        customerName: customer?.name ?? 'Client',
+        fromStatus: oldStatus,
+        toStatus: 'COMPLETED',
+      });
+    } catch {
+      // Non-blocking
+    }
+
+    return (await this.getBooking(id))!;
+  }
+
+  async startJob(id: string): Promise<BookingDetail> {
+    const booking = await db.orm.public.Booking.where({ id }).first();
+    if (!booking) throw new Error(`Booking ${id} not found`);
+
+    const oldStatus = booking.status;
+    await db.orm.public.Booking.where({ id }).update({ status: 'IN_PROGRESS' });
+
+    try {
+      const customer = await db.orm.public.Customer.where({ id: booking.customerId }).first();
+      await notificationsService.emitEvent({
+        type: 'booking.status_changed',
+        bookingId: id,
+        customerId: booking.customerId,
+        customerName: customer?.name ?? 'Client',
+        fromStatus: oldStatus,
+        toStatus: 'IN_PROGRESS',
+      });
+    } catch {
+      // Non-blocking
+    }
+
+    return (await this.getBooking(id))!;
+  }
+
+  async markNoShow(id: string): Promise<BookingDetail> {
+    const booking = await db.orm.public.Booking.where({ id }).first();
+    if (!booking) throw new Error(`Booking ${id} not found`);
+
+    const oldStatus = booking.status;
+    await db.orm.public.Booking.where({ id }).update({
+      status: 'NO_SHOW',
+      cancellationReason: 'Customer did not arrive for scheduled appointment',
+    });
+
+    try {
+      const customer = await db.orm.public.Customer.where({ id: booking.customerId }).first();
+      await notificationsService.emitEvent({
+        type: 'booking.status_changed',
+        bookingId: id,
+        customerId: booking.customerId,
+        customerName: customer?.name ?? 'Client',
+        fromStatus: oldStatus,
+        toStatus: 'NO_SHOW',
+      });
+    } catch {
+      // Non-blocking
+    }
+
+    return (await this.getBooking(id))!;
+  }
+
+  async reassignBay(id: string, newResourceId: string): Promise<BookingDetail> {
+    const booking = await db.orm.public.Booking.where({ id }).first();
+    if (!booking) throw new Error(`Booking ${id} not found`);
+
+    // Verify the new bay is available for the booking's time window
+    const isAvail = await this.isSlotAvailable(newResourceId, booking.startAt, booking.endAt, id);
+    if (!isAvail) {
+      throw new Error('New bay is not available for this time slot');
+    }
+
+    const oldResource = await db.orm.public.Resource.where({ id: booking.resourceId }).first();
+    await db.orm.public.Booking.where({ id }).update({ resourceId: newResourceId });
+    const newResource = await db.orm.public.Resource.where({ id: newResourceId }).first();
+
+    try {
+      const customer = await db.orm.public.Customer.where({ id: booking.customerId }).first();
+      await notificationsService.emitEvent({
+        type: 'booking.status_changed',
+        bookingId: id,
+        customerId: booking.customerId,
+        customerName: customer?.name ?? 'Client',
+        fromStatus: `Bay: ${oldResource?.name ?? 'Unknown'}`,
+        toStatus: `Bay: ${newResource?.name ?? 'Unknown'}`,
+      });
+    } catch {
+      // Non-blocking
+    }
+
     return (await this.getBooking(id))!;
   }
 
@@ -478,9 +656,13 @@ export class BookingService {
 
   async getBlockedDates(monthStr: string): Promise<string[]> {
     // monthStr: YYYY-MM
+    const [year, month] = monthStr.split('-').map(Number);
+    const lastDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    const lastDateStr = `${monthStr}-${String(lastDay).padStart(2, '0')}`;
+
     const dates = await db.orm.public.BlockedDate
       .where((d) => d.date.gte(`${monthStr}-01`))
-      .where((d) => d.date.lte(`${monthStr}-31`))
+      .where((d) => d.date.lte(lastDateStr))
       .all();
 
     return dates.map((d) => d.date);

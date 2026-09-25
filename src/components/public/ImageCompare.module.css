@@ -44,8 +44,8 @@
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: var(--color-accent-primary);
-  box-shadow: 0 0 10px rgba(212, 168, 83, 0.8);
+  background-color: #FFFFFF;
+  box-shadow: 0 0 8px rgba(15, 23, 42, 0.4);
   pointer-events: none;
 }
 
@@ -54,28 +54,30 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-full);
-  background: var(--gradient-gold);
-  color: #0A0A0A;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.7), 0 0 12px rgba(212, 168, 83, 0.6);
+  background: #0F172A;
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: ew-resize;
   pointer-events: auto;
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .sliderHandle:hover {
   transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.45);
 }
 
 .handleIcon {
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: -2px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -1px;
 }
 
 .pillBefore,
@@ -85,8 +87,8 @@
   padding: 4px 12px;
   border-radius: var(--radius-full);
   font-size: 11px;
-  font-weight: var(--font-bold);
-  letter-spacing: var(--tracking-wider);
+  font-weight: 700;
+  letter-spacing: 0.05em;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: var(--z-raised);
@@ -95,17 +97,17 @@
 
 .pillBefore {
   left: var(--space-4);
-  background-color: rgba(0, 0, 0, 0.65);
-  color: var(--color-text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: rgba(15, 23, 42, 0.75);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .pillAfter {
   right: var(--space-4);
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.85), rgba(184, 134, 11, 0.85));
-  color: #0A0A0A;
-  border: 1px solid var(--color-accent-border);
-  box-shadow: 0 0 10px rgba(212, 168, 83, 0.4);
+  background-color: rgba(180, 83, 9, 0.9);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.3);
 }
 
 .instructions {

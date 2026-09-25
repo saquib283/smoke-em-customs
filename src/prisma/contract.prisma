@@ -51,6 +51,7 @@ enum BookingStatus {
   @@type("pg/text@1")
   PENDING_CONFIRMATION = "PENDING_CONFIRMATION"
   CONFIRMED            = "CONFIRMED"
+  IN_PROGRESS          = "IN_PROGRESS"
   RESCHEDULED          = "RESCHEDULED"
   CANCELLED            = "CANCELLED"
   COMPLETED            = "COMPLETED"

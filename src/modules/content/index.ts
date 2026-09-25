@@ -10,21 +10,20 @@ export interface GalleryListItem {
   id: string;
   title: string;
   slug: string;
+  description: string | null;
   serviceCategory: string | null;
   vehicleBrand: string | null;
   vehicleModel: string | null;
+  tags: string[];
   isFeatured: boolean;
+  isPublished: boolean;
   beforeImageUrl: string | null;
   afterImageUrl: string | null;
-}
-
-export interface GalleryItemDetail extends GalleryListItem {
-  description: string | null;
-  tags: string[];
-  isPublished: boolean;
   videoUrl: string | null;
   serviceId: string | null;
 }
+
+export type GalleryItemDetail = GalleryListItem;
 
 export interface CreateGalleryInput {
   title: string;
@@ -84,7 +83,9 @@ export interface OfferListItem {
   startAt: string;
   endAt: string;
   isEnabled: boolean;
+  serviceId?: string | null;
   serviceName: string | null;
+  packageId?: string | null;
   packageName: string | null;
 }
 
@@ -145,17 +146,25 @@ export class ContentService {
       const afterMedia = item.afterMediaId
         ? await db.orm.public.Media.where({ id: item.afterMediaId }).first()
         : null;
+      const videoMedia = item.videoMediaId
+        ? await db.orm.public.Media.where({ id: item.videoMediaId }).first()
+        : null;
 
       result.push({
         id: item.id,
         title: item.title,
         slug: item.slug,
+        description: item.description,
         serviceCategory: item.serviceCategory,
         vehicleBrand: item.vehicleBrand,
         vehicleModel: item.vehicleModel,
+        tags: [...(item.tags ?? [])],
         isFeatured: item.isFeatured,
+        isPublished: item.isPublished,
         beforeImageUrl: beforeMedia?.url ?? null,
         afterImageUrl: afterMedia?.url ?? null,
+        videoUrl: videoMedia?.url ?? null,
+        serviceId: item.serviceId,
       });
     }
 
@@ -270,6 +279,10 @@ export class ContentService {
     if (data.afterImageUrl) {
       const m = await this.createMedia({ url: data.afterImageUrl, type: 'IMAGE' });
       updatePayload['afterMediaId'] = m.id;
+    }
+    if (data.videoUrl) {
+      const m = await this.createMedia({ url: data.videoUrl, type: 'VIDEO' });
+      updatePayload['videoMediaId'] = m.id;
     }
 
     await db.orm.public.GalleryItem.where({ id }).update(updatePayload);
@@ -410,7 +423,9 @@ export class ContentService {
         startAt: o.startAt,
         endAt: o.endAt,
         isEnabled: o.isEnabled,
+        serviceId: o.serviceId,
         serviceName: service?.name ?? null,
+        packageId: o.packageId,
         packageName: pkg?.name ?? null,
       });
     }
@@ -429,6 +444,13 @@ export class ContentService {
       packageId: data.packageId ?? null,
     });
 
+    const service = created.serviceId
+      ? await db.orm.public.Service.where({ id: created.serviceId }).first()
+      : null;
+    const pkg = created.packageId
+      ? await db.orm.public.Package.where({ id: created.packageId }).first()
+      : null;
+
     return {
       id: created.id,
       title: created.title,
@@ -436,8 +458,10 @@ export class ContentService {
       startAt: created.startAt,
       endAt: created.endAt,
       isEnabled: created.isEnabled,
-      serviceName: null,
-      packageName: null,
+      serviceId: created.serviceId,
+      serviceName: service?.name ?? null,
+      packageId: created.packageId,
+      packageName: pkg?.name ?? null,
     };
   }
 
@@ -455,6 +479,13 @@ export class ContentService {
     const o = await db.orm.public.Offer.where({ id }).first();
     if (!o) throw new Error(`Offer ${id} not found`);
 
+    const service = o.serviceId
+      ? await db.orm.public.Service.where({ id: o.serviceId }).first()
+      : null;
+    const pkg = o.packageId
+      ? await db.orm.public.Package.where({ id: o.packageId }).first()
+      : null;
+
     return {
       id: o.id,
       title: o.title,
@@ -462,8 +493,10 @@ export class ContentService {
       startAt: o.startAt,
       endAt: o.endAt,
       isEnabled: o.isEnabled,
-      serviceName: null,
-      packageName: null,
+      serviceId: o.serviceId,
+      serviceName: service?.name ?? null,
+      packageId: o.packageId,
+      packageName: pkg?.name ?? null,
     };
   }
 

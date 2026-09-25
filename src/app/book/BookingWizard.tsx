@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Icon } from '@/components/common/Icons';
 import styles from './booking.module.css';
 
 interface ItemOption {
@@ -229,8 +230,8 @@ export function BookingWizard({
                   </span>
                 </div>
                 <h3 className={styles.itemName}>{item.name}</h3>
-                <span className={styles.itemDuration}>
-                  ⏱️ Approx. {Math.round(item.durationMinutes / 60)} Hours
+                <span className={styles.itemDuration} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Clock size={12} color="var(--color-gold)" /> Approx. {Math.round(item.durationMinutes / 60)} Hours
                 </span>
               </div>
             ))}
@@ -311,7 +312,9 @@ export function BookingWizard({
                       }}
                     >
                       <div className={styles.slotTime}>{startTime} – {endTime}</div>
-                      <div className={styles.slotBay}>🏛️ {slot.resourceName}</div>
+                      <div className={styles.slotBay} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Icon.Bay size={12} color="var(--color-gold)" /> {slot.resourceName}
+                      </div>
                     </button>
                   );
                 })}

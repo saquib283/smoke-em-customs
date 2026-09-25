@@ -1,0 +1,598 @@
+/**
+ * Smoke M Customs — Shared UI Components Styles
+ * Skeleton, EmptyState, Toast, ConfirmModal, ErrorState
+ */
+
+/* ─────────────────────── Skeleton ─────────────────────── */
+
+.skeletonBase {
+  display: block;
+}
+
+/* Table Skeleton */
+.tableSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.tableSkeletonHeader {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableSkeletonRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  animation: fadeInRow var(--transition-base) ease-out both;
+}
+
+.tableSkeletonRow:last-child {
+  border-bottom: none;
+}
+
+/* Card Skeleton */
+.cardSkeleton {
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.cardSkeletonBody {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* KPI Grid Skeleton */
+.kpiGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-5);
+}
+
+.kpiCardSkeleton {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  animation: fadeInRow var(--transition-base) ease-out both;
+}
+
+.kpiCardSkeletonInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Detail Panel Skeleton */
+.detailSkeleton {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.detailSkeletonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detailSkeletonGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.detailSkeletonField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.detailSkeletonActions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Page Skeleton */
+.pageSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.pageSkeletonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pageSkeletonHeaderActions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.pageSkeletonFilters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.cardGridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.listSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.listItemSkeleton {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: fadeInRow var(--transition-base) ease-out both;
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────── Empty State ─────────────────────── */
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  gap: var(--space-4);
+  animation: fadeInRow var(--transition-slow) ease-out both;
+}
+
+.emptyStateCompact {
+  padding: var(--space-8) var(--space-4);
+  gap: var(--space-3);
+}
+
+.emptyStateIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-2xl);
+  background: linear-gradient(135deg, var(--color-bg-elevated), var(--color-bg-surface));
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: var(--space-2);
+}
+
+.emptyStateIconCompact {
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  border-radius: var(--radius-xl);
+}
+
+.emptyStateTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.emptyStateTitleCompact {
+  font-size: var(--text-base);
+}
+
+.emptyStateDescription {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  max-width: 360px;
+  line-height: var(--leading-relaxed);
+}
+
+/* ─────────────────────── Toast ─────────────────────── */
+
+.toastContainer {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 420px;
+  pointer-events: none;
+}
+
+.toastItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-elevated);
+  box-shadow: var(--shadow-xl);
+  animation: toastEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.toastExit {
+  animation: toastExit 0.3s ease-in forwards;
+}
+
+.toastSuccess {
+  border-left: 3px solid var(--color-success);
+}
+
+.toastError {
+  border-left: 3px solid var(--color-error);
+}
+
+.toastWarning {
+  border-left: 3px solid var(--color-warning);
+}
+
+.toastInfo {
+  border-left: 3px solid var(--color-info);
+}
+
+.toastIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: var(--font-bold);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.toastSuccess .toastIcon {
+  background-color: var(--color-success-subtle);
+  color: var(--color-success);
+}
+
+.toastError .toastIcon {
+  background-color: var(--color-error-subtle);
+  color: var(--color-error);
+}
+
+.toastWarning .toastIcon {
+  background-color: var(--color-warning-subtle);
+  color: var(--color-warning);
+}
+
+.toastInfo .toastIcon {
+  background-color: var(--color-info-subtle);
+  color: var(--color-info);
+}
+
+.toastContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.toastTitle {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+}
+
+.toastDescription {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.toastDismiss {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toastDismiss:hover {
+  background-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+.toastProgress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-accent-primary);
+  animation: toastProgressShrink linear forwards;
+  opacity: 0.5;
+  width: 100%;
+}
+
+@keyframes toastEnter {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toastExit {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+}
+
+@keyframes toastProgressShrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Mobile toast positioning */
+@media (max-width: 480px) {
+  .toastContainer {
+    left: var(--space-3);
+    right: var(--space-3);
+    max-width: none;
+  }
+}
+
+/* ─────────────────────── Confirm Modal ─────────────────────── */
+
+.confirmDialog {
+  border: none;
+  background: transparent;
+  padding: 0;
+  max-width: min(480px, calc(100vw - var(--space-8)));
+  width: 100%;
+}
+
+.confirmDialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: fadeInBackdrop 0.2s ease-out;
+}
+
+.confirmContent {
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  box-shadow: var(--shadow-xl);
+  animation: confirmEnter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.confirmIconCircle {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.confirmIconDanger {
+  background-color: var(--color-error-subtle);
+}
+
+.confirmIconWarning {
+  background-color: var(--color-warning-subtle);
+}
+
+.confirmIconDefault {
+  background-color: var(--color-accent-subtle);
+}
+
+.confirmTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+}
+
+.confirmDescription {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  max-width: 340px;
+}
+
+.confirmActions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  width: 100%;
+  justify-content: center;
+}
+
+.confirmActions button {
+  min-width: 120px;
+}
+
+@keyframes fadeInBackdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes confirmEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ─────────────────────── Error State ─────────────────────── */
+
+.errorState {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-error-subtle);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.errorStatePage {
+  flex-direction: column;
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  background: transparent;
+  border: none;
+}
+
+.errorStateInline {
+  /* Default horizontal layout */
+}
+
+.errorStateCard {
+  flex-direction: column;
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.errorStateIcon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.errorStatePage .errorStateIcon {
+  font-size: 48px;
+}
+
+.errorStateContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.errorStateTitle {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-error);
+}
+
+.errorStatePage .errorStateTitle {
+  font-size: var(--text-lg);
+}
+
+.errorStateMessage {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.errorStatePage .errorStateMessage {
+  font-size: var(--text-sm);
+}
+
+/* ─── Field Error ─── */
+
+.fieldError {
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  margin-top: 2px;
+  animation: fadeInRow 0.15s ease-out;
+}
+
+/* ─────────────────────── Reduced Motion ─────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .toastItem,
+  .toastExit,
+  .toastProgress,
+  .confirmContent,
+  .confirmDialog::backdrop,
+  .emptyState,
+  .listItemSkeleton,
+  .kpiCardSkeleton,
+  .tableSkeletonRow {
+    animation: none !important;
+  }
+
+  .toastItem {
+    opacity: 1;
+    transform: none;
+  }
+
+  .confirmContent {
+    opacity: 1;
+    transform: none;
+  }
+}

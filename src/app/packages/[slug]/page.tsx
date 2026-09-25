@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { catalogueService } from '@/modules/catalogue';
+import { Icon } from '@/components/common/Icons';
 import styles from './packageDetail.module.css';
 
 interface PackagePageProps {
@@ -68,21 +69,21 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
               
               <div className={styles.specsRow}>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}>⏱️</span>
+                  <span className={styles.specIcon}><Icon.Clock size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.specTitle}>Workshop Stay</h4>
                     <span className={styles.specDesc}>~{Math.round(pkg.durationMinutes / 60)} Hours</span>
                   </div>
                 </div>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}>🛡️</span>
+                  <span className={styles.specIcon}><Icon.Shield size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.specTitle}>Warranty</h4>
                     <span className={styles.specDesc}>{pkg.warrantyText ?? 'Comprehensive Coverage'}</span>
                   </div>
                 </div>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}>📅</span>
+                  <span className={styles.specIcon}><Icon.Calendar size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.specTitle}>Validity</h4>
                     <span className={styles.specDesc}>{pkg.validityText ?? 'Year-Round'}</span>
@@ -97,7 +98,9 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
               <div className={styles.benefitsGrid}>
                 {pkg.benefits.map((benefit, idx) => (
                   <div key={idx} className={styles.benefitItem}>
-                    <span className={styles.benefitCheck}>✓</span>
+                    <span className={styles.benefitCheck} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                      <Icon.Check size={12} color="var(--color-gold)" />
+                    </span>
                     <span>{benefit}</span>
                   </div>
                 ))}
@@ -145,20 +148,21 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.waSidebarBtn}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                 >
-                  💬 Inquire on WhatsApp
+                  <Icon.WhatsApp size={16} /> Inquire on WhatsApp
                 </a>
               </div>
 
               <div className={styles.guarantees}>
-                <div className={styles.guarantee}>
-                  <span>🔒</span> Zero Advance Booking Fee Required
+                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon.Lock size={14} color="var(--color-gold)" /> Zero Advance Booking Fee Required
                 </div>
-                <div className={styles.guarantee}>
-                  <span>📄</span> Official Warranty Certificate Included
+                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon.FileText size={14} color="var(--color-gold)" /> Official Warranty Certificate Included
                 </div>
-                <div className={styles.guarantee}>
-                  <span>🚗</span> Free Follow-up Inspection Check
+                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon.Car size={14} color="var(--color-gold)" /> Free Follow-up Inspection Check
                 </div>
               </div>
             </div>

@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
+import { Icon } from '@/components/common/Icons';
 import styles from './leads.module.css';
 
-interface LeadItem {
+export interface LeadItem {
   id: string;
   customerId: string;
   customerName: string;
@@ -25,252 +27,426 @@ interface LeadsClientProps {
 }
 
 export function LeadsClient({ initialLeads }: LeadsClientProps) {
-  const [leads, setLeads] = useState<LeadItem[]>(initialLeads);
-  const [filterStatus, setFilterStatus] = useState('ALL');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
-  const [selectedLeadDetail, setSelectedLeadDetail] = useState<any | null>(null);
-  const [detailLoading, setDetailLoading] = useState(false);
-  const [newNote, setNewNote] = useState('');
-  const [actionLoading, setActionLoading] = useState(false);
-  const [activePhotoUrl, setActivePhotoUrl] = useState<string | null>(null);
+  const [leads] = useState<LeadItem[]>(initialLeads);
+  const [filterTab, setFilterTab] = useState<string>('ALL');
+  const [sourceFilter, setSourceFilter] = useState<string>('ALL');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
+  // ── Metrics Calculation ──
+  const metrics = useMemo(() => {
+    const total = leads.length;
+    const followUpDue = leads.filter((l) => l.needsFollowUp).length;
+    const duplicates = leads.filter((l) => l.isDuplicate).length;
+    const active = leads.filter((l) =>
+      ['NEW', 'CONTACTED', 'QUOTE_SENT', 'FOLLOW_UP'].includes(l.status)
+    ).length;
+    return { total, followUpDue, duplicates, active };
+  }, [leads]);
+
+  // ── Filter Tabs Definition ──
   const filterTabs = [
-    { key: 'ALL', label: 'All Leads' },
-    { key: 'FOLLOW_UP_DUE', label: '⚠️ Follow-up Due' },
-    { key: 'DUPLICATES', label: '🔁 Duplicates' },
-    { key: 'NEW', label: 'New' },
-    { key: 'CONTACTED', label: 'Contacted' },
-    { key: 'QUOTE_SENT', label: 'Quote Sent' },
-    { key: 'FOLLOW_UP', label: 'Follow Up' },
-    { key: 'BOOKED', label: 'Booked' },
-    { key: 'COMPLETED', label: 'Completed' },
-    { key: 'LOST', label: 'Lost' },
+    { key: 'ALL', label: 'All Leads', count: metrics.total },
+    { key: 'ATTENTION', label: 'Action Required', count: metrics.followUpDue + metrics.duplicates, alert: true },
+    { key: 'NEW', label: 'New', count: leads.filter((l) => l.status === 'NEW').length },
+    { key: 'CONTACTED', label: 'Contacted', count: leads.filter((l) => l.status === 'CONTACTED').length },
+    { key: 'QUOTE_SENT', label: 'Quote Sent', count: leads.filter((l) => l.status === 'QUOTE_SENT').length },
+    { key: 'FOLLOW_UP', label: 'Follow Up', count: leads.filter((l) => l.status === 'FOLLOW_UP').length },
+    { key: 'BOOKED', label: 'Booked', count: leads.filter((l) => l.status === 'BOOKED').length },
+    { key: 'COMPLETED', label: 'Completed', count: leads.filter((l) => l.status === 'COMPLETED').length },
+    { key: 'LOST', label: 'Lost', count: leads.filter((l) => l.status === 'LOST').length },
   ];
 
-  const pipelineStatuses = [
-    'NEW',
-    'CONTACTED',
-    'QUOTE_SENT',
-    'FOLLOW_UP',
-    'BOOKED',
-    'COMPLETED',
-    'LOST',
-  ];
+  // ── Filtered Leads ──
+  const filteredLeads = useMemo(() => {
+    return leads.filter((l) => {
+      // Tab filter
+      if (filterTab === 'ATTENTION') {
+        if (!l.needsFollowUp && !l.isDuplicate) return false;
+      } else if (filterTab !== 'ALL') {
+        if (l.status !== filterTab) return false;
+      }
 
-  const filteredLeads = leads.filter((l) => {
-    if (filterStatus === 'FOLLOW_UP_DUE') {
-      if (!l.needsFollowUp) return false;
-    } else if (filterStatus === 'DUPLICATES') {
-      if (!l.isDuplicate) return false;
-    } else if (filterStatus !== 'ALL') {
-      if (l.status !== filterStatus) return false;
+      // Source filter
+      if (sourceFilter !== 'ALL') {
+        const leadSrc = (l.source || '').toLowerCase();
+        if (sourceFilter === 'public_web' && !leadSrc.includes('web')) return false;
+        if (sourceFilter === 'CONTACT_FORM' && !leadSrc.includes('form') && !leadSrc.includes('contact')) return false;
+        if (sourceFilter === 'WHATSAPP' && !leadSrc.includes('whatsapp')) return false;
+      }
+
+      // Search term
+      if (searchTerm.trim()) {
+        const q = searchTerm.toLowerCase();
+        const matchName = l.customerName.toLowerCase().includes(q);
+        const matchPhone = l.customerPhone.includes(q);
+        const matchVehicle = l.vehicleText ? l.vehicleText.toLowerCase().includes(q) : false;
+        const matchService = l.serviceInterestName ? l.serviceInterestName.toLowerCase().includes(q) : false;
+        if (!matchName && !matchPhone && !matchVehicle && !matchService) return false;
+      }
+
+      return true;
+    });
+  }, [leads, filterTab, sourceFilter, searchTerm]);
+
+  // ── Client Monogram Generator ──
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     }
+    return (name[0] || 'L').toUpperCase();
+  };
 
-    if (searchTerm.trim()) {
-      const q = searchTerm.toLowerCase();
-      const match =
-        l.customerName.toLowerCase().includes(q) ||
-        l.customerPhone.includes(q) ||
-        (l.vehicleText && l.vehicleText.toLowerCase().includes(q));
-      if (!match) return false;
-    }
-    return true;
-  });
+  // ── Source Formatter ──
+  const formatSource = (source: string | null) => {
+    if (!source) return 'Website';
+    const s = source.toLowerCase();
+    if (s.includes('contact')) return 'Contact Form';
+    if (s.includes('web')) return 'Web Inquiry';
+    if (s.includes('whatsapp')) return 'WhatsApp';
+    if (s.includes('walk')) return 'Studio Walk-in';
+    return source.replace(/_/g, ' ');
+  };
 
-  const openLeadDetail = async (id: string) => {
-    setSelectedLeadId(id);
-    setDetailLoading(true);
-    try {
-      const res = await fetch(`/api/admin/leads?id=${id}`);
-      const data = await res.json();
-      setSelectedLeadDetail(data.lead || null);
-    } catch {
-      // Fallback
-    } finally {
-      setDetailLoading(false);
+  // ── Status Formatter ──
+  const formatStatus = (st: string) => {
+    switch (st) {
+      case 'NEW':
+        return 'New Lead';
+      case 'CONTACTED':
+        return 'Contacted';
+      case 'QUOTE_SENT':
+        return 'Quote Sent';
+      case 'FOLLOW_UP':
+        return 'Follow Up';
+      case 'BOOKED':
+        return 'Booked Bay';
+      case 'COMPLETED':
+        return 'Completed';
+      case 'LOST':
+        return 'Lost';
+      default:
+        return st.replace(/_/g, ' ');
     }
   };
 
-  const handleStatusChange = async (newStatus: string) => {
-    if (!selectedLeadId) return;
-    setActionLoading(true);
-    try {
-      const res = await fetch('/api/admin/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'UPDATE_STATUS',
-          leadId: selectedLeadId,
-          status: newStatus,
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setLeads((prev) =>
-          prev.map((l) => (l.id === selectedLeadId ? { ...l, status: newStatus } : l))
-        );
-        if (selectedLeadDetail) {
-          setSelectedLeadDetail(data.lead || { ...selectedLeadDetail, status: newStatus });
-        }
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  // ── Export CSV Handler ──
+  const handleExportCSV = () => {
+    const headers = ['Client Name', 'Phone', 'Vehicle', 'Service', 'Status', 'Follow-up Due', 'Duplicate', 'Source', 'Date'];
+    const rows = filteredLeads.map((l) => [
+      `"${l.customerName.replace(/"/g, '""')}"`,
+      `"${l.customerPhone}"`,
+      `"${(l.vehicleText || 'Unspecified').replace(/"/g, '""')}"`,
+      `"${(l.serviceInterestName || 'General').replace(/"/g, '""')}"`,
+      `"${l.status}"`,
+      l.needsFollowUp ? 'YES' : 'NO',
+      l.isDuplicate ? 'YES' : 'NO',
+      `"${l.source || 'Web'}"`,
+      `"${new Date(l.createdAt).toISOString()}"`,
+    ]);
 
-  const handleAddNote = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedLeadId || !newNote.trim()) return;
-    setActionLoading(true);
-    try {
-      const res = await fetch('/api/admin/leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'ADD_NOTE',
-          leadId: selectedLeadId,
-          body: newNote.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (data.success && data.lead) {
-        setSelectedLeadDetail(data.lead);
-        setNewNote('');
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setActionLoading(false);
-    }
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `smokecustoms_leads_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <div className={styles.container}>
-      {/* ── Filter & Search Toolbar ── */}
-      <div className={styles.toolbar}>
-        <div className={styles.statusTabs}>
-          {filterTabs.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              className={`${styles.tabBtn} ${filterStatus === tab.key ? styles.activeTab : ''}`}
-              onClick={() => setFilterStatus(tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
+      {/* ── Executive Header ── */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerLeft}>
+          <div className={styles.eyebrow}>
+            <span>STUDIO CRM PIPELINE</span>
+            <span className={styles.eyebrowDot} />
+            <span>EXECUTIVE DISPATCH</span>
+          </div>
+          <h1 className={styles.pageTitle}>Leads & Inquiries</h1>
+          <p className={styles.pageSubtitle}>
+            Monitor incoming detailing requests, coordinate treatments, and track pipeline conversion.
+          </p>
         </div>
 
-        <div className={styles.searchBox}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search client, mobile, vehicle..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className={styles.headerActions}>
+          <button type="button" onClick={handleExportCSV} className={styles.exportBtn} title="Download CSV spreadsheet of current view">
+            <Icon.FileText size={15} />
+            <span>Export CSV</span>
+          </button>
+          <Link href="/admin/quotes" className={styles.primaryActionBtn}>
+            <Icon.Plus size={15} />
+            <span>Create Quote</span>
+          </Link>
         </div>
       </div>
 
-      {/* ── Leads Table ── */}
+      {/* ── Executive KPI Metric Cards ── */}
+      <div className={styles.metricsGrid}>
+        <div className={styles.metricCard}>
+          <div className={styles.metricInfo}>
+            <span className={styles.metricLabel}>Total Inquiries</span>
+            <span className={styles.metricValue}>{metrics.total}</span>
+            <span className={styles.metricSubtext}>All recorded leads</span>
+          </div>
+          <div className={`${styles.metricIconWrap} ${styles.metricIconNeutral}`}>
+            <Icon.Inbox size={20} />
+          </div>
+        </div>
+
+        <div className={styles.metricCard}>
+          <div className={styles.metricInfo}>
+            <span className={styles.metricLabel}>Follow-up Overdue</span>
+            <span className={styles.metricValue} style={{ color: metrics.followUpDue > 0 ? '#B45309' : '#0F172A' }}>
+              {metrics.followUpDue}
+            </span>
+            <span className={styles.metricSubtext}>3+ days without action</span>
+          </div>
+          <div className={`${styles.metricIconWrap} ${styles.metricIconWarning}`}>
+            <Icon.AlertTriangle size={20} />
+          </div>
+        </div>
+
+        <div className={styles.metricCard}>
+          <div className={styles.metricInfo}>
+            <span className={styles.metricLabel}>24h Duplicates</span>
+            <span className={styles.metricValue} style={{ color: metrics.duplicates > 0 ? '#BE123C' : '#0F172A' }}>
+              {metrics.duplicates}
+            </span>
+            <span className={styles.metricSubtext}>Repeated client inquiries</span>
+          </div>
+          <div className={`${styles.metricIconWrap} ${styles.metricIconDuplicate}`}>
+            <Icon.Repeat size={20} />
+          </div>
+        </div>
+
+        <div className={styles.metricCard}>
+          <div className={styles.metricInfo}>
+            <span className={styles.metricLabel}>Active Pipeline</span>
+            <span className={styles.metricValue} style={{ color: '#2563EB' }}>
+              {metrics.active}
+            </span>
+            <span className={styles.metricSubtext}>New, Contacted, & Quotes</span>
+          </div>
+          <div className={`${styles.metricIconWrap} ${styles.metricIconActive}`}>
+            <Icon.Clock size={20} />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Controls & Filter Panel ── */}
+      <div className={styles.controlsCard}>
+        {/* Category Filter Tabs */}
+        <div className={styles.tabsScroll}>
+          <div className={styles.statusTabs}>
+            {filterTabs.map((tab) => {
+              const isActive = filterTab === tab.key;
+              const hasAlert = tab.alert && tab.count > 0;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  className={`${styles.tabBtn} ${isActive ? styles.activeTab : ''}`}
+                  onClick={() => setFilterTab(tab.key)}
+                >
+                  <span>{tab.label}</span>
+                  <span
+                    className={`${styles.tabBadge} ${
+                      isActive ? '' : hasAlert ? styles.tabBadgeAlert : styles.tabBadgeInactive
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Search Input & Channel Selector Row */}
+        <div className={styles.searchRow}>
+          <div className={styles.searchBox}>
+            <span className={styles.searchIcon}>
+              <Icon.Search size={15} />
+            </span>
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="Search client name, phone number, vehicle..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <button
+                type="button"
+                className={styles.clearSearchBtn}
+                onClick={() => setSearchTerm('')}
+                title="Clear search"
+              >
+                <Icon.Cross size={13} />
+              </button>
+            )}
+          </div>
+
+          <div className={styles.filterMeta}>
+            <select
+              className={styles.sourceSelect}
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value)}
+            >
+              <option value="ALL">All Acquisition Channels</option>
+              <option value="public_web">Website Inquiries</option>
+              <option value="CONTACT_FORM">Contact Form Submissions</option>
+              <option value="WHATSAPP">WhatsApp Inquiries</option>
+            </select>
+
+            <span style={{ fontSize: '0.78125rem', color: '#64748B', whiteSpace: 'nowrap' }}>
+              Showing <strong>{filteredLeads.length}</strong> of {leads.length}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Leads Table Card ── */}
       <div className={styles.tableCard}>
         <div className={styles.tableResponsive}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Received</th>
-                <th>Client</th>
-                <th>Vehicle & Treatment</th>
-                <th>Pipeline Status</th>
-                <th>Flags</th>
-                <th>Channel</th>
-                <th>Actions</th>
+                <th style={{ width: '130px' }}>Received</th>
+                <th style={{ width: '220px' }}>Client Profile</th>
+                <th style={{ width: '230px' }}>Vehicle & Treatment</th>
+                <th style={{ width: '140px' }}>Pipeline Status</th>
+                <th style={{ width: '150px' }}>Flags & Signals</th>
+                <th style={{ width: '130px' }}>Channel</th>
+                <th style={{ width: '160px', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredLeads.map((lead) => {
-                const cleanPhone = lead.customerPhone.replace(/\D/g, '');
-                const waPhone = cleanPhone.startsWith('91') ? cleanPhone : `91${cleanPhone}`;
-                const waText = encodeURIComponent(
-                  `Hi ${lead.customerName}, this is Smoke M Customs regarding your detailing inquiry.`
-                );
+              {filteredLeads.map((lead, idx) => {
+                const isLast = idx === filteredLeads.length - 1;
+                const statusClass = `status${lead.status}`;
 
                 return (
-                  <tr key={lead.id} className={styles.tableRow}>
+                  <tr key={lead.id} className={`${styles.tableRow} ${isLast ? styles.tableRowLast : ''}`}>
+                    {/* 1. Date */}
                     <td className={styles.dateCell}>
-                      {new Date(lead.createdAt).toLocaleDateString('en-IN', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </td>
-                    <td>
-                      <div className={styles.clientCol}>
-                        <span className={styles.nameText}>{lead.customerName}</span>
-                        <span className={styles.phoneText}>{lead.customerPhone}</span>
+                      <div className={styles.datePrimary}>
+                        {new Date(lead.createdAt).toLocaleDateString('en-IN', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </div>
+                      <div className={styles.dateTime}>
+                        {new Date(lead.createdAt).toLocaleTimeString('en-IN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </div>
                     </td>
-                    <td>
-                      <div className={styles.carCol}>
-                        <span className={styles.carText}>{lead.vehicleText ?? 'Vehicle Unspecified'}</span>
-                        <span className={styles.serviceText}>{lead.serviceInterestName ?? 'General Inquiry'}</span>
+
+                    {/* 2. Client Profile */}
+                    <td className={styles.clientCell}>
+                      <Link href={`/admin/leads/${lead.id}`} className={styles.clientWrapper}>
+                        <div className={styles.clientAvatar}>
+                          {getInitials(lead.customerName)}
+                        </div>
+                        <div className={styles.clientDetails}>
+                          <span className={styles.clientName}>{lead.customerName}</span>
+                          <span className={styles.clientPhone}>{lead.customerPhone}</span>
+                        </div>
+                      </Link>
+                    </td>
+
+                    {/* 3. Vehicle & Service */}
+                    <td className={styles.vehicleCell}>
+                      <div className={styles.vehicleDetails}>
+                        <span className={styles.vehicleName}>
+                          {lead.vehicleText ?? 'Vehicle Unspecified'}
+                        </span>
+                        <span className={styles.serviceInterestTag}>
+                          {lead.serviceInterestName ?? 'General Inquiry'}
+                        </span>
                       </div>
                     </td>
-                    <td>
-                      <span className={`${styles.statusPill} ${styles[`status${lead.status}`] || ''}`}>
-                        {lead.status.replace(/_/g, ' ')}
+
+                    {/* 4. Pipeline Status */}
+                    <td className={styles.statusCell}>
+                      <span className={`${styles.statusPill} ${styles[statusClass] || styles.statusNEW}`}>
+                        <span className={styles.statusDot} />
+                        <span>{formatStatus(lead.status)}</span>
                       </span>
                     </td>
-                    <td>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                        {lead.needsFollowUp && (
-                          <span className={styles.badgeFollowup}>
-                            ⚠️ Follow-up Due
+
+                    {/* 5. Flags & Signals */}
+                    <td className={styles.flagsCell}>
+                      <div className={styles.flagsGroup}>
+                        {lead.isDuplicate && (
+                          <span className={styles.flagDuplicate} title="Client submitted another inquiry within 24 hours">
+                            <Icon.Repeat size={11} />
+                            <span>Duplicate (24h)</span>
                           </span>
                         )}
-                        {lead.isDuplicate && (
-                          <span className={styles.badgeDuplicate}>
-                            🔁 Duplicate (24h)
+                        {lead.needsFollowUp && (
+                          <span className={styles.flagFollowup} title="Lead has been inactive for 3 or more days">
+                            <Icon.AlertTriangle size={11} />
+                            <span>Follow-up Due</span>
                           </span>
                         )}
                         {lead.photosCount > 0 && (
-                          <span className={styles.badgePhotos}>
-                            📷 {lead.photosCount} photo{lead.photosCount > 1 ? 's' : ''}
+                          <span className={styles.flagPhotos} title={`${lead.photosCount} inspection photo(s) attached`}>
+                            <Icon.Camera size={11} />
+                            <span>{lead.photosCount} photo{lead.photosCount > 1 ? 's' : ''}</span>
                           </span>
                         )}
                         {!lead.needsFollowUp && !lead.isDuplicate && lead.photosCount === 0 && (
-                          <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>—</span>
+                          <span className={styles.emptyFlags}>—</span>
                         )}
                       </div>
                     </td>
-                    <td>
-                      <span className={styles.sourceTag}>{lead.source ?? 'Web'}</span>
+
+                    {/* 6. Channel */}
+                    <td className={styles.channelCell}>
+                      <span className={styles.channelBadge}>
+                        {formatSource(lead.source)}
+                      </span>
                     </td>
-                    <td>
+
+                    {/* 7. Action Hub */}
+                    <td className={styles.actionCell}>
                       <div className={styles.actionBtns}>
+                        <WhatsAppCTA
+                          phone={lead.customerPhone}
+                          message={`Hi ${lead.customerName}, this is Smoke M Customs regarding your inquiry for ${lead.vehicleText || 'your vehicle'}.`}
+                          iconOnly
+                          size="sm"
+                          variant="icon"
+                          ariaLabel={`WhatsApp ${lead.customerName}`}
+                          logCommunication={{
+                            customerId: lead.customerId,
+                            leadId: lead.id,
+                            summary: `Outbound WhatsApp chat opened with ${lead.customerName}`,
+                          }}
+                        />
+
                         <a
-                          href={`https://wa.me/${waPhone}?text=${waText}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.waBtn}
-                          title="WhatsApp direct chat"
+                          href={`tel:${lead.customerPhone}`}
+                          className={styles.callBtn}
+                          title={`Call ${lead.customerName}`}
                         >
-                          💬
+                          <Icon.Phone size={13} />
                         </a>
-                        <a href={`tel:${lead.customerPhone}`} className={styles.callBtn} title="Call Client">
-                          📞
-                        </a>
-                        <button
-                          type="button"
-                          onClick={() => openLeadDetail(lead.id)}
-                          className="btn btn-secondary btn-sm"
+
+                        <Link
+                          href={`/admin/leads/${lead.id}`}
+                          className={styles.manageBtn}
                         >
-                          Manage
-                        </button>
+                          <span>Manage</span>
+                          <Icon.ArrowRight size={12} />
+                        </Link>
                       </div>
                     </td>
                   </tr>
@@ -279,254 +455,48 @@ export function LeadsClient({ initialLeads }: LeadsClientProps) {
 
               {filteredLeads.length === 0 && (
                 <tr>
-                  <td colSpan={7} className={styles.emptyCell}>
-                    No leads found matching current filter or search criteria.
+                  <td colSpan={7}>
+                    <div className={styles.emptyCard}>
+                      <div className={styles.emptyIconWrap}>
+                        <Icon.Inbox size={24} />
+                      </div>
+                      <h4 className={styles.emptyTitle}>No matching inquiries found</h4>
+                      <p className={styles.emptyDesc}>
+                        Try adjusting your search query, clear filters, or select a different pipeline stage tab.
+                      </p>
+                      {(searchTerm || filterTab !== 'ALL' || sourceFilter !== 'ALL') && (
+                        <button
+                          type="button"
+                          className={styles.emptyResetBtn}
+                          onClick={() => {
+                            setSearchTerm('');
+                            setFilterTab('ALL');
+                            setSourceFilter('ALL');
+                          }}
+                        >
+                          Reset All Filters
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        {/* Table Summary Footer */}
+        {filteredLeads.length > 0 && (
+          <div className={styles.tableFooter}>
+            <span>
+              Showing {filteredLeads.length} of {leads.length} total lead{leads.length !== 1 ? 's' : ''}
+            </span>
+            <span style={{ fontSize: '0.6875rem', color: '#94A3B8' }}>
+              Smoke M Customs • Executive CRM Engine
+            </span>
+          </div>
+        )}
       </div>
-
-      {/* ── Slide-over Detail Drawer ── */}
-      {selectedLeadId && (
-        <div className={styles.drawerBackdrop} onClick={() => setSelectedLeadId(null)}>
-          <div className={styles.drawer} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.drawerHeader}>
-              <div>
-                <span className={styles.drawerTag}>LEAD PROFILE & PIPELINE</span>
-                <h3 className={styles.drawerTitle}>
-                  {selectedLeadDetail?.customerName || 'Lead Detail'}
-                </h3>
-              </div>
-              <button
-                type="button"
-                className={styles.closeBtn}
-                onClick={() => setSelectedLeadId(null)}
-              >
-                ✕
-              </button>
-            </div>
-
-            {detailLoading ? (
-              <div className={styles.drawerLoading}>Loading lead details, photos & history...</div>
-            ) : selectedLeadDetail ? (
-              <div className={styles.drawerBody}>
-                {/* Duplicate Lead Notice */}
-                {selectedLeadDetail.isDuplicate && (
-                  <div className={styles.badgeDuplicate} style={{ display: 'block', padding: 'var(--space-2) var(--space-3)', width: '100%' }}>
-                    <strong>🔁 24-Hour Duplicate Detected:</strong> Customer submitted another inquiry for this vehicle within 24 hours. Check previous notes and interactions below.
-                  </div>
-                )}
-
-                {/* Follow-up Overdue Flag */}
-                {selectedLeadDetail.needsFollowUp && (
-                  <div className={styles.badgeFollowup} style={{ display: 'block', padding: 'var(--space-2) var(--space-3)', width: '100%' }}>
-                    <strong>⚠️ Follow-up Overdue:</strong> Lead has been inactive for 3 or more days without conversion or close.
-                  </div>
-                )}
-
-                {/* Status Transitions */}
-                <div className={styles.drawerSection}>
-                  <label className={styles.sectionLabel}>Pipeline Status Transition</label>
-                  <div className={styles.statusButtons}>
-                    {pipelineStatuses.map((st) => (
-                      <button
-                        key={st}
-                        type="button"
-                        disabled={actionLoading}
-                        className={`${styles.statusOptionBtn} ${selectedLeadDetail.status === st ? styles.activeStatusOption : ''}`}
-                        onClick={() => handleStatusChange(st)}
-                      >
-                        {st.replace(/_/g, ' ')}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Client & Vehicle Parameters */}
-                <div className={styles.drawerSection}>
-                  <label className={styles.sectionLabel}>Client & Vehicle Parameters</label>
-                  <div className={styles.infoGrid}>
-                    <div>
-                      <span className={styles.infoLabel}>Mobile Number</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.customerPhone}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Email</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.customer?.email ?? 'Not provided'}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Vehicle</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.vehicleText ?? 'Not specified'}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Primary Treatment</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.serviceInterestName ?? 'General Inquiry'}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Paint Condition</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.vehicleCondition ?? 'Unspecified'}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Desired Outcome</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.desiredResult ?? 'Unspecified'}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Estimated Band</span>
-                      <span className={styles.infoVal}>
-                        {selectedLeadDetail.budgetRangeMin && selectedLeadDetail.budgetRangeMax
-                          ? `₹${Number(selectedLeadDetail.budgetRangeMin).toLocaleString('en-IN')} – ₹${Number(selectedLeadDetail.budgetRangeMax).toLocaleString('en-IN')}`
-                          : 'Standard Evaluation'}
-                      </span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Preferred Contact</span>
-                      <span className={styles.infoVal}>{selectedLeadDetail.customer?.preferredContactMethod ?? 'WHATSAPP'}</span>
-                    </div>
-                  </div>
-
-                  {selectedLeadDetail.additionalNotes && (
-                    <div className={styles.notesBox} style={{ marginTop: 'var(--space-2)' }}>
-                      <span className={styles.infoLabel}>Client Requirements / Notes:</span>
-                      <p className={styles.notesText}>{selectedLeadDetail.additionalNotes}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Attached Vehicle & Paint Photos */}
-                {selectedLeadDetail.photos && selectedLeadDetail.photos.length > 0 && (
-                  <div className={styles.drawerSection}>
-                    <label className={styles.sectionLabel}>
-                      Client Attached Photos ({selectedLeadDetail.photos.length})
-                    </label>
-                    <div className={styles.photosGrid}>
-                      {selectedLeadDetail.photos.map((p: any) => (
-                        <div
-                          key={p.id}
-                          className={styles.photoThumbnail}
-                          onClick={() => setActivePhotoUrl(p.url)}
-                          title="Click to expand"
-                        >
-                          <img src={p.url} alt={p.altText || 'Lead vehicle photo'} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Quick Action Links */}
-                <div className={styles.drawerActionsRow}>
-                  <Link
-                    href={`/admin/quotes?leadId=${selectedLeadDetail.id}&customerId=${selectedLeadDetail.customerId}`}
-                    className="btn btn-primary btn-sm"
-                  >
-                    + Generate Formal Quote
-                  </Link>
-                  <Link
-                    href={`/admin/bookings?customerId=${selectedLeadDetail.customerId}&leadId=${selectedLeadDetail.id}`}
-                    className="btn btn-secondary btn-sm"
-                  >
-                    + Book Bay Slot
-                  </Link>
-                  <a
-                    href={`https://wa.me/${selectedLeadDetail.customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                      `Hi ${selectedLeadDetail.customerName}, Smoke M Customs following up on quote request for your ${selectedLeadDetail.vehicleText || 'vehicle'}.`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-secondary btn-sm"
-                  >
-                    💬 WhatsApp Client
-                  </a>
-                </div>
-
-                {/* Status Transition History Timeline */}
-                {selectedLeadDetail.statusHistory && selectedLeadDetail.statusHistory.length > 0 && (
-                  <div className={styles.drawerSection}>
-                    <label className={styles.sectionLabel}>Pipeline Status History</label>
-                    <div className={styles.timeline}>
-                      {selectedLeadDetail.statusHistory.map((h: any) => (
-                        <div key={h.id} className={styles.timelineItem}>
-                          <span className={styles.timelineTransition}>
-                            {h.fromStatus ? `${h.fromStatus} → ` : 'Created as '}
-                            <strong>{h.toStatus}</strong>
-                          </span>
-                          <span className={styles.timelineDate}>
-                            {new Date(h.changedAt).toLocaleString('en-IN', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Internal Notes & Timeline */}
-                <div className={styles.drawerSection}>
-                  <label className={styles.sectionLabel}>Internal Staff Notes</label>
-                  <form onSubmit={handleAddNote} className={styles.noteForm}>
-                    <input
-                      type="text"
-                      className={styles.noteInput}
-                      placeholder="Add inspection note, follow-up log, quote price sent..."
-                      value={newNote}
-                      onChange={(e) => setNewNote(e.target.value)}
-                    />
-                    <button type="submit" disabled={actionLoading || !newNote.trim()} className="btn btn-secondary btn-sm">
-                      Post Note
-                    </button>
-                  </form>
-
-                  <div className={styles.notesList}>
-                    {selectedLeadDetail.notes?.map((n: any) => (
-                      <div key={n.id} className={styles.noteItem}>
-                        <div className={styles.noteHead}>
-                          <span className={styles.noteAuthor}>{n.authorName}</span>
-                          <span className={styles.noteDate}>
-                            {new Date(n.createdAt).toLocaleString('en-IN', {
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
-                        </div>
-                        <p className={styles.noteBody}>{n.body}</p>
-                      </div>
-                    ))}
-                    {(!selectedLeadDetail.notes || selectedLeadDetail.notes.length === 0) && (
-                      <p className={styles.emptyNotes}>No internal notes recorded yet.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      )}
-
-      {/* Lightbox Modal for Photo Zoom */}
-      {activePhotoUrl && (
-        <div className={styles.lightboxOverlay} onClick={() => setActivePhotoUrl(null)}>
-          <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className={styles.lightboxClose}
-              onClick={() => setActivePhotoUrl(null)}
-            >
-              ✕ Close
-            </button>
-            <img src={activePhotoUrl} alt="Inspection Photo" />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

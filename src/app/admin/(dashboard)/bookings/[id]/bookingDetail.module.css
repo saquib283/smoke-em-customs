@@ -1,0 +1,775 @@
+/* ─────────────────────────────────────────────────────────────
+   Smoke M Customs — Executive Studio Booking Dossier
+   Font: Plus Jakarta Sans
+   Theme: Executive Modern Light Atelier
+   ───────────────────────────────────────────────────────────── */
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0F172A;
+  padding-bottom: 3rem;
+}
+
+/* ── Top Navigation Bar ── */
+.topNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748B;
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  transition: all 0.15s ease;
+}
+
+.backBtn:hover {
+  color: #0F172A;
+  border-color: #CBD5E1;
+  background-color: #F8FAFC;
+  transform: translateX(-2px);
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #334155;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.actionBtn:hover {
+  background-color: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+/* ── Page Hero Header ── */
+.headerCard {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.125rem;
+}
+
+.bookingAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  color: #FDE68A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  flex-shrink: 0;
+}
+
+.headerMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #B45309;
+}
+
+.eyebrowDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #CBD5E1;
+}
+
+.pageTitle {
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0F172A;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.headerSubtext {
+  font-size: 0.8125rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.statusPENDING_CONFIRMATION {
+  background-color: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+.statusPENDING_CONFIRMATION .statusDot {
+  background-color: #B45309;
+}
+
+.statusCONFIRMED {
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+.statusCONFIRMED .statusDot {
+  background-color: #1D4ED8;
+}
+
+.statusIN_PROGRESS {
+  background-color: #F5F3FF;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+}
+.statusIN_PROGRESS .statusDot {
+  background-color: #6D28D9;
+}
+
+.statusCOMPLETED {
+  background-color: #F0FDF4;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+}
+.statusCOMPLETED .statusDot {
+  background-color: #15803D;
+}
+
+.statusCANCELLED {
+  background-color: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+.statusCANCELLED .statusDot {
+  background-color: #B91C1C;
+}
+
+/* ── Two Column Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1080px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.sidebarColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 1.5rem;
+}
+
+/* ── Card Styling ── */
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: #CBD5E1;
+}
+
+.cardHeader {
+  padding: 1.125rem 1.5rem;
+  border-bottom: 1px solid #F1F5F9;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cardHeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.cardHeaderIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: #FEF3C7;
+  color: #B45309;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardHeaderIconSlate {
+  background-color: #F1F5F9;
+  color: #475569;
+}
+
+.cardTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.cardSubtitle {
+  font-size: 0.75rem;
+  color: #64748B;
+  margin: 0.1rem 0 0 0;
+}
+
+.cardBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Hero Dossier Banner ── */
+.bookingHero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.heroDetails {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.heroIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: #0F172A;
+  color: #FDE68A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.heroServiceTitle {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+}
+
+.heroMetaLine {
+  font-size: 0.8125rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+  flex-wrap: wrap;
+}
+
+.priceTag {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-feature-settings: 'tnum';
+}
+
+/* ── Info Grids ── */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+}
+
+.infoLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoValue {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0F172A;
+  word-break: break-word;
+}
+
+.infoValueSubtext {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #64748B;
+}
+
+.lineageLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #B45309;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  margin-top: 0.2rem;
+  transition: color 0.15s ease;
+}
+
+.lineageLink:hover {
+  color: #92400E;
+  text-decoration: underline;
+}
+
+/* ── Lifecycle Stepper Progress Bar ── */
+.stepperTrack {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 0.5rem 0 1.25rem 0;
+}
+
+.stepperLine {
+  position: absolute;
+  top: 14px;
+  left: 15px;
+  right: 15px;
+  height: 2px;
+  background-color: #E2E8F0;
+  z-index: 1;
+}
+
+.stepperLineActive {
+  position: absolute;
+  top: 14px;
+  left: 15px;
+  height: 2px;
+  background-color: #10B981;
+  z-index: 2;
+  transition: width 0.3s ease;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  position: relative;
+  z-index: 3;
+}
+
+.stepNode {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 2px solid #CBD5E1;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.stepNodeActive {
+  border-color: #B45309;
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.stepNodeDone {
+  border-color: #10B981;
+  background-color: #10B981;
+  color: #FFFFFF;
+}
+
+.stepText {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #64748B;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.stepTextActive {
+  color: #0F172A;
+  font-weight: 700;
+}
+
+/* ── Workflow Operations Buttons ── */
+.actionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btnPrimaryLarge {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  border: 1px solid #0F172A;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btnPrimaryLarge:hover:not(:disabled) {
+  background-color: #1E293B;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+}
+
+.btnPrimaryLarge:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnGreenLarge {
+  background-color: #059669;
+  border-color: #059669;
+}
+
+.btnGreenLarge:hover:not(:disabled) {
+  background-color: #047857;
+  border-color: #047857;
+}
+
+.secondaryRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.btnSecondaryOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btnSecondaryOutline:hover {
+  background-color: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+.btnDangerOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: #FFFFFF;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.btnDangerOutline:hover {
+  background-color: #FEF2F2;
+  border-color: #F87171;
+}
+
+/* ── Inline Action Drawers / Boxes ── */
+.actionBox {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.actionBoxDanger {
+  background-color: #FEF2F2;
+  border-color: #FECACA;
+}
+
+.actionBoxTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.actionBoxTitleDanger {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #991B1B;
+}
+
+.inputField {
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8125rem;
+  color: #0F172A;
+  font-family: inherit;
+  width: 100%;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: #B45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
+}
+
+.textareaField {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ── Metadata & Activity Feed ── */
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748B;
+  padding: 0.25rem 0;
+}
+
+.metaValue {
+  font-weight: 600;
+  color: #1E293B;
+  font-feature-settings: 'tnum';
+}
+
+.commCard {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.commHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+}
+
+.commBody {
+  font-size: 0.8125rem;
+  color: #1E293B;
+}
+
+/* ── Timeline & Audit Trail Styles ── */
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 1.5rem;
+  gap: 1.25rem;
+}
+
+.timelineList::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background-color: #E2E8F0;
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.timelineDot {
+  position: absolute;
+  left: -1.5rem;
+  top: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 2px solid #0F172A;
+  z-index: 1;
+}
+
+.timelineDotActive {
+  border-color: #B45309;
+  background-color: #FEF3C7;
+}
+
+.timelineHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.timelineTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.timelineTime {
+  font-size: 0.6875rem;
+  color: #94A3B8;
+}
+
+.timelineDetail {
+  font-size: 0.75rem;
+  color: #64748B;
+  background-color: #F8FAFC;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #F1F5F9;
+}
+

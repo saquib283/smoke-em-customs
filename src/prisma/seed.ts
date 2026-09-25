@@ -17,7 +17,7 @@ const db = postgres<Contract>({
 });
 
 async function main() {
-  console.log('🌱 Seeding database...\n');
+  console.log('Seeding database...\n');
 
   // ── 1. Admin User ──
   const passwordHash = await bcrypt.hash('SmokeMCustoms2024!', 12);
@@ -34,9 +34,9 @@ async function main() {
       role: 'ADMIN',
       isActive: true,
     });
-    console.log('✅ Admin user created: admin@smokecustoms.com');
+    console.log('[OK] Admin user created: admin@smokecustoms.com');
   } else {
-    console.log('⏭️  Admin user already exists');
+    console.log('[-] Admin user already exists');
   }
 
   // ── 2. Default Resource (Bay) ──
@@ -49,9 +49,9 @@ async function main() {
       name: 'Bay 1',
       isActive: true,
     });
-    console.log('✅ Default resource created: Bay 1');
+    console.log('[OK] Default resource created: Bay 1');
   } else {
-    console.log('⏭️  Default resource already exists');
+    console.log('[-] Default resource already exists');
   }
 
   // ── 3. Business Hours (Mon-Sat 10:00-19:00) ──
@@ -70,9 +70,9 @@ async function main() {
     for (const day of daysOfWeek) {
       await db.orm.public.BusinessHours.create(day);
     }
-    console.log('✅ Business hours created (Mon-Sat)');
+    console.log('[OK] Business hours created (Mon-Sat)');
   } else {
-    console.log('⏭️  Business hours already exist');
+    console.log('[-] Business hours already exist');
   }
 
   // ── 4. Sample Services ──
@@ -160,9 +160,9 @@ async function main() {
     for (const service of services) {
       await db.orm.public.Service.create(service);
     }
-    console.log(`✅ ${services.length} services created`);
+    console.log(`[OK] ${services.length} services created`);
   } else {
-    console.log('⏭️  Services already exist');
+    console.log('[-] Services already exist');
   }
 
   // ── 5. Second Resource (Bay 2) ──
@@ -175,7 +175,7 @@ async function main() {
       name: 'Bay 2',
       isActive: true,
     });
-    console.log('✅ Secondary resource created: Bay 2');
+    console.log('[OK] Secondary resource created: Bay 2');
   }
 
   // ── 6. Sample Packages ──
@@ -230,9 +230,9 @@ async function main() {
       sortOrder: 3,
     });
 
-    console.log('✅ 3 packages created');
+    console.log('[OK] 3 packages created');
   } else {
-    console.log('⏭️  Packages already exist');
+    console.log('[-] Packages already exist');
   }
 
   // ── 6b. Package-Service Associations ──
@@ -269,9 +269,9 @@ async function main() {
       if (interiorSvc) await db.orm.public.PackageService.create({ packageId: p3.id, serviceId: interiorSvc.id });
     }
 
-    console.log('✅ Package-Service associations created');
+    console.log('[OK] Package-Service associations created');
   } else {
-    console.log('⏭️  Package-Service associations already exist');
+    console.log('[-] Package-Service associations already exist');
   }
 
   // ── 7. Sample Reviews ──
@@ -320,9 +320,9 @@ async function main() {
     for (const r of reviews) {
       await db.orm.public.Review.create(r);
     }
-    console.log(`✅ ${reviews.length} reviews created`);
+    console.log(`[OK] ${reviews.length} reviews created`);
   } else {
-    console.log('⏭️  Reviews already exist');
+    console.log('[-] Reviews already exist');
   }
 
   // ── 8. Sample Offers ──
@@ -339,9 +339,9 @@ async function main() {
       endAt: nextMonth.toISOString(),
       isEnabled: true,
     });
-    console.log('✅ Sample offer created');
+    console.log('[OK] Sample offer created');
   } else {
-    console.log('⏭️  Offers already exist');
+    console.log('[-] Offers already exist');
   }
 
   // ── 9. Sample Gallery Items ──
@@ -402,12 +402,12 @@ async function main() {
       afterMediaId: m4.id,
     });
 
-    console.log('✅ 2 gallery items created');
+    console.log('[OK] 2 gallery items created');
   } else {
-    console.log('⏭️  Gallery items already exist');
+    console.log('[-] Gallery items already exist');
   }
 
-  console.log('\n🎉 Seeding complete!\n');
+  console.log('\nSeeding complete!\n');
   console.log('Admin credentials:');
   console.log('  Email:    admin@smokecustoms.com');
   console.log('  Password: SmokeMCustoms2024!');
@@ -415,7 +415,7 @@ async function main() {
 
 main()
   .catch((error) => {
-    console.error('❌ Seed failed:', error);
+    console.error('[ERROR] Seed failed:', error);
     process.exit(1);
   })
   .finally(async () => {

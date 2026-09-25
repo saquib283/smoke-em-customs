@@ -34,6 +34,12 @@
   text-decoration: none;
 }
 
+.logoImage {
+  border-radius: 50%;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .logoBadge {
   display: inline-flex;
   align-items: center;
@@ -89,17 +95,20 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background-color: var(--color-bg-elevated);
+  background-color: #F8FAFC;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  color: #0F172A;
   text-decoration: none;
   font-size: 16px;
   transition: all var(--transition-fast);
 }
 
 .socialIcon:hover {
-  background-color: var(--color-bg-surface);
-  border-color: var(--color-border-hover);
+  background-color: #FFFFFF;
+  border-color: #94A3B8;
+  color: var(--color-accent-primary);
+  box-shadow: var(--shadow-sm);
   transform: translateY(-2px);
 }
 

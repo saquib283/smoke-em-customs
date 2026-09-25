@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Icon } from '@/components/common/Icons';
 import styles from './about.module.css';
 
 export const metadata: Metadata = {
@@ -42,7 +43,7 @@ export default function AboutPage() {
           {/* Pillars */}
           <div className={styles.pillarsGrid}>
             <div className={styles.pillar}>
-              <div className={styles.pillarIcon}>🌡️</div>
+              <div className={styles.pillarIcon}><Icon.Thermometer size={24} /></div>
               <h3 className={styles.pillarTitle}>Climate & Dust Controlled</h3>
               <p className={styles.pillarDesc}>
                 Ceramic coatings and PPF require exact humidity (45–55%) and temperature (20–24°C)
@@ -51,7 +52,7 @@ export default function AboutPage() {
             </div>
 
             <div className={styles.pillar}>
-              <div className={styles.pillarIcon}>💡</div>
+              <div className={styles.pillarIcon}><Icon.Lightbulb size={24} /></div>
               <h3 className={styles.pillarTitle}>98 CRI Concourse Lighting</h3>
               <p className={styles.pillarDesc}>
                 Standard shop lights hide 60% of clear coat defects. We utilize multi-angle,
@@ -60,7 +61,7 @@ export default function AboutPage() {
             </div>
 
             <div className={styles.pillar}>
-              <div className={styles.pillarIcon}>📏</div>
+              <div className={styles.pillarIcon}><Icon.Ruler size={24} /></div>
               <h3 className={styles.pillarTitle}>Non-Destructive Paint Profiling</h3>
               <p className={styles.pillarDesc}>
                 We measure paint thickness in microns across every panel before compounding.
@@ -69,7 +70,7 @@ export default function AboutPage() {
             </div>
 
             <div className={styles.pillar}>
-              <div className={styles.pillarIcon}>🤝</div>
+              <div className={styles.pillarIcon}><Icon.Handshake size={24} /></div>
               <h3 className={styles.pillarTitle}>Transparent Consultation</h3>
               <p className={styles.pillarDesc}>
                 No aggressive upselling. We assess your vehicle&apos;s real-world usage and recommend

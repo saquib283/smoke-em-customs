@@ -1,16 +1,19 @@
 .main {
   padding-bottom: var(--space-16);
+  background-color: var(--color-bg-primary);
 }
 
 .header {
-  background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, rgba(10, 10, 10, 0.95) 75%);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(180, 83, 9, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-12) 0 var(--space-10);
+  padding: var(--space-14) 0 var(--space-10);
   text-align: center;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 0 var(--space-4);
 }
@@ -26,17 +29,18 @@
 }
 
 .title {
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
   font-weight: var(--font-extrabold);
   color: var(--color-text-primary);
   margin-bottom: var(--space-3);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
   font-size: var(--text-base);
   color: var(--color-text-secondary);
   line-height: var(--leading-relaxed);
-  max-width: 600px;
+  max-width: 620px;
   margin: 0 auto;
 }
 
@@ -49,10 +53,11 @@
 }
 
 .card {
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
 }
 
 .cardTitle {
@@ -62,6 +67,7 @@
   margin-bottom: var(--space-6);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--color-border);
+  letter-spacing: -0.01em;
 }
 
 .infoList {
@@ -102,6 +108,7 @@
 
 .closedText {
   color: var(--color-warning);
+  font-weight: 500;
 }
 
 .link {
@@ -116,7 +123,7 @@
 }
 
 .waLink {
-  color: #25D366;
+  color: #15803D;
   text-decoration: none;
   font-weight: var(--font-semibold);
   font-size: var(--text-sm);
@@ -145,8 +152,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-3);
-  background-color: rgba(37, 211, 102, 0.15);
-  color: #25D366;
+  background-color: rgba(37, 211, 102, 0.1);
+  color: #15803D;
   border: 1px solid rgba(37, 211, 102, 0.3);
   border-radius: var(--radius-md);
   text-decoration: none;
@@ -156,13 +163,13 @@
 }
 
 .waBigBtn:hover {
-  background-color: rgba(37, 211, 102, 0.25);
+  background-color: rgba(37, 211, 102, 0.18);
 }
 
 .directionsCard {
-  background-color: var(--color-bg-primary);
+  background-color: #F8FAFC;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-4);
 }
 

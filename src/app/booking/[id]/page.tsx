@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { bookingService } from '@/modules/booking';
+import { Icon } from '@/components/common/Icons';
 import styles from './bookingStatus.module.css';
 
 interface BookingStatusPageProps {
@@ -100,9 +101,13 @@ export default async function BookingStatusPage({ params }: BookingStatusPagePro
           {/* Location & Drop-off info */}
           <div className={styles.locationBox}>
             <h3 className={styles.locTitle}>Studio Drop-Off Location</h3>
-            <p className={styles.locDesc}>
-              📍 42 Detailing Boulevard, Phase II, Auto Zone, India<br />
-              ⏰ Operating Hours: Monday – Saturday: 10:00 AM – 7:00 PM
+            <p className={styles.locDesc} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Icon.MapPin size={16} color="var(--color-gold)" /> 42 Detailing Boulevard, Phase II, Auto Zone, India
+              </span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Icon.Clock size={16} color="var(--color-gold)" /> Operating Hours: Monday – Saturday: 10:00 AM – 7:00 PM
+              </span>
             </p>
             <p className={styles.locNotes}>
               *Please arrive 10 minutes prior to your allocated time slot for initial paint condition assessment.
@@ -116,19 +121,25 @@ export default async function BookingStatusPage({ params }: BookingStatusPagePro
               download={`smokecustoms-booking-${shortCode}.ics`}
               className="btn btn-secondary btn-lg"
               title="Add to Google Calendar, Apple Calendar, or Outlook"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
             >
-              📅 Download Calendar Invite (.ics)
+              <Icon.Calendar size={16} /> Download Calendar Invite (.ics)
             </a>
             <a
               href={`https://wa.me/919876543210?text=${waText}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-primary btn-lg"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
             >
-              💬 WhatsApp Concierge
+              <Icon.WhatsApp size={16} /> WhatsApp Concierge
             </a>
-            <a href="tel:+919876543210" className="btn btn-outline btn-lg">
-              📞 Call Studio
+            <a
+              href="tel:+919876543210"
+              className="btn btn-outline btn-lg"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+            >
+              <Icon.Phone size={16} /> Call Studio
             </a>
             <Link href="/" className="btn btn-outline">
               Return to Home

@@ -1,155 +1,448 @@
+/* ── Bespoke Luxury Light Navbar ── */
+
 .header {
   position: sticky;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: var(--z-sticky);
-  background-color: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border);
-  transition: all var(--transition-fast);
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .scrolled {
-  background-color: rgba(10, 10, 10, 0.95);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  border-bottom-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.05);
+  border-bottom-color: rgba(15, 23, 42, 0.09);
 }
 
 .container {
-  max-width: var(--max-width);
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 var(--space-4);
-  height: 72px;
+  padding: 0 1.75rem;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.5rem;
 }
 
-/* ── Logo ── */
-
+/* ── Brand Logo / Identity ── */
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 0.85rem;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
-.logoBadge {
-  display: inline-flex;
+.logoBadgeContainer {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
-  color: var(--color-text-inverse);
-  font-weight: var(--font-bold);
-  font-size: var(--text-sm);
-  letter-spacing: 0.05em;
-  box-shadow: 0 0 15px rgba(212, 168, 83, 0.35);
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.logo:hover .logoBadgeContainer {
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+}
+
+.logoImage {
+  border-radius: 50%;
+  object-fit: contain;
 }
 
 .logoText {
   display: flex;
   flex-direction: column;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .logoSmoke {
-  font-weight: var(--font-extrabold);
-  font-size: var(--text-lg);
-  letter-spacing: 0.1em;
-  color: var(--color-text-primary);
+  font-family: var(--font-heading, inherit);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  color: #0F172A;
   text-transform: uppercase;
 }
 
 .logoCustoms {
-  font-size: var(--text-xs);
-  letter-spacing: 0.25em;
-  color: var(--color-accent-primary);
-  font-weight: var(--font-semibold);
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  color: #B45309;
+  font-weight: 800;
   text-transform: uppercase;
+  margin-top: 2px;
 }
 
-/* ── Desktop Nav ── */
-
+/* ── Desktop Navigation Group ── */
 .desktopNav {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 0.5rem;
+}
+
+.navItem {
+  position: relative;
 }
 
 .navLink {
-  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
   text-decoration: none;
-  font-size: var(--text-sm);
-  font-weight: var(--font-medium);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
 }
 
 .navLink:hover {
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-elevated);
+  color: #0F172A;
+  background-color: rgba(15, 23, 42, 0.04);
 }
 
 .activeNavLink {
-  color: var(--color-accent-primary);
-  background-color: var(--color-accent-subtle);
-  font-weight: var(--font-semibold);
+  color: #0F172A;
+  font-weight: 600;
+  background-color: rgba(180, 83, 9, 0.06);
 }
 
-/* ── Actions ── */
+.chevron {
+  color: #94A3B8;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s ease;
+}
 
+.chevronOpen {
+  transform: rotate(180deg);
+  color: #0F172A;
+}
+
+/* ── Luxury Flyout Dropdown Card ── */
+.dropdownFlyout {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding-top: 10px;
+  /* Invisible bridge to prevent mouse leaving */
+  z-index: 1050;
+  animation: flyoutFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes flyoutFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownCard {
+  width: 440px;
+  background: #FFFFFF;
+  border: 1px solid rgba(15, 23, 42, 0.09);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdownHeader {
+  padding: 0.4rem 0.75rem 0.5rem 0.75rem;
+  border-bottom: 1px solid #F1F5F9;
+  margin-bottom: 0.35rem;
+}
+
+.dropdownCategory {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #94A3B8;
+}
+
+.dropdownGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.dropdownItem:hover {
+  background-color: #F8FAFC;
+}
+
+.itemIconBox {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748B;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.dropdownItem:hover .itemIconBox {
+  background: #0F172A;
+  color: #FFFFFF;
+  border-color: #0F172A;
+  transform: scale(1.04);
+}
+
+.itemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.itemTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0F172A;
+  line-height: 1.25;
+  transition: color 0.18s ease;
+}
+
+.dropdownItem:hover .itemTitle {
+  color: #B45309;
+}
+
+.itemBadge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.itemDescription {
+  font-size: 0.75rem;
+  color: #64748B;
+  line-height: 1.35;
+  margin: 0.2rem 0 0 0;
+}
+
+.dropdownFooter {
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  border-top: 1px solid #F1F5F9;
+  background: #F8FAFC;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.footerLink {
+  color: #B45309;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.footerLink:hover {
+  color: #92400E;
+  transform: translateX(2px);
+}
+
+/* ── Actions Cluster ── */
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
-.waBtn {
+/* ── VIP Studio WhatsApp Concierge Button ── */
+.conciergePill {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  background-color: rgba(37, 211, 102, 0.12);
-  color: #25D366;
-  border: 1px solid rgba(37, 211, 102, 0.25);
-  border-radius: var(--radius-md);
+  gap: 0.5rem;
+  padding: 0.42rem 0.95rem 0.42rem 0.55rem;
+  border-radius: 9999px;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(37, 211, 102, 0.4);
+  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.1), 0 1px 2px rgba(15, 23, 42, 0.04);
   text-decoration: none;
-  font-size: var(--text-xs);
-  font-weight: var(--font-semibold);
-  transition: all var(--transition-fast);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.waBtn:hover {
-  background-color: rgba(37, 211, 102, 0.2);
-  box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
+.conciergePill:hover {
+  background-color: #F0FDF4;
+  border-color: #25D366;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.22);
+  transform: translateY(-1px);
 }
 
-/* ── Hamburger ── */
+.waBadgeIcon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
 
+.conciergePill:hover .waBadgeIcon {
+  transform: scale(1.1);
+}
+
+.conciergeInfo {
+  display: flex;
+  align-items: center;
+}
+
+.conciergeText {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #0F172A;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.conciergePill:hover .conciergeText {
+  color: #15803D;
+}
+
+/* Customer Portal Shortcut */
+.portalShortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #64748B;
+  font-size: 0.825rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.44rem 0.75rem;
+  border-radius: 8px;
+  transition: all 0.18s ease;
+}
+
+.portalShortcut:hover {
+  color: #0F172A;
+  background-color: #F1F5F9;
+}
+
+.activePortalShortcut {
+  color: #0F172A;
+  background-color: #F1F5F9;
+}
+
+.portalText {
+  letter-spacing: 0.01em;
+}
+
+/* Primary Hero Button */
+.btnHeroBook {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.52rem 1.35rem;
+  border-radius: 9999px;
+  background-color: #0F172A;
+  color: #FFFFFF;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.btnHeroBook:hover {
+  background-color: #1E293B;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22);
+}
+
+.btnArrow {
+  transition: transform 0.2s ease;
+}
+
+.btnHeroBook:hover .btnArrow {
+  transform: translateX(2px);
+}
+
+/* ── Mobile Hamburger ── */
 .hamburger {
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   background: transparent;
-  border: none;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
   cursor: pointer;
-  padding: 4px;
+  padding: 7px 6px;
+  transition: all 0.2s ease;
+}
+
+.hamburger:hover {
+  background: #F1F5F9;
 }
 
 .bar {
   width: 100%;
   height: 2px;
-  background-color: var(--color-text-primary);
+  background-color: #0F172A;
   border-radius: 2px;
-  transition: all var(--transition-fast);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .barOpenTop {
@@ -158,87 +451,154 @@
 
 .barOpenMid {
   opacity: 0;
+  transform: scaleX(0);
 }
 
 .barOpenBot {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ── Mobile Drawer ── */
-
+/* ── Mobile Navigation Drawer ── */
 .mobileDrawer {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 70px);
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  overflow-y: auto;
+  padding: 1.5rem;
   display: none;
-  background-color: var(--color-bg-secondary);
-  border-bottom: 1px solid var(--color-border);
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height var(--transition-normal) ease-in-out;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 .drawerOpen {
-  max-height: 500px;
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.mobileNav {
-  padding: var(--space-4);
+.mobileNavContent {
+  max-width: 480px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.mobileSection {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.mobileSectionTitle {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #94A3B8;
+  display: block;
+  margin-bottom: 0.75rem;
+  padding-left: 0.25rem;
+}
+
+.mobileLinkList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 
 .mobileNavLink {
-  padding: var(--space-3);
-  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  color: #334155;
   text-decoration: none;
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
 }
 
 .mobileNavLink:hover {
-  background-color: var(--color-bg-elevated);
-  color: var(--color-text-primary);
-}
-
-.mobileActiveNavLink {
-  color: var(--color-accent-primary);
-  background-color: var(--color-accent-subtle);
-  font-weight: var(--font-semibold);
+  background: #F8FAFC;
+  color: #0F172A;
 }
 
 .mobileActions {
-  margin-top: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--space-4);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
-.mobileWaLink {
-  text-align: center;
-  color: #25D366;
+.mobileBtnBook {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem;
+  background: #0F172A;
+  color: #FFFFFF;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.925rem;
   text-decoration: none;
-  font-weight: var(--font-medium);
-  font-size: var(--text-sm);
-  padding: var(--space-2);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
 }
 
-@media (max-width: 992px) {
+.mobileBtnQuote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem;
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  color: #0F172A;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.925rem;
+  text-decoration: none;
+}
+
+.mobileWaBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #15803D;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.925rem;
+  text-decoration: none;
+}
+
+/* ── Responsive Breakpoints ── */
+@media (max-width: 1024px) {
   .desktopNav {
     display: none;
   }
 
-  .waText {
+  .conciergePill {
+    display: none;
+  }
+
+  .portalShortcut {
     display: none;
   }
 
   .hamburger {
     display: flex;
-  }
-
-  .mobileDrawer {
-    display: block;
   }
 }

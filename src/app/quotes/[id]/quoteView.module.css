@@ -1,0 +1,544 @@
+/* ── Printable & Shareable Quote View Styles ── */
+
+.pageContainer {
+  min-height: 80vh;
+  padding: var(--space-8) var(--space-4);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.actionBar {
+  max-width: 860px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.actionBtnGroup {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btnPrint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.25rem;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.btnPrint:hover {
+  background: var(--color-bg-surface);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+}
+
+.btnWhatsApp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.25rem;
+  background: #16A34A;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.btnWhatsApp:hover {
+  background: #15803D;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.btnBook {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.25rem;
+  background: var(--color-text-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.btnBook:hover {
+  background: #1E293B;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.bookedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #047857;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+/* ── Quote Document Sheet ── */
+.quoteDocument {
+  max-width: 860px;
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.docHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding-bottom: var(--space-6);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.brandLogo {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-accent-primary);
+  text-transform: uppercase;
+  margin-bottom: var(--space-1);
+}
+
+.brandSubtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.quoteLogo {
+  border-radius: 50%;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.docMeta {
+  text-align: right;
+}
+
+.docTitle {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.docRef {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  margin-bottom: var(--space-2);
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statusDRAFT {
+  background: rgba(156, 163, 175, 0.2);
+  color: #9CA3AF;
+  border: 1px solid #9CA3AF;
+}
+
+.statusSENT {
+  background: rgba(154, 123, 209, 0.2);
+  color: #9A7BD1;
+  border: 1px solid #9A7BD1;
+}
+
+.statusACCEPTED {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10B981;
+  border: 1px solid #10B981;
+}
+
+.statusDECLINED {
+  background: rgba(239, 68, 68, 0.2);
+  color: #EF4444;
+  border: 1px solid #EF4444;
+}
+
+.statusEXPIRED {
+  background: rgba(245, 158, 11, 0.2);
+  color: #F59E0B;
+  border: 1px solid #F59E0B;
+}
+
+/* ── Parties Grid ── */
+.partiesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.partyBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.partyLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.partyName {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.partyDetail {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* ── Items Table ── */
+.tableWrapper {
+  margin: var(--space-6) 0;
+  overflow-x: auto;
+}
+
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.itemsTable th {
+  padding: var(--space-3) var(--space-2);
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.itemsTable td {
+  padding: var(--space-4) var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.itemNumber {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.itemDesc {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.itemSub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.textRight {
+  text-align: right;
+}
+
+.itemTotal {
+  font-weight: 700;
+  color: var(--color-accent-primary);
+}
+
+/* ── Financials & Notes ── */
+.summarySection {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--space-6);
+  padding-top: var(--space-4);
+}
+
+.notesColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.noteBlock {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+}
+
+.noteTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.noteText {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.totalsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  justify-content: flex-start;
+}
+
+.calcRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  padding: var(--space-1) 0;
+}
+
+.calcRowDiscount {
+  color: #10B981;
+}
+
+.grandTotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--color-accent-primary);
+  border-top: 2px solid var(--color-border);
+  padding-top: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+/* ── Footer / Signature ── */
+.docFooter {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.footerNotes {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  max-width: 480px;
+  line-height: 1.4;
+}
+
+.signBox {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+.signLine {
+  width: 160px;
+  height: 1px;
+  background: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.signTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.signCompany {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+/* ── PRINT MEDIA QUERY ── */
+@media print {
+  /* Hide external navigation, actions, and UI chrome */
+  :global(nav),
+  :global(footer),
+  :global([class*="MobileStickyBar"]),
+  .actionBar {
+    display: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .pageContainer {
+    background: #FFFFFF !important;
+    padding: 0 !important;
+  }
+
+  .quoteDocument {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0.5in !important;
+    background: #FFFFFF !important;
+    color: #111827 !important;
+  }
+
+  .brandLogo {
+    color: #111827 !important;
+  }
+
+  .brandSubtitle,
+  .partyDetail,
+  .itemSub,
+  .calcRow,
+  .noteText,
+  .footerNotes {
+    color: #4B5563 !important;
+  }
+
+  .docTitle,
+  .partyName,
+  .itemDesc {
+    color: #111827 !important;
+  }
+
+  .docRef,
+  .itemTotal,
+  .grandTotalRow {
+    color: #111827 !important;
+    font-weight: 800 !important;
+  }
+
+  .docHeader,
+  .partiesGrid,
+  .itemsTable th,
+  .itemsTable td,
+  .grandTotalRow,
+  .docFooter {
+    border-color: #E5E7EB !important;
+  }
+
+  .itemsTable th {
+    background: #F3F4F6 !important;
+    color: #374151 !important;
+  }
+
+  .noteBlock {
+    background: #F9FAFB !important;
+    border-color: #E5E7EB !important;
+  }
+
+  .statusBadge {
+    border: 1px solid #374151 !important;
+    color: #111827 !important;
+    background: #F3F4F6 !important;
+  }
+
+  .signLine {
+    background: #374151 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .quoteDocument {
+    padding: var(--space-4);
+  }
+
+  .partiesGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .summarySection {
+    grid-template-columns: 1fr;
+  }
+
+  .docHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .docMeta {
+    text-align: left;
+  }
+
+  .docFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .signBox {
+    align-items: flex-start;
+  }
+}

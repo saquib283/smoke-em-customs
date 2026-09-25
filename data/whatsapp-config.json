@@ -1,0 +1,12 @@
+{
+  "isEnabled": false,
+  "phoneNumberId": "",
+  "accessToken": "",
+  "appSecret": "",
+  "webhookVerifyToken": "smokecustoms_meta_token_secret",
+  "studioBusinessPhone": "+91 98765 43210",
+  "autoSendLeadWelcome": true,
+  "autoSendQuoteNotification": true,
+  "autoSendBookingConfirmation": true,
+  "autoSendBookingCancellation": true
+}

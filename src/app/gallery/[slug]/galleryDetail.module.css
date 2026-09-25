@@ -1,15 +1,18 @@
 .main {
   padding-bottom: var(--space-16);
+  background-color: var(--color-bg-primary);
 }
 
 .header {
-  background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.15) 0%, rgba(10, 10, 10, 0.95) 75%);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(180, 83, 9, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-8) 0 var(--space-8);
+  padding: var(--space-12) 0 var(--space-10);
 }
 
 .container {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 0 var(--space-4);
 }
@@ -35,6 +38,7 @@
 
 .currentCrumb {
   color: var(--color-accent-primary);
+  font-weight: var(--font-semibold);
 }
 
 .tag {
@@ -48,16 +52,18 @@
 }
 
 .title {
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: var(--font-extrabold);
   color: var(--color-text-primary);
   line-height: 1.15;
   margin-bottom: var(--space-2);
+  letter-spacing: -0.02em;
 }
 
 .carInfo {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+  font-weight: var(--font-medium);
 }
 
 /* ── Content ── */
@@ -83,11 +89,12 @@
 
 .imageWrapper {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   overflow: hidden;
   height: 380px;
-  background-color: #000;
+  background-color: #0F172A;
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 .image {
@@ -105,16 +112,17 @@
   font-size: 11px;
   font-weight: var(--font-bold);
   letter-spacing: 0.08em;
+  backdrop-filter: blur(8px);
 }
 
 .badgeBefore {
-  background-color: rgba(248, 113, 113, 0.9);
-  color: #fff;
+  background-color: rgba(220, 38, 38, 0.9);
+  color: #FFFFFF;
 }
 
 .badgeAfter {
-  background-color: rgba(74, 222, 128, 0.9);
-  color: #0A0A0A;
+  background-color: rgba(16, 185, 129, 0.9);
+  color: #FFFFFF;
 }
 
 .caption {
@@ -124,10 +132,11 @@
 }
 
 .narrativeCard {
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
 }
 
 .narrativeTitle {
@@ -137,6 +146,7 @@
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--color-border);
+  letter-spacing: -0.01em;
 }
 
 .narrativeText {
@@ -155,11 +165,12 @@
 
 .tagPill {
   font-size: var(--text-xs);
-  color: var(--color-accent-primary);
-  background-color: var(--color-accent-subtle);
-  border: 1px solid rgba(212, 168, 83, 0.2);
-  padding: 3px 10px;
+  color: #0F172A;
+  background-color: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
+  font-weight: var(--font-semibold);
 }
 
 .actionRow {

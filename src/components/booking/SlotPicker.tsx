@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { Icon } from '@/components/common/Icons';
 import styles from './bookingComponents.module.css';
 
 export interface TimeSlot {
@@ -78,8 +79,8 @@ export function SlotPicker({
           <p>
             All positive-pressure detailing bays are currently allocated or this date is outside operational hours.
           </p>
-          <p style={{ color: 'var(--color-gold)', fontSize: 'var(--text-xs)', marginTop: 'var(--space-2)' }}>
-            💡 Try picking the next available working day, or reach out to our studio concierge directly.
+          <p style={{ color: 'var(--color-gold)', fontSize: 'var(--text-xs)', marginTop: 'var(--space-2)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon.Lightbulb size={14} color="var(--color-gold)" /> Try picking the next available working day, or reach out to our studio concierge directly.
           </p>
         </div>
       </div>
@@ -98,7 +99,9 @@ export function SlotPicker({
 
       {morningSlots.length > 0 && (
         <div className={styles.slotGroup}>
-          <div className={styles.slotGroupTitle}>🌅 Morning Detailing Slots</div>
+          <div className={styles.slotGroupTitle} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon.Sunrise size={16} color="var(--color-gold)" /> Morning Detailing Slots
+          </div>
           <div className={styles.slotGrid} role="radiogroup" aria-label="Morning slots">
             {morningSlots.map((slot) => {
               const isSelected =
@@ -117,8 +120,8 @@ export function SlotPicker({
                   <div className={styles.slotTimeRange}>
                     {formatSlotTime(slot.startAt)} – {formatSlotTime(slot.endAt)}
                   </div>
-                  <div className={styles.slotBayTag}>
-                    🏛️ {slot.resourceName}
+                  <div className={styles.slotBayTag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon.Bay size={14} color="var(--color-gold)" /> {slot.resourceName}
                   </div>
                   <span className={styles.slotBadge}>Bay Reserved for Treatment</span>
                 </button>
@@ -130,7 +133,9 @@ export function SlotPicker({
 
       {afternoonSlots.length > 0 && (
         <div className={styles.slotGroup}>
-          <div className={styles.slotGroupTitle}>☀️ Afternoon & Evening Slots</div>
+          <div className={styles.slotGroupTitle} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icon.Sun size={16} color="var(--color-gold)" /> Afternoon & Evening Slots
+          </div>
           <div className={styles.slotGrid} role="radiogroup" aria-label="Afternoon slots">
             {afternoonSlots.map((slot) => {
               const isSelected =
@@ -149,8 +154,8 @@ export function SlotPicker({
                   <div className={styles.slotTimeRange}>
                     {formatSlotTime(slot.startAt)} – {formatSlotTime(slot.endAt)}
                   </div>
-                  <div className={styles.slotBayTag}>
-                    🏛️ {slot.resourceName}
+                  <div className={styles.slotBayTag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <Icon.Bay size={14} color="var(--color-gold)" /> {slot.resourceName}
                   </div>
                   <span className={styles.slotBadge}>Bay Reserved for Treatment</span>
                 </button>

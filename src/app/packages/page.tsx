@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { catalogueService } from '@/modules/catalogue';
+import { Icon } from '@/components/common/Icons';
 import styles from './packages.module.css';
 
 export const metadata: Metadata = {
@@ -46,8 +47,12 @@ export default async function PackagesPage() {
               </div>
 
               <div className={styles.metaRow}>
-                <span>⏱️ ~{Math.round(pkg.durationMinutes / 60)} Hours</span>
-                <span>🛡️ Multi-Year Warranty</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Clock size={14} color="var(--color-gold)" /> ~{Math.round(pkg.durationMinutes / 60)} Hours
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Shield size={14} color="var(--color-gold)" /> Multi-Year Warranty
+                </span>
               </div>
 
               <div className={styles.cardBody}>
@@ -55,7 +60,9 @@ export default async function PackagesPage() {
                 <ul className={styles.benefitsList}>
                   {pkg.benefits.map((b, i) => (
                     <li key={i}>
-                      <span className={styles.check}>✓</span>
+                      <span className={styles.check} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Icon.Check size={12} color="var(--color-gold)" />
+                      </span>
                       <span>{b}</span>
                     </li>
                   ))}
@@ -91,8 +98,9 @@ export default async function PackagesPage() {
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary btn-lg"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
             >
-              💬 Speak with Master Detailer
+              <Icon.WhatsApp size={18} /> Speak with Master Detailer
             </a>
           </div>
         </div>

@@ -37,7 +37,44 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, bookingId, reason, newStartAt, status, internalNotes } = body;
+    const { action, bookingId, reason, newStartAt, newResourceId, status, internalNotes, bookingData } = body;
+
+    if (action === 'CREATE') {
+      if (!bookingData || !bookingData.customerId || !bookingData.resourceId || !bookingData.startAt) {
+        return NextResponse.json(
+          { error: 'Missing customer, bay resource, or start time' },
+          { status: 400 }
+        );
+      }
+      const booking = await bookingService.createBooking({
+        customerId: bookingData.customerId,
+        vehicleId: bookingData.vehicleId ?? undefined,
+        leadId: bookingData.leadId ?? undefined,
+        quoteId: bookingData.quoteId ?? undefined,
+        serviceId: bookingData.serviceId ?? undefined,
+        packageId: bookingData.packageId ?? undefined,
+        resourceId: bookingData.resourceId,
+        startAt: bookingData.startAt,
+        durationMinutes: bookingData.durationMinutes || 120,
+        source: 'admin',
+        priceQuoted: bookingData.priceQuoted ? String(bookingData.priceQuoted) : undefined,
+        customerNotes: bookingData.customerNotes ?? undefined,
+        internalNotes: bookingData.internalNotes ?? undefined,
+      });
+
+      await logAudit({
+        action: 'BOOKING_CREATED_BY_ADMIN',
+        entityType: 'BOOKING',
+        entityId: booking.id,
+        after: {
+          quoteId: bookingData.quoteId,
+          startAt: bookingData.startAt,
+          resourceId: bookingData.resourceId,
+        },
+      });
+
+      return NextResponse.json({ success: true, booking });
+    }
 
     if (!bookingId) {
       return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 });
@@ -50,6 +87,28 @@ export async function POST(req: NextRequest) {
         entityType: 'BOOKING',
         entityId: bookingId,
         after: { status: 'CONFIRMED' },
+      });
+      return NextResponse.json({ success: true, booking: updated });
+    }
+
+    if (action === 'START_JOB') {
+      const updated = await bookingService.startJob(bookingId);
+      await logAudit({
+        action: 'BOOKING_STARTED',
+        entityType: 'BOOKING',
+        entityId: bookingId,
+        after: { status: 'IN_PROGRESS' },
+      });
+      return NextResponse.json({ success: true, booking: updated });
+    }
+
+    if (action === 'COMPLETE_JOB' || action === 'COMPLETE') {
+      const updated = await bookingService.completeBooking(bookingId);
+      await logAudit({
+        action: 'BOOKING_COMPLETED',
+        entityType: 'BOOKING',
+        entityId: bookingId,
+        after: { status: 'COMPLETED' },
       });
       return NextResponse.json({ success: true, booking: updated });
     }
@@ -79,13 +138,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, booking: updated });
     }
 
-    if (action === 'COMPLETE') {
-      const updated = await bookingService.completeBooking(bookingId);
+    if (action === 'NO_SHOW') {
+      const updated = await bookingService.markNoShow(bookingId);
       await logAudit({
-        action: 'BOOKING_COMPLETED',
+        action: 'BOOKING_NO_SHOW',
         entityType: 'BOOKING',
         entityId: bookingId,
-        after: { status: 'COMPLETED' },
+        after: { status: 'NO_SHOW' },
+      });
+      return NextResponse.json({ success: true, booking: updated });
+    }
+
+    if (action === 'REASSIGN_BAY') {
+      if (!newResourceId) {
+        return NextResponse.json({ error: 'Missing newResourceId' }, { status: 400 });
+      }
+      const updated = await bookingService.reassignBay(bookingId, newResourceId);
+      await logAudit({
+        action: 'BOOKING_BAY_REASSIGNED',
+        entityType: 'BOOKING',
+        entityId: bookingId,
+        after: { resourceId: newResourceId },
       });
       return NextResponse.json({ success: true, booking: updated });
     }

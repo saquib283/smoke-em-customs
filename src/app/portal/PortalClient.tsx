@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Icon } from '@/components/common/Icons';
 import styles from './portal.module.css';
 
 interface CustomerData {
@@ -249,6 +251,16 @@ export function PortalClient() {
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.authCard}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+              <Image
+                src="/logo.png"
+                alt="Smoke 'Em Customs"
+                width={72}
+                height={72}
+                priority
+                style={{ borderRadius: '50%', boxShadow: '0 0 20px rgba(0,0,0,0.6)' }}
+              />
+            </div>
             <span className={styles.authBadge}>CLIENT CONCIERGE</span>
             <h1 className={styles.authTitle}>Client Service Portal</h1>
             <p className={styles.authSubtitle}>
@@ -379,16 +391,25 @@ export function PortalClient() {
             marginBottom: '24px',
           }}
         >
-          <div>
-            <span style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--color-accent-text)', letterSpacing: '1px' }}>
-              AUTHENTICATED CLIENT
-            </span>
-            <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', margin: '4px 0' }}>
-              Welcome, {customer?.name}
-            </h1>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: 0 }}>
-              Mobile: {customer?.phone} {customer?.email && `• ${customer.email}`}
-            </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <Image
+              src="/logo.png"
+              alt="Smoke 'Em Customs"
+              width={48}
+              height={48}
+              style={{ borderRadius: '50%', flexShrink: 0 }}
+            />
+            <div>
+              <span style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--color-accent-text)', letterSpacing: '1px' }}>
+                AUTHENTICATED CLIENT
+              </span>
+              <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 'bold', margin: '4px 0' }}>
+                Welcome, {customer?.name}
+              </h1>
+              <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: 0 }}>
+                Smoke &apos;Em Customs Concierge • Mobile: {customer?.phone} {customer?.email && `• ${customer.email}`}
+              </p>
+            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -425,9 +446,12 @@ export function PortalClient() {
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            📅 Bay Appointments ({bookings.length})
+            <Icon.Calendar size={14} /> Bay Appointments ({bookings.length})
           </button>
 
           <button
@@ -441,9 +465,12 @@ export function PortalClient() {
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            🚗 Registered Vehicles ({customer?.vehicles.length || 0})
+            <Icon.Car size={14} /> Registered Vehicles ({customer?.vehicles.length || 0})
           </button>
 
           <button
@@ -457,9 +484,12 @@ export function PortalClient() {
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            🛡️ Warranty Certificates
+            <Icon.Shield size={14} /> Warranty Certificates
           </button>
 
           <button
@@ -473,9 +503,12 @@ export function PortalClient() {
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
             }}
           >
-            📋 Estimates ({quotes.length})
+            <Icon.Clipboard size={14} /> Estimates ({quotes.length})
           </button>
         </div>
 
@@ -553,16 +586,16 @@ export function PortalClient() {
                           >
                             {b.status}
                           </span>
-                          <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
-                            🏛️ {b.resourceName}
+                          <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                            <Icon.Bay size={12} color="var(--color-gold)" /> {b.resourceName}
                           </span>
                         </div>
 
                         <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold', margin: '4px 0' }}>
                           {b.serviceName || b.packageName || 'Detailing Service'}
                         </h3>
-                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: '4px 0' }}>
-                          🚗 {b.vehicleText || 'Client Vehicle'} &bull; ⏰ {startDate} ({startTime} – {endTime})
+                        <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', margin: '4px 0', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                          <Icon.Car size={12} /> {b.vehicleText || 'Client Vehicle'} &bull; <Icon.Clock size={12} /> {startDate} ({startTime} – {endTime})
                         </p>
                       </div>
 
@@ -613,7 +646,7 @@ export function PortalClient() {
                     padding: '20px',
                   }}
                 >
-                  <span style={{ fontSize: '28px', display: 'block', marginBottom: '8px' }}>🚗</span>
+                  <span style={{ display: 'inline-flex', marginBottom: '8px', color: 'var(--color-gold)' }}><Icon.Car size={28} /></span>
                   <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 'bold', margin: '4px 0' }}>
                     {v.make} {v.model}
                   </h3>
@@ -653,7 +686,9 @@ export function PortalClient() {
                 <span style={{ fontSize: '10px', fontWeight: 'bold', color: 'var(--color-accent-text)', letterSpacing: '1px' }}>
                   SMOKE M DIGITAL WARRANTY
                 </span>
-                <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'bold' }}>✓ ACTIVE</span>
+                <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Check size={12} color="#10B981" /> ACTIVE
+                </span>
               </div>
               <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold', margin: '4px 0' }}>
                 Paint Protection Film (PPF) Guarantee
@@ -679,7 +714,9 @@ export function PortalClient() {
                 <span style={{ fontSize: '10px', fontWeight: 'bold', color: 'var(--color-accent-text)', letterSpacing: '1px' }}>
                   SMOKE M DIGITAL WARRANTY
                 </span>
-                <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'bold' }}>✓ ACTIVE</span>
+                <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <Icon.Check size={12} color="#10B981" /> ACTIVE
+                </span>
               </div>
               <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 'bold', margin: '4px 0' }}>
                 9H Ceramic Coating Protection

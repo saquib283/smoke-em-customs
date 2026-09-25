@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Icon } from '@/components/common/Icons';
 import styles from './reviews.module.css';
 
 interface ReviewItem {
@@ -79,7 +80,11 @@ export function ReviewsClient({ initialReviews }: ReviewsClientProps) {
       <div className={styles.scorecard}>
         <div className={styles.scoreLeft}>
           <span className={styles.scoreNumber}>4.9</span>
-          <div className={styles.stars}>★★★★★</div>
+          <div className={styles.stars} style={{ display: 'flex', gap: 2 }}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Icon.Star key={i} size={16} color="var(--color-gold)" fill="var(--color-gold)" />
+            ))}
+          </div>
           <span className={styles.scoreLabel}>Overall Customer Rating</span>
         </div>
         <div className={styles.scoreDivider} />
@@ -103,7 +108,11 @@ export function ReviewsClient({ initialReviews }: ReviewsClientProps) {
             className="btn btn-secondary btn-md"
             onClick={() => setShowForm(!showForm)}
           >
-            {showForm ? 'Cancel' : '✍️ Write a Review'}
+            {showForm ? 'Cancel' : (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <Icon.Edit size={16} /> Write a Review
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -129,8 +138,13 @@ export function ReviewsClient({ initialReviews }: ReviewsClientProps) {
                   type="button"
                   className={`${styles.starBtn} ${rating >= s ? styles.starFilled : ''}`}
                   onClick={() => setRating(s)}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  ★
+                  <Icon.Star
+                    size={20}
+                    color={rating >= s ? 'var(--color-gold)' : 'var(--color-border)'}
+                    fill={rating >= s ? 'var(--color-gold)' : 'transparent'}
+                  />
                 </button>
               ))}
             </div>
@@ -188,8 +202,15 @@ export function ReviewsClient({ initialReviews }: ReviewsClientProps) {
       <div className={styles.reviewsGrid}>
         {reviews.map((r) => (
           <div key={r.id} className={styles.card}>
-            <div className={styles.cardStars}>
-              {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+            <div className={styles.cardStars} style={{ display: 'flex', gap: 2 }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Icon.Star
+                  key={i}
+                  size={14}
+                  color={i < r.rating ? 'var(--color-gold)' : 'var(--color-border)'}
+                  fill={i < r.rating ? 'var(--color-gold)' : 'transparent'}
+                />
+              ))}
             </div>
             <p className={styles.cardBody}>&ldquo;{r.body}&rdquo;</p>
             <div className={styles.cardFooter}>

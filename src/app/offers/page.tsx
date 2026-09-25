@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { contentService } from '@/modules/content';
+import { Icon } from '@/components/common/Icons';
 import styles from './offers.module.css';
 
 export const metadata: Metadata = {
@@ -50,9 +51,19 @@ export default async function OffersPage() {
                   <p className={styles.offerDesc}>{offer.description}</p>
 
                   <div className={styles.validityRow}>
-                    <span>⏳ Valid Until: <strong>{endDate}</strong></span>
-                    {offer.serviceName && <span>📌 Applies to: {offer.serviceName}</span>}
-                    {offer.packageName && <span>📦 Applies to: {offer.packageName}</span>}
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <Icon.Clock size={14} color="var(--color-gold)" /> Valid Until: <strong>{endDate}</strong>
+                    </span>
+                    {offer.serviceName && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Icon.Tag size={14} color="var(--color-gold)" /> Applies to: {offer.serviceName}
+                      </span>
+                    )}
+                    {offer.packageName && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                        <Icon.Package size={14} color="var(--color-gold)" /> Applies to: {offer.packageName}
+                      </span>
+                    )}
                   </div>
 
                   <div className={styles.actions}>
@@ -64,8 +75,9 @@ export default async function OffersPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.waBtn}
+                      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                     >
-                      💬 Claim on WhatsApp
+                      <Icon.WhatsApp size={16} /> Claim on WhatsApp
                     </a>
                   </div>
                 </div>

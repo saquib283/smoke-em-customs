@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { catalogueService } from '@/modules/catalogue';
 import { JsonLd } from '@/components/public/JsonLd';
+import { Icon } from '@/components/common/Icons';
 import styles from './serviceDetail.module.css';
 
 interface ServicePageProps {
@@ -90,21 +91,21 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               
               <div className={styles.specsRow}>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}>⏱️</span>
+                  <span className={styles.specIcon}><Icon.Clock size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.specTitle}>Duration</h4>
                     <span className={styles.specDesc}>~{Math.round(service.durationMinutes / 60)} Hours</span>
                   </div>
                 </div>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}>🛡️</span>
+                  <span className={styles.specIcon}><Icon.Shield size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.specTitle}>Warranty</h4>
                     <span className={styles.specDesc}>{service.warrantyText ?? 'Craftsmanship Guarantee'}</span>
                   </div>
                 </div>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}>🏛️</span>
+                  <span className={styles.specIcon}><Icon.Bay size={18} color="var(--color-gold)" /></span>
                   <div>
                     <h4 className={styles.specTitle}>Bay Environment</h4>
                     <span className={styles.specDesc}>Dust-Free Climate Controlled</span>
@@ -119,7 +120,9 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               <div className={styles.benefitsGrid}>
                 {service.benefits.map((benefit, idx) => (
                   <div key={idx} className={styles.benefitItem}>
-                    <span className={styles.benefitCheck}>✓</span>
+                    <span className={styles.benefitCheck} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                      <Icon.Check size={12} color="var(--color-gold)" />
+                    </span>
                     <span>{benefit}</span>
                   </div>
                 ))}
@@ -187,20 +190,21 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.waSidebarBtn}
+                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                 >
-                  💬 Inquire on WhatsApp
+                  <Icon.WhatsApp size={16} /> Inquire on WhatsApp
                 </a>
               </div>
 
               <div className={styles.guarantees}>
-                <div className={styles.guarantee}>
-                  <span>🔒</span> No Advance Payment Required to Reserve
+                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon.Lock size={14} color="var(--color-gold)" /> No Advance Payment Required to Reserve
                 </div>
-                <div className={styles.guarantee}>
-                  <span>📞</span> Confirmation Call Within 2 Hours
+                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon.Phone size={14} color="var(--color-gold)" /> Confirmation Call Within 2 Hours
                 </div>
-                <div className={styles.guarantee}>
-                  <span>🔄</span> Free Rescheduling Allowed
+                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Icon.Refresh size={14} color="var(--color-gold)" /> Free Rescheduling Allowed
                 </div>
               </div>
             </div>

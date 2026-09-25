@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { DatePicker } from './DatePicker';
 import { SlotPicker, type TimeSlot } from './SlotPicker';
+import { Icon } from '@/components/common/Icons';
 import styles from '@/app/book/booking.module.css';
 
 interface TreatmentInfo {
@@ -22,12 +23,14 @@ interface BookServiceWizardProps {
   treatment: TreatmentInfo;
   blockedDates?: string[];
   leadId?: string;
+  quoteId?: string;
 }
 
 export function BookServiceWizard({
   treatment,
   blockedDates = [],
   leadId,
+  quoteId,
 }: BookServiceWizardProps) {
   const router = useRouter();
 
@@ -119,6 +122,7 @@ export function BookServiceWizard({
         resourceId: selectedSlot.resourceId,
         startAt: selectedSlot.startAt,
         leadId: leadId || undefined,
+        quoteId: quoteId || undefined,
       };
 
       const res = await fetch('/api/bookings', {
@@ -132,7 +136,7 @@ export function BookServiceWizard({
       // Handle 409 Conflict / SLOT_NO_LONGER_AVAILABLE
       if (res.status === 409 || data.error === 'SLOT_NO_LONGER_AVAILABLE') {
         setConflictAlert(
-          '⚠️ The bay time slot you selected was just booked by another client. We have reloaded the live calendar. Please select an alternative slot below.'
+          'The bay time slot you selected was just booked by another client. We have reloaded the live calendar. Please select an alternative slot below.'
         );
         setSelectedSlot(null);
         setStep(1); // Jump back to step 1
@@ -206,9 +210,13 @@ export function BookServiceWizard({
             marginBottom: 'var(--space-6)',
             fontSize: 'var(--text-sm)',
             fontWeight: 600,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
           }}
         >
-          {conflictAlert}
+          <Icon.AlertTriangle size={18} color="#EF4444" />
+          <span>{conflictAlert}</span>
         </div>
       )}
 
@@ -473,8 +481,8 @@ export function BookServiceWizard({
               color: 'var(--color-text-secondary)',
             }}
           >
-            <div style={{ color: 'var(--color-gold)', fontWeight: 700, marginBottom: '4px' }}>
-              ✓ No Upfront Payment Required
+            <div style={{ color: 'var(--color-gold)', fontWeight: 700, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Icon.Check size={14} color="var(--color-gold)" /> No Upfront Payment Required
             </div>
             Your slot in our positive-pressure bay is held immediately. Our studio manager will call you prior to drop-off to inspect paint depth readings and confirm timelines.
           </div>

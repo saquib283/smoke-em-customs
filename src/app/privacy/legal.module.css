@@ -1,16 +1,19 @@
 .main {
   padding-bottom: var(--space-16);
+  background-color: var(--color-bg-primary);
 }
 
 .header {
-  background: radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.12) 0%, rgba(10, 10, 10, 0.95) 75%);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(180, 83, 9, 0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-12) 0 var(--space-8);
+  padding: var(--space-14) 0 var(--space-8);
   text-align: center;
 }
 
 .container {
-  max-width: 860px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 0 var(--space-4);
 }
@@ -26,10 +29,11 @@
 }
 
 .title {
-  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-size: clamp(2.2rem, 3.5vw, 3rem);
   font-weight: var(--font-extrabold);
   color: var(--color-text-primary);
   margin-bottom: var(--space-2);
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
@@ -39,10 +43,11 @@
 
 .content {
   margin-top: var(--space-8);
-  background-color: var(--color-bg-secondary);
+  background-color: #FFFFFF;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
 }
 
 .section {

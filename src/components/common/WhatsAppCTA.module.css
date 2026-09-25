@@ -1,0 +1,150 @@
+.ctaWrapper {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  user-select: none;
+  gap: 0.5rem;
+}
+
+/* Sizes */
+.sizeSm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.sizeSm svg {
+  width: 14px;
+  height: 14px;
+}
+
+.sizeMd {
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.sizeMd svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sizeLg {
+  padding: 0.75rem 1.4rem;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+.sizeLg svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Icon only override */
+.iconOnly.sizeSm {
+  padding: 0.35rem;
+  border-radius: 50%;
+}
+
+.iconOnly.sizeMd {
+  padding: 0.55rem;
+  border-radius: 50%;
+}
+
+.iconOnly.sizeLg {
+  padding: 0.75rem;
+  border-radius: 50%;
+}
+
+/* Variants */
+.variantButton {
+  background: #25d366;
+  color: #0b0f17;
+  border: 1px solid rgba(37, 211, 102, 0.4);
+  box-shadow: 0 2px 10px rgba(37, 211, 102, 0.2);
+}
+
+.variantButton:hover {
+  background: #20bd5a;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  transform: translateY(-1px);
+}
+
+.variantGold {
+  background: var(--color-gold, #c5a880);
+  color: #000;
+  border: 1px solid rgba(197, 168, 128, 0.4);
+  box-shadow: 0 2px 12px rgba(197, 168, 128, 0.2);
+}
+
+.variantGold:hover {
+  background: var(--color-gold-hover, #d4b896);
+  box-shadow: 0 4px 20px rgba(197, 168, 128, 0.35);
+  transform: translateY(-1px);
+}
+
+.variantOutline {
+  background: rgba(37, 211, 102, 0.08);
+  color: #25d366;
+  border: 1px solid rgba(37, 211, 102, 0.35);
+}
+
+.variantOutline:hover {
+  background: rgba(37, 211, 102, 0.16);
+  border-color: #25d366;
+  color: #34e778;
+  transform: translateY(-1px);
+}
+
+.variantIcon {
+  background: rgba(255, 255, 255, 0.05);
+  color: #25d366;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.variantIcon:hover {
+  background: rgba(37, 211, 102, 0.15);
+  border-color: rgba(37, 211, 102, 0.4);
+  color: #34e778;
+  transform: scale(1.05);
+}
+
+/* Floating variant */
+.variantFloating {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 999;
+  background: #25d366;
+  color: #0b0f17;
+  padding: 0.85rem 1.25rem;
+  border-radius: 9999px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 211, 102, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.variantFloating:hover {
+  background: #20bd5a;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 28px rgba(37, 211, 102, 0.6);
+}
+
+.iconSvg {
+  flex-shrink: 0;
+  display: block;
+}
+
+.label {
+  white-space: nowrap;
+}

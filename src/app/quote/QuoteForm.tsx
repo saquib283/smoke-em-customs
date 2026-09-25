@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { POPULAR_VEHICLE_BRANDS, getModelsForBrand, detectVehicleType } from '@/lib/vehicles';
+import { Icon } from '@/components/common/Icons';
 import styles from './quote.module.css';
 
 interface ServiceOption {
@@ -242,19 +243,21 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
     const selectedService = services.find((s) => s.id === formData.serviceInterestId);
     const cleanPhone = formData.customerPhone.replace(/\D/g, '');
     const waText = encodeURIComponent(
-      `Hello Smoke M Customs! 🏁\nI just requested an instant detailing quote.\n\n` +
-      `📋 Reference: ${submittedResult.referenceCode}\n` +
-      `👤 Name: ${formData.customerName}\n` +
-      `🚗 Vehicle: ${formData.vehicleBrand} ${formData.vehicleModel} (${formData.vehicleType})\n` +
-      `✨ Treatment: ${selectedService?.name ?? 'Detailing'}\n` +
-      `🔍 Paint Condition: ${formData.vehicleCondition}\n` +
-      (submittedResult.estimate ? `💰 Estimate: ₹${submittedResult.estimate.min.toLocaleString('en-IN')} – ₹${submittedResult.estimate.max.toLocaleString('en-IN')}\n` : '') +
+      `Hello Smoke M Customs,\nI just requested an instant detailing quote.\n\n` +
+      `Reference: ${submittedResult.referenceCode}\n` +
+      `Name: ${formData.customerName}\n` +
+      `Vehicle: ${formData.vehicleBrand} ${formData.vehicleModel} (${formData.vehicleType})\n` +
+      `Treatment: ${selectedService?.name ?? 'Detailing'}\n` +
+      `Paint Condition: ${formData.vehicleCondition}\n` +
+      (submittedResult.estimate ? `Estimate: ₹${submittedResult.estimate.min.toLocaleString('en-IN')} – ₹${submittedResult.estimate.max.toLocaleString('en-IN')}\n` : '') +
       `\nPlease review my requirements and confirm next inspection availability.`
     );
 
     return (
       <div className={styles.successCard}>
-        <div className={styles.successIcon}>✓</div>
+        <div className={styles.successIcon} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon.Check size={28} color="var(--color-gold)" />
+        </div>
         <span className={styles.successTag}>ENQUIRY DISPATCHED</span>
         <h2 className={styles.successTitle}>We Have Received Your Vehicle Details</h2>
         <p className={styles.successSubtitle}>
@@ -264,7 +267,9 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
 
         {submittedResult.isDuplicate && (
           <div className={styles.duplicateBanner}>
-            <span className={styles.duplicateBannerIcon}>ℹ️</span>
+            <span className={styles.duplicateBannerIcon}>
+              <Icon.Info size={18} color="var(--color-gold)" />
+            </span>
             <div>
               <div className={styles.duplicateBannerTitle}>Active Inquiry Recognized</div>
               <p className={styles.duplicateBannerText}>
@@ -322,8 +327,9 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-primary btn-lg"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
           >
-            💬 Open in WhatsApp with Quote Ref
+            <Icon.WhatsApp size={18} /> Open in WhatsApp with Quote Ref
           </a>
           <Link href="/book" className="btn btn-secondary btn-lg">
             Directly Reserve a Bay Slot
@@ -421,9 +427,21 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
                     className={`${styles.pillBtn} ${formData.preferredContactMethod === method ? styles.pillActive : ''}`}
                     onClick={() => updateField('preferredContactMethod', method)}
                   >
-                    {method === 'WHATSAPP' && '💬 WhatsApp'}
-                    {method === 'CALL' && '📞 Phone Call'}
-                    {method === 'EMAIL' && '✉️ Email'}
+                    {method === 'WHATSAPP' && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <Icon.WhatsApp size={14} /> WhatsApp
+                      </span>
+                    )}
+                    {method === 'CALL' && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <Icon.Phone size={14} /> Phone Call
+                      </span>
+                    )}
+                    {method === 'EMAIL' && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <Icon.Mail size={14} /> Email
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -619,7 +637,9 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
                 className={styles.uploadDropzone}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <div className={styles.uploadIcon}>📷</div>
+                <div className={styles.uploadIcon} style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Icon.Camera size={32} color="var(--color-gold)" />
+                </div>
                 <div className={styles.uploadPrompt}>
                   {uploadingPhotos ? 'Uploading & analyzing images...' : 'Click to select or drop paint defect photos'}
                 </div>
@@ -651,8 +671,9 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
                           removePhoto(idx);
                         }}
                         title="Remove photo"
+                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                       >
-                        ✕
+                        <Icon.Cross size={14} />
                       </button>
                     </div>
                   ))}
@@ -729,7 +750,7 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
               <div className={styles.reviewRow}>
                 <span className={styles.reviewLabel}>Photos Attached:</span>
                 <span className={styles.reviewVal}>
-                  {formData.photos.length > 0 ? `📷 ${formData.photos.length} photos ready for assessment` : 'None'}
+                  {formData.photos.length > 0 ? `${formData.photos.length} photos ready for assessment` : 'None'}
                 </span>
               </div>
             </div>

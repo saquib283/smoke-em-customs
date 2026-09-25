@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { contentService } from '@/modules/content';
 import { ImageCompare } from '@/components/public/ImageCompare';
+import { Icon } from '@/components/common/Icons';
 import styles from './galleryDetail.module.css';
 
 interface GalleryDetailProps {
@@ -46,7 +47,9 @@ export default async function GalleryDetailPage({ params }: GalleryDetailProps) 
           <span className={styles.tag}>{item.serviceCategory ?? 'Transformation Project'}</span>
           <h1 className={styles.title}>{item.title}</h1>
           <div className={styles.carInfo}>
-            <span>🚗 {item.vehicleBrand} {item.vehicleModel}</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Icon.Car size={16} color="var(--color-gold)" /> {item.vehicleBrand} {item.vehicleModel}
+            </span>
           </div>
         </div>
       </div>

@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { signOut } from 'next-auth/react';
+import { Icon } from '@/components/common/Icons';
 import styles from './AdminShell.module.css';
 
 interface AdminShellProps {
@@ -26,20 +28,68 @@ interface NotificationItem {
   createdAt: string;
 }
 
-const NAV_ITEMS = [
-  { href: '/admin', label: 'Dashboard', icon: '📊', section: 'Overview' },
-  { href: '/admin/leads', label: 'Leads', icon: '📥', section: 'CRM' },
-  { href: '/admin/customers', label: 'Customers', icon: '👥', section: 'CRM' },
-  { href: '/admin/vehicles', label: 'Vehicles', icon: '🚗', section: 'CRM' },
-  { href: '/admin/bookings', label: 'Bookings', icon: '📅', section: 'Operations' },
-  { href: '/admin/calendar', label: 'Calendar', icon: '🗓️', section: 'Operations' },
-  { href: '/admin/quotes', label: 'Quotes', icon: '📋', section: 'Operations' },
-  { href: '/admin/services', label: 'Services', icon: '🔧', section: 'Catalogue' },
-  { href: '/admin/packages', label: 'Packages', icon: '📦', section: 'Catalogue' },
-  { href: '/admin/gallery', label: 'Gallery', icon: '🖼️', section: 'Marketing' },
-  { href: '/admin/reviews', label: 'Reviews', icon: '⭐', section: 'Marketing' },
-  { href: '/admin/settings', label: 'Settings', icon: '⚙️', section: 'Studio Control' },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+interface NavSection {
+  title: string;
+  items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
+  {
+    title: 'Overview',
+    items: [
+      { href: '/admin', label: 'Dashboard', icon: <Icon.Dashboard size={17} /> },
+      { href: '/admin/notifications', label: 'Notifications', icon: <Icon.Bell size={17} /> },
+    ],
+  },
+  {
+    title: 'Customer & CRM',
+    items: [
+      { href: '/admin/leads', label: 'Leads', icon: <Icon.Inbox size={17} /> },
+      { href: '/admin/customers', label: 'Customers', icon: <Icon.Users size={17} /> },
+      { href: '/admin/vehicles', label: 'Vehicles', icon: <Icon.Car size={17} /> },
+    ],
+  },
+  {
+    title: 'Studio Operations',
+    items: [
+      { href: '/admin/bookings', label: 'Bookings', icon: <Icon.Calendar size={17} /> },
+      { href: '/admin/calendar', label: 'Bay Calendar', icon: <Icon.Clock size={17} /> },
+      { href: '/admin/quotes', label: 'Quotes', icon: <Icon.FileText size={17} /> },
+    ],
+  },
+  {
+    title: 'Catalogue & Services',
+    items: [
+      { href: '/admin/services', label: 'Services', icon: <Icon.Wrench size={17} /> },
+      { href: '/admin/packages', label: 'Packages', icon: <Icon.Package size={17} /> },
+    ],
+  },
+  {
+    title: 'Marketing & Media',
+    items: [
+      { href: '/admin/gallery', label: 'Gallery', icon: <Icon.Image size={17} /> },
+      { href: '/admin/reviews', label: 'Reviews', icon: <Icon.Star size={17} /> },
+      { href: '/admin/offers', label: 'Offers', icon: <Icon.Tag size={17} /> },
+      { href: '/admin/campaigns', label: 'Email Campaigns', icon: <Icon.Mail size={17} /> },
+    ],
+  },
+  {
+    title: 'System',
+    items: [
+      { href: '/admin/settings', label: 'Studio Settings', icon: <Icon.Settings size={17} /> },
+    ],
+  },
 ];
+
+const ALL_NAV_ITEMS = NAV_SECTIONS.flatMap((sec) =>
+  sec.items.map((item) => ({ ...item, section: sec.title }))
+);
 
 function getBreadcrumbs(pathname: string) {
   if (pathname === '/admin') {
@@ -49,7 +99,7 @@ function getBreadcrumbs(pathname: string) {
     ];
   }
 
-  const match = NAV_ITEMS.find((item) => item.href !== '/admin' && pathname.startsWith(item.href));
+  const match = ALL_NAV_ITEMS.find((item) => item.href !== '/admin' && pathname.startsWith(item.href));
   if (match) {
     return [
       { label: 'Studio Control', href: '/admin' },
@@ -177,8 +227,19 @@ export function AdminShell({ user, children }: AdminShellProps) {
       <aside className={`${styles.sidebar} ${mobileOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
           <Link href="/admin" className={styles.logo} onClick={() => setMobileOpen(false)}>
-            <span className="gradient-text">SMOKE M</span>
-            <span className={styles.studioBadge}>ADMIN</span>
+            <div className={styles.sidebarLogoBadge}>
+              <Image
+                src="/logo.png"
+                alt="Smoke 'Em Customs Logo"
+                width={34}
+                height={34}
+                className={styles.sidebarLogoImg}
+              />
+            </div>
+            <div className={styles.sidebarLogoText}>
+              <span className={styles.sidebarLogoSmoke}>SMOKE &apos;EM</span>
+              <span className={styles.sidebarLogoSub}>ATELIER ADMIN</span>
+            </div>
           </Link>
           <button
             type="button"
@@ -186,21 +247,31 @@ export function AdminShell({ user, children }: AdminShellProps) {
             onClick={() => setMobileOpen(false)}
             aria-label="Close navigation menu"
           >
-            ✕
+            <Icon.Cross size={18} />
           </button>
         </div>
 
         <nav className={styles.nav}>
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
-            >
-              <span className={styles.navIcon}>{item.icon}</span>
-              <span className={styles.navLabel}>{item.label}</span>
-            </Link>
+          {NAV_SECTIONS.map((section) => (
+            <div key={section.title} className={styles.navSection}>
+              <div className={styles.sectionHeader}>
+                <span className={styles.sectionTitle}>{section.title}</span>
+              </div>
+              <div className={styles.sectionItems}>
+                {section.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={`${styles.navItem} ${isActive(item.href) ? styles.navItemActive : ''}`}
+                  >
+                    <span className={styles.navIcon}>{item.icon}</span>
+                    <span className={styles.navLabel}>{item.label}</span>
+                    {isActive(item.href) && <span className={styles.activePill} />}
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </nav>
 
@@ -218,8 +289,9 @@ export function AdminShell({ user, children }: AdminShellProps) {
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
             className={styles.signOutBtn}
             title="Sign out"
+            aria-label="Sign out"
           >
-            ↪
+            <Icon.LogOut size={16} />
           </button>
         </div>
       </aside>
@@ -235,7 +307,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
               onClick={() => setMobileOpen(true)}
               aria-label="Open navigation menu"
             >
-              ☰
+              <Icon.Menu size={20} />
             </button>
 
             {/* Breadcrumbs */}
@@ -275,7 +347,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
                 title="Notifications Feed"
                 aria-label="Toggle notifications"
               >
-                🔔
+                <Icon.Bell size={18} />
                 {unreadCount > 0 && (
                   <span className={styles.notificationBadge}>
                     {unreadCount > 9 ? '9+' : unreadCount}
@@ -305,10 +377,10 @@ export function AdminShell({ user, children }: AdminShellProps) {
                       </div>
                     ) : (
                       notifications.map((n) => {
-                        let icon = '🔔';
-                        if (n.type === 'NEW_LEAD') icon = '📥';
-                        if (n.type === 'NEW_BOOKING_PENDING') icon = '📅';
-                        if (n.type === 'LEAD_NEEDS_FOLLOWUP') icon = '⚠️';
+                        let icon = <Icon.Bell size={16} />;
+                        if (n.type === 'NEW_LEAD') icon = <Icon.Inbox size={16} />;
+                        if (n.type === 'NEW_BOOKING_PENDING') icon = <Icon.Calendar size={16} />;
+                        if (n.type === 'LEAD_NEEDS_FOLLOWUP') icon = <Icon.AlertTriangle size={16} />;
 
                         return (
                           <div
@@ -335,6 +407,15 @@ export function AdminShell({ user, children }: AdminShellProps) {
                         );
                       })
                     )}
+                  </div>
+                  <div style={{ padding: '0.6rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
+                    <Link
+                      href="/admin/notifications"
+                      onClick={() => setNotifDropdownOpen(false)}
+                      style={{ fontSize: '0.8rem', color: 'var(--color-gold, #c5a880)', textDecoration: 'none', fontWeight: 600 }}
+                    >
+                      View Full Notification Feed →
+                    </Link>
                   </div>
                 </div>
               )}

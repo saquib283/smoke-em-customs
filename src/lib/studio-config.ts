@@ -11,7 +11,7 @@ export interface BookingRulesConfig {
   slotGranularityMinutes: number;
 }
 
-let activeConfig: BookingRulesConfig = {
+const activeConfig: BookingRulesConfig = {
   bufferMinutes: 15,
   minLeadTimeHours: 2,
   slotGranularityMinutes: 30,

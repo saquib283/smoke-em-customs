@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Icon } from '@/components/common/Icons';
 import styles from './ContactForm.module.css';
 
 export function ContactForm() {
@@ -64,7 +65,7 @@ export function ContactForm() {
 
     return (
       <div className={styles.successCard}>
-        <span className={styles.successIcon}>✨</span>
+        <span className={styles.successIcon}><Icon.Sparkles size={24} color="var(--color-gold)" /></span>
         <h3 className={styles.successTitle}>Inquiry Registered Successfully</h3>
         <p className={styles.successText}>
           Thank you, <strong>{submittedLead.name}</strong>. Our detailing concierge has received your vehicle details.
@@ -78,7 +79,9 @@ export function ContactForm() {
             rel="noopener noreferrer"
             className={styles.waBtn}
           >
-            <span>💬 Instant WhatsApp Follow-up</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Icon.WhatsApp size={16} /> Instant WhatsApp Follow-up
+            </span>
           </a>
 
           <button
