@@ -9,7 +9,7 @@ import styles from './MobileStickyBar.module.css';
 export function MobileStickyBar() {
   const pathname = usePathname();
 
-  // Hide on homepage (hero CTA has priority) and admin pages
+  // Hide on homepage (hero CTA has priority) and admin pages per DESIGN.md §7
   if (!pathname || pathname === '/' || pathname.startsWith('/admin')) {
     return null;
   }
@@ -26,12 +26,12 @@ export function MobileStickyBar() {
         ariaLabel="Contact via WhatsApp"
       />
 
-      <Link href="/quote" className={`btn btn-secondary ${styles.btnQuote}`}>
-        Instant Quote
+      <Link href="/quote" className={`btn btn-primary ${styles.btnQuote}`}>
+        Get a Quote
       </Link>
 
-      <Link href="/book" className={`btn btn-primary ${styles.btnBook}`}>
-        Book Bay
+      <Link href="/book" className={`btn btn-secondary ${styles.btnBook}`}>
+        Book Now
       </Link>
     </aside>
   );

@@ -5,7 +5,7 @@ import { Icon } from '@/components/common/Icons';
 import styles from './offers.module.css';
 
 export const metadata: Metadata = {
-  title: 'Current Offers & Promotions — Smoke M Customs',
+  title: 'Studio Privileges & Offers | Smoke M Customs',
   description:
     'Exclusive detailing promotions and seasonal paint protection specials at Smoke M Customs.',
 };
@@ -17,23 +17,34 @@ export default async function OffersPage() {
 
   return (
     <main className={styles.main}>
-      <div className={styles.header}>
+      <header className={styles.header}>
         <div className={styles.container}>
-          <span className={styles.tag}>LIMITED TIME PRIVILEGES</span>
-          <h1 className={styles.title}>Exclusive Studio Offers</h1>
+          <span className={styles.tag}>STUDIO PRIVILEGES</span>
+          <h1 className={styles.title}>Seasonal Allocations</h1>
           <p className={styles.subtitle}>
-            Take advantage of seasonal preservation promotions and bundled treatment upgrades.
+            Reserved vehicle preservation allocations and curated treatment upgrades currently available at the studio.
           </p>
         </div>
-      </div>
+      </header>
 
       <div className={styles.container}>
         {offers.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>No active promotional specials at this time. Standard studio pricing applies.</p>
-            <Link href="/services" className="btn btn-primary btn-md">
-              View Services Catalogue
-            </Link>
+            <div className={styles.emptyIcon}>
+              <Icon.Tag size={28} />
+            </div>
+            <h2 className={styles.emptyTitle}>No Active Seasonal Offers</h2>
+            <p className={styles.emptyText}>
+              All current studio slots are booked at standard bespoke rates. Inquire directly or explore our standard services catalogue.
+            </p>
+            <div className={styles.emptyActions}>
+              <Link href="/services" className="btn btn-primary btn-md">
+                View Services Catalogue
+              </Link>
+              <Link href="/quote" className="btn btn-secondary btn-md">
+                Request Bespoke Quote
+              </Link>
+            </div>
           </div>
         ) : (
           <div className={styles.grid}>
@@ -45,42 +56,46 @@ export default async function OffersPage() {
               });
 
               return (
-                <div key={offer.id} className={styles.offerCard}>
-                  <div className={styles.cardBadge}>LIMITED TIME DEAL</div>
+                <article key={offer.id} className={styles.offerCard}>
+                  <div className={styles.cardHeader}>
+                    <span className={styles.cardBadge}>EXCLUSIVE PRIVILEGE</span>
+                    <span className={styles.validityBadge}>
+                      <Icon.Clock size={12} /> Valid Thru {endDate}
+                    </span>
+                  </div>
+
                   <h2 className={styles.offerTitle}>{offer.title}</h2>
                   <p className={styles.offerDesc}>{offer.description}</p>
 
-                  <div className={styles.validityRow}>
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                      <Icon.Clock size={14} color="var(--color-gold)" /> Valid Until: <strong>{endDate}</strong>
-                    </span>
+                  <div className={styles.scopeDetails}>
                     {offer.serviceName && (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Icon.Tag size={14} color="var(--color-gold)" /> Applies to: {offer.serviceName}
-                      </span>
+                      <div className={styles.scopeItem}>
+                        <Icon.Shield size={14} className={styles.scopeIcon} />
+                        <span>Applies to Service: <strong>{offer.serviceName}</strong></span>
+                      </div>
                     )}
                     {offer.packageName && (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                        <Icon.Package size={14} color="var(--color-gold)" /> Applies to: {offer.packageName}
-                      </span>
+                      <div className={styles.scopeItem}>
+                        <Icon.Package size={14} className={styles.scopeIcon} />
+                        <span>Applies to Package: <strong>{offer.packageName}</strong></span>
+                      </div>
                     )}
                   </div>
 
                   <div className={styles.actions}>
                     <Link href="/quote" className="btn btn-primary btn-full">
-                      Claim via Instant Quote
+                      Claim via Bespoke Quote
                     </Link>
                     <a
-                      href={`https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20want%20to%20claim%20the%20${encodeURIComponent(offer.title)}`}
+                      href={`https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20am%20inquiring%20about%20the%20${encodeURIComponent(offer.title)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.waBtn}
-                      style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                     >
-                      <Icon.WhatsApp size={16} /> Claim on WhatsApp
+                      <Icon.WhatsApp size={16} /> Inquire on WhatsApp
                     </a>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>

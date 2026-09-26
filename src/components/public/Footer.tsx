@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Icon } from '@/components/common/Icons';
 import styles from './Footer.module.css';
@@ -15,23 +14,20 @@ export function Footer() {
     return null;
   }
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.grid}>
           {/* Brand Col */}
           <div className={styles.colBrand}>
-            <Link href="/" className={styles.logo}>
-              <Image
-                src="/logo.png"
-                alt="Smoke 'Em Customs Logo"
-                width={40}
-                height={40}
-                className={styles.logoImage}
-              />
-              <span className={styles.logoText}>
-                <span className={styles.logoSmoke}>SMOKE &apos;EM</span>{' '}
-                <span className={styles.logoCustoms}>CUSTOMS</span>
+            <Link href="/" className={styles.logo} aria-label="Smoke M Customs Home">
+              <div className={styles.logoMark} aria-hidden="true">
+                S
+              </div>
+              <span className={styles.wordmark}>
+                SMOKE <span className={styles.wordmarkAccent}>M</span> CUSTOMS
               </span>
             </Link>
             <p className={styles.brandDesc}>
@@ -76,12 +72,11 @@ export function Footer() {
             <ul className={styles.linkList}>
               <li><Link href="/services">Services Catalogue</Link></li>
               <li><Link href="/packages">Protection Packages</Link></li>
-              <li><Link href="/gallery">Before & After Gallery</Link></li>
-              <li><Link href="/reviews">Customer Reviews</Link></li>
-              <li><Link href="/offers">Current Offers</Link></li>
+              <li><Link href="/gallery">Transformation Gallery</Link></li>
+              <li><Link href="/reviews">Client Reviews</Link></li>
+              <li><Link href="/offers">Studio Offers</Link></li>
               <li><Link href="/about">About Studio</Link></li>
               <li><Link href="/contact">Location & Contact</Link></li>
-              <li><Link href="/portal">Client Portal (Bookings & Warranty)</Link></li>
             </ul>
           </div>
 
@@ -100,7 +95,7 @@ export function Footer() {
 
           {/* Contact Info */}
           <div className={styles.col}>
-            <h4 className={styles.heading}>Studio</h4>
+            <h4 className={styles.heading}>Workshop Atelier</h4>
             <ul className={styles.contactList}>
               <li>
                 <span className={styles.contactIcon}><Icon.MapPin size={16} /></span>
@@ -108,7 +103,10 @@ export function Footer() {
               </li>
               <li>
                 <span className={styles.contactIcon}><Icon.Clock size={16} /></span>
-                <span>Mon – Sat: 10:00 AM – 7:00 PM<br /><small className={styles.closed}>Sunday: Closed for deep bay cleaning</small></span>
+                <span>
+                  Mon – Sat: 10:00 AM – 7:00 PM
+                  <small className={styles.closed}>Sunday: Deep chemical bay sanitization</small>
+                </span>
               </li>
               <li>
                 <span className={styles.contactIcon}><Icon.Phone size={16} /></span>
@@ -120,9 +118,8 @@ export function Footer() {
                   href="https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.waHighlight}
                 >
-                  WhatsApp Support Active
+                  Direct WhatsApp Chat &rarr;
                 </a>
               </li>
             </ul>
@@ -130,22 +127,11 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className={styles.bottomBar}>
-          <p className={styles.copy}>
-            © {new Date().getFullYear()} Smoke M Customs. All rights reserved. Precision Automotive Craftsmanship.
-          </p>
+        <div className={styles.bottom}>
+          <span>&copy; {currentYear} SMOKE M CUSTOMS. All rights reserved. Precision vehicle craftsmanship.</span>
           <div className={styles.bottomLinks}>
             <Link href="/privacy">Privacy Policy</Link>
-            <span className={styles.dot}>•</span>
             <Link href="/terms">Terms of Service</Link>
-            <span className={styles.dot}>•</span>
-            <Link href="/quote">Get Quote</Link>
-            <span className={styles.dot}>•</span>
-            <Link href="/book">Book Bay</Link>
-            <span className={styles.dot}>•</span>
-            <Link href="/admin/login" className={styles.adminLink}>
-              Staff Portal
-            </Link>
           </div>
         </div>
       </div>

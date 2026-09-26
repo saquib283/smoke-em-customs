@@ -1,109 +1,109 @@
 /**
- * Smoke M Customs — Design Tokens
- * Source of truth: docs/DESIGN.md §2
+ * Smoke M Customs — Centralized Design Tokens
+ * Source of truth: docs/DESIGN.md §3, §4, §5
  *
- * Premium automotive aesthetic:
- * Dark backgrounds, warm gold accents, clean typography.
+ * Visual Language: Premium + dark + automotive + precise + restrained.
+ * Near-black backgrounds, elevated dark surfaces, subtle muted-gold accent.
  */
 
-/* ─────────────────────── CSS Custom Properties ─────────────────────── */
-
 :root {
-  /* ── Colour Palette: Clean Executive Modern Light ── */
+  /* ── Surfaces (DESIGN.md §3) ── */
+  --color-bg-base: #0B0C0E;        /* App background, near-black */
+  --color-bg-primary: #0B0C0E;     /* Primary surface alias */
+  --color-bg-secondary: #16181C;   /* Cards, panels */
+  --color-bg-elevated: #16181C;    /* Elevated cards, panels */
+  --color-bg-elevated-2: #1F2227;  /* Nested cards, modals, dropdowns */
+  --color-bg-surface: #191B20;     /* Wells, inputs, subtle containers */
+  --color-bg-muted: #242830;       /* Divider tracks, pills */
+  --color-bg-subtle: #121418;      /* Deep subtle container */
+  --color-bg-glass: rgba(16, 18, 22, 0.85); /* Blurred headers / sticky bars */
 
-  /* Neutrals (Porcelain Canvas → Crisp Elevated Cards) */
-  --color-bg-primary: #F8FAFC;
-  /* Soft Slate 50 / Porcelain Canvas */
-  --color-bg-secondary: #FFFFFF;
-  /* Pure crisp white for sections & cards */
-  --color-bg-elevated: #FFFFFF;
-  /* Elevated surfaces, dropdowns, modals */
-  --color-bg-surface: #F1F5F9;
-  /* Slate 100 for input backgrounds, pills, inner wells */
-  --color-bg-muted: #E2E8F0;
-  /* Slate 200 for subtle borders and tracks */
-  --color-bg-subtle: #F8FAFC;
+  /* ── Borders (DESIGN.md §3) ── */
+  --color-border: #2A2D33;
+  --color-border-hover: #3E434D;
+  --color-border-focus: #C9A24B;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
 
-  /* Text (Crisp Deep Slate / Charcoal) */
-  --color-text-primary: #0F172A;
-  /* Slate 900 — authoritative, ultra-sharp */
-  --color-text-secondary: #334155;
-  /* Slate 700 — clear, readable body */
-  --color-text-muted: #64748B;
-  /* Slate 500 — refined meta & labels */
-  --color-text-inverse: #FFFFFF;
-  /* Pure white on dark elements */
+  /* ── Typography & Text (DESIGN.md §3, §4) ── */
+  --color-text-primary: #F4F5F6;   /* Crisp off-white */
+  --color-text-secondary: #A6ABB3; /* Refined secondary text */
+  --color-text-muted: #6E7480;     /* Meta, captions, labels */
+  --color-text-inverse: #0B0C0E;   /* Inverted text on accent buttons */
 
-  /* Accent — Executive Warm Bronze Gold & Champagne */
-  --color-accent-primary: #B45309;
-  /* Amber 700 / Rich Warm Bronze Gold */
-  --color-accent-hover: #92400E;
-  /* Amber 800 */
-  --color-accent-active: #78350F;
-  /* Amber 900 */
-  --color-accent-subtle: rgba(180, 83, 9, 0.08);
-  /* Soft champagne tint */
-  --color-accent-text: #B45309;
-  /* Accessible contrast ratio >= 5:1 on white */
-  --color-gold: #B45309;
-  --color-gold-light: #D97706;
+  /* ── Brand Accent: Muted Brushed Gold (DESIGN.md §3) ── */
+  --color-accent: #C9A24B;         /* Muted brushed-gold */
+  --color-accent-primary: #C9A24B;
+  --color-accent-hover: #D9B562;
+  --color-accent-active: #B38C3B;
+  --color-accent-contrast: #14120A;/* Dark text on gold for high AA contrast */
+  --color-accent-subtle: rgba(201, 162, 75, 0.12);
+  --color-accent-text: #C9A24B;
+  --color-gold: #C9A24B;
+  --color-gold-light: #D9B562;
 
-  /* Status Badges & Alerts */
-  --color-success: #059669;
-  /* Emerald 600 */
-  --color-success-subtle: #ECFDF5;
-  --color-warning: #D97706;
-  /* Amber 600 */
-  --color-warning-subtle: #FFFBEB;
-  --color-error: #DC2626;
-  /* Red 600 */
-  --color-error-subtle: #FEF2F2;
-  --color-info: #2563EB;
-  /* Blue 600 */
-  --color-info-subtle: #EFF6FF;
+  /* ── Secondary Accent (DESIGN.md §3) ── */
+  --color-accent-cool: #4B8FC9;    /* Secondary/informational touchpoints */
 
-  /* Lead Status Colours (Clean Modern Badges) */
-  --color-lead-new: #2563EB;
-  --color-lead-contacted: #7C3AED;
-  --color-lead-quote-sent: #D97706;
-  --color-lead-follow-up: #EA580C;
-  --color-lead-booked: #059669;
-  --color-lead-completed: #0D9488;
-  --color-lead-lost: #DC2626;
+  /* ── Semantic Colors (DESIGN.md §3) ── */
+  --color-success: #3FAE6A;
+  --color-success-subtle: rgba(63, 174, 106, 0.14);
+  --color-warning: #D9A441;
+  --color-warning-subtle: rgba(217, 164, 65, 0.14);
+  --color-danger: #E15B5B;
+  --color-error: #E15B5B;
+  --color-error-subtle: rgba(225, 91, 91, 0.14);
+  --color-info: #4B8FC9;
+  --color-info-subtle: rgba(75, 143, 201, 0.14);
 
-  /* Borders */
-  --color-border: #E2E8F0;
-  /* Crisp slate-200 */
-  --color-border-hover: #CBD5E1;
-  /* Slate-300 */
-  --color-border-focus: #0F172A;
+  /* ── Status Tokens (DESIGN.md §3 mapped to ARCHITECTURE.md enums) ── */
+  --status-new: #4B8FC9;
+  --status-contacted: #C9A24B;
+  --status-quote-sent: #9A7BD1;
+  --status-follow-up: #D9A441;
+  --status-booked: #3FAE6A;
+  --status-completed: #6E7480;
+  --status-lost: #E15B5B;
+  --status-pending-confirmation: #D9A441;
+  --status-confirmed: #3FAE6A;
+  --status-rescheduled: #4B8FC9;
+  --status-cancelled: #E15B5B;
+  --status-no-show: #9A5B5B;
 
-  /* ── Typography ── */
-  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Aliases for Lead Status */
+  --color-lead-new: var(--status-new);
+  --color-lead-contacted: var(--status-contacted);
+  --color-lead-quote-sent: var(--status-quote-sent);
+  --color-lead-follow-up: var(--status-follow-up);
+  --color-lead-booked: var(--status-booked);
+  --color-lead-completed: var(--status-completed);
+  --color-lead-lost: var(--status-lost);
+
+  /* ── Typography Scale & Fonts (DESIGN.md §4) ── */
+  --font-heading: 'Oswald', 'Plus Jakarta Sans', sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
 
-  /* Font Sizes (with line heights) */
+  /* Fluid Headings with clamp() per DESIGN.md §4 */
+  --text-display: clamp(2.125rem, 5vw + 1rem, 3.5rem); /* 34px -> 56px */
+  --text-h1: clamp(1.75rem, 3.5vw + 1rem, 2.5rem);     /* 28px -> 40px */
+  --text-h2: clamp(1.375rem, 2vw + 1rem, 1.75rem);     /* 22px -> 28px */
+  --text-h3: clamp(1.125rem, 1vw + 1rem, 1.25rem);     /* 18px -> 20px */
+  --text-body-lg: clamp(1rem, 0.5vw + 0.9rem, 1.125rem); /* 16px -> 18px */
+  --text-body: 1rem;                                   /* 16px */
+  --text-body-sm: 0.875rem;                            /* 14px */
+  --text-caption: 0.75rem;                             /* 12px */
+
+  /* Fixed rem scale aliases */
   --text-xs: 0.75rem;
-  /* 12px */
   --text-sm: 0.875rem;
-  /* 14px */
   --text-base: 1rem;
-  /* 16px */
   --text-lg: 1.125rem;
-  /* 18px */
   --text-xl: 1.25rem;
-  /* 20px */
   --text-2xl: 1.5rem;
-  /* 24px */
   --text-3xl: 1.875rem;
-  /* 30px */
   --text-4xl: 2.25rem;
-  /* 36px */
   --text-5xl: 3rem;
-  /* 48px */
   --text-6xl: 3.75rem;
-  /* 60px */
 
   /* Font Weights */
   --font-light: 300;
@@ -114,455 +114,131 @@
   --font-extrabold: 800;
 
   /* Line Heights */
-  --leading-tight: 1.2;
+  --leading-tight: 1.15;
+  --leading-heading: 1.2;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.7;
+  --leading-relaxed: 1.65;
 
   /* Letter Spacing */
-  --tracking-tight: -0.025em;
+  --tracking-tight: -0.02em;
   --tracking-normal: 0;
-  --tracking-wide: 0.05em;
-  --tracking-wider: 0.1em;
+  --tracking-wide: 0.03em;
+  --tracking-wider: 0.08em;
+  --tracking-widest: 0.16em;
 
-  /* ── Spacing ── */
+  /* ── Spacing (DESIGN.md §5, 8px base grid) ── */
   --space-0: 0;
-  --space-1: 0.25rem;
-  /* 4px */
-  --space-2: 0.5rem;
-  /* 8px */
-  --space-3: 0.75rem;
-  /* 12px */
-  --space-4: 1rem;
-  /* 16px */
-  --space-5: 1.25rem;
-  /* 20px */
-  --space-6: 1.5rem;
-  /* 24px */
-  --space-8: 2rem;
-  /* 32px */
-  --space-10: 2.5rem;
-  /* 40px */
-  --space-12: 3rem;
-  /* 48px */
-  --space-16: 4rem;
-  /* 64px */
-  --space-20: 5rem;
-  /* 80px */
-  --space-24: 6rem;
-  /* 96px */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
 
-  /* ── Borders & Radii ── */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 18px;
-  --radius-2xl: 24px;
-  --radius-full: 9999px;
+  /* ── Radius (DESIGN.md §5) ── */
+  --radius-sm: 6px;    /* inputs, badges, small buttons */
+  --radius-md: 12px;   /* cards, buttons */
+  --radius-lg: 20px;   /* large surfaces, modals, feature cards */
+  --radius-pill: 999px;/* pills, status badges */
 
-  /* ── Diffuse Luxury Shadows ── */
-  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
-  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --shadow-glow: 0 10px 25px -5px rgba(180, 83, 9, 0.18);
-  --shadow-glow-strong: 0 15px 35px -5px rgba(180, 83, 9, 0.28);
+  /* ── Shadows (DESIGN.md §5) ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 24px rgba(201, 162, 75, 0.22);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.4);
 
-  /* ── Transitions ── */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
-  --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* ── Transitions & Motion (DESIGN.md §10) ── */
+  --transition-fast: 120ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* ── Z-Index Scale ── */
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-overlay: 300;
+  /* ── Breakpoints (DESIGN.md §9) ── */
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ── Z-Index Hierarchy ── */
+  --z-base: 0;
+  --z-card: 1;
+  --z-overlay: 10;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-modal-backdrop: 300;
   --z-modal: 400;
-  --z-popover: 500;
-  --z-toast: 600;
+  --z-toast: 500;
+  --z-tooltip: 600;
 
-  /* ── Layout ── */
-  --container-sm: 640px;
-  --container-md: 768px;
-  --container-lg: 1024px;
-  --container-xl: 1280px;
-  --container-2xl: 1440px;
-  --max-width: 1280px;
-  --sidebar-width: 260px;
-  --header-height: 72px;
-
+  /* ── Touch Target standard (DESIGN.md §9, ≥44px) ── */
+  --touch-target-min: 44px;
 }
 
-/* ─────────────────────── Global Reset & Base ─────────────────────── */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-size: 16px;
-  -webkit-text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  line-height: var(--leading-normal);
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
-  min-height: 100dvh;
-}
-
-/* ── Links ── */
-a {
-  color: var(--color-accent-text);
-  text-decoration: none;
-  transition: color var(--transition-fast);
-}
-
-a:hover {
-  color: var(--color-accent-hover);
-}
-
-/* ── Headings ── */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  font-weight: var(--font-semibold);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text-primary);
-}
-
-/* ── Selection ── */
-::selection {
-  background: var(--color-accent-primary);
-  color: var(--color-text-inverse);
-}
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-bg-muted);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
-}
-
-/* ── Focus Ring ── */
-:focus-visible {
-  outline: 2px solid var(--color-accent-primary);
-  outline-offset: 2px;
-}
-
-/* ── Images ── */
-img,
-video {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* ── Tables ── */
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* ── Form Defaults ── */
-input,
-textarea,
-select,
-button {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-/* ─────────────────────── Utility Classes ─────────────────────── */
-
-/* Visually hidden but accessible to screen readers */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Container */
-.container {
-  width: 100%;
-  max-width: var(--container-xl);
-  margin-inline: auto;
-  padding-inline: var(--space-4);
-}
-
-@media (min-width: 768px) {
-  .container {
-    padding-inline: var(--space-6);
-  }
-}
-
-@media (min-width: 1280px) {
-  .container {
-    padding-inline: var(--space-8);
-  }
-}
-
-/* Section spacing */
-.section {
-  padding-block: var(--space-16);
-}
-
-@media (min-width: 768px) {
-  .section {
-    padding-block: var(--space-24);
-  }
-}
-
-/* Glass card effect (Clean Frosted Porcelain) */
-.glass {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Gradient text (Obsidian into Warm Bronze Gold) */
-.gradient-text {
-  background: linear-gradient(135deg, #0F172A 20%, #B45309 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Fade in animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in {
-  animation: fadeIn var(--transition-base) ease-out forwards;
-}
-
-/* Pulse glow animation */
-@keyframes pulseGlow {
-
-  0%,
-  100% {
-    box-shadow: var(--shadow-glow);
-  }
-
-  50% {
-    box-shadow: var(--shadow-glow-strong);
-  }
-}
-
-.pulse-glow {
-  animation: pulseGlow 2s infinite;
-}
-
-/* Slide up animation */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.slide-up {
-  animation: slideUp var(--transition-slow) ease-out forwards;
-}
-
-/* ─────────────────────── Staggered Entrance ─────────────────────── */
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.fade-in-up {
-  animation: fadeInUp var(--transition-slow) ease-out forwards;
-}
-
-.scale-in {
-  animation: scaleIn var(--transition-base) ease-out forwards;
-}
-
-.slide-in-right {
-  animation: slideInRight var(--transition-slow) ease-out forwards;
-}
-
-.slide-in-left {
-  animation: slideInLeft var(--transition-slow) ease-out forwards;
-}
-
-/* Stagger delays for child elements */
-.stagger-1 {
-  animation-delay: 50ms;
-}
-
-.stagger-2 {
-  animation-delay: 100ms;
-}
-
-.stagger-3 {
-  animation-delay: 150ms;
-}
-
-.stagger-4 {
-  animation-delay: 200ms;
-}
-
-.stagger-5 {
-  animation-delay: 250ms;
-}
-
-.stagger-6 {
-  animation-delay: 300ms;
-}
-
-/* ─────────────────────── Hover Effects ─────────────────────── */
-
+/* ── Utility & Micro-Interaction Classes ── */
 .hover-lift {
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
-
 .hover-lift:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .hover-glow {
-  transition: box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base), border-color var(--transition-base);
 }
-
 .hover-glow:hover {
+  border-color: var(--color-accent);
   box-shadow: var(--shadow-glow);
 }
 
-.hover-scale {
-  transition: transform var(--transition-fast);
+.gradient-text {
+  background: linear-gradient(135deg, #FFFFFF 20%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.hover-scale:hover {
-  transform: scale(1.02);
+.gold-gradient-text {
+  background: linear-gradient(135deg, #F4F5F6 0%, var(--color-accent) 60%, var(--color-accent-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* ─────────────────────── Accessibility ─────────────────────── */
-
-/* Skip to main content link */
+/* Accessible Skip Link */
 .skip-link {
   position: absolute;
   top: -100px;
   left: var(--space-4);
-  background: var(--color-accent-primary);
-  color: var(--color-text-inverse);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
   font-weight: var(--font-semibold);
   z-index: 9999;
   transition: top var(--transition-fast);
+  text-decoration: none;
 }
-
 .skip-link:focus {
   top: var(--space-4);
+  outline: 2px solid #FFFFFF;
 }
 
-/* Reduced Motion — Global Override */
-@media (prefers-reduced-motion: reduce) {
+/* Accessibility: Focus Rings */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
 
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
@@ -570,9 +246,5 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  html {
-    scroll-behavior: auto;
   }
 }

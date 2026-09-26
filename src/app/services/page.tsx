@@ -5,22 +5,27 @@ import { Icon } from '@/components/common/Icons';
 import styles from './services.module.css';
 
 export const metadata: Metadata = {
-  title: 'Services Catalogue — Car Detailing & PPF',
+  title: 'Services Catalogue — Smoke M Customs',
   description:
-    'Explore our professional car detailing services: Ceramic Coating, Paint Protection Film (PPF), Paint Correction, and Interior Spa Detailing.',
+    'Explore our professional car detailing and protection services: 9H Ceramic Coating, TPU Paint Protection Film (PPF), Multi-Stage Paint Correction, and Interior Sanitization.',
 };
 
 export const revalidate = 60;
 
+const SERVICE_IMAGES: Record<string, string> = {
+  'ceramic-coating': '/ceramic-detail.jpg',
+  'paint-protection-film': '/ppf-install.jpg',
+  'interior-detailing': '/ppf-craft.jpg',
+  'exterior-detailing': '/ceramic-macro.jpg',
+  'paint-correction': '/hero-luxury-dark.jpg',
+  'windshield-coating': '/ceramic-detail.jpg',
+};
+
 export default async function ServicesPage() {
   const services = await catalogueService.listServices({ enabledOnly: true });
 
-  const categories = Array.from(
-    new Set(services.map((s) => s.category).filter(Boolean))
-  ) as string[];
-
   return (
-    <main className={styles.main}>
+    <div className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
           <span className={styles.tag}>BESPOKE VEHICLE PRESERVATION</span>
@@ -33,39 +38,62 @@ export default async function ServicesPage() {
       </div>
 
       <div className={styles.container}>
-        {/* Services List */}
+        {/* Services Grid */}
         <div className={styles.grid}>
-          {services.map((service) => (
-            <div key={service.id} className={styles.card}>
-              <div className={styles.cardTop}>
-                <span className={styles.category}>{service.category ?? 'Detailing'}</span>
-                <span className={styles.price}>
-                  From ₹{Number(service.startingPrice).toLocaleString('en-IN')}
-                </span>
+          {services.map((service) => {
+            const imageSrc = SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
+            return (
+              <div key={service.id} className={styles.card}>
+                <div className={styles.cardImageWrap}>
+                  <img
+                    src={imageSrc}
+                    alt={service.name}
+                    className={styles.cardImg}
+                    loading="lazy"
+                  />
+                  <span className={styles.cardTopBadge}>
+                    {service.category ?? 'Detailing'}
+                  </span>
+                </div>
+
+                <div className={styles.cardContent}>
+                  <h2 className={styles.name}>{service.name}</h2>
+
+                  <div className={styles.metaRow}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <Icon.Clock size={13} color="var(--color-accent)" />
+                      ~{Math.round(service.durationMinutes / 60)} Hours
+                    </span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <Icon.Shield size={13} color="var(--color-accent)" />
+                      {(service as any).warrantyText ? (service as any).warrantyText.split(' ')[0] + ' Warranty' : 'Certified Standard'}
+                    </span>
+                  </div>
+
+                  <p className={styles.desc}>
+                    {(service as any).description ||
+                      'Engineered for maximum optical clarity, hydrophobic self-cleaning properties, and long-term surface resilience.'}
+                  </p>
+
+                  <div className={styles.cardPriceRow}>
+                    <span className={styles.priceLabel}>Starting Price</span>
+                    <span className={styles.priceVal}>
+                      ₹{Number(service.startingPrice).toLocaleString('en-IN')}
+                    </span>
+                  </div>
+
+                  <div className={styles.cardActions}>
+                    <Link href={`/services/${service.slug}`} className="btn btn-secondary btn-full">
+                      View Scope
+                    </Link>
+                    <Link href={`/book?service=${service.id}`} className="btn btn-primary btn-full">
+                      Book Slot
+                    </Link>
+                  </div>
+                </div>
               </div>
-              <h2 className={styles.name}>{service.name}</h2>
-              <div className={styles.metaRow}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <Icon.Clock size={14} color="var(--color-gold)" /> Duration: ~{Math.round(service.durationMinutes / 60)} Hours
-                </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                  <Icon.Shield size={14} color="var(--color-gold)" /> Professional Warranty
-                </span>
-              </div>
-              <p className={styles.desc}>
-                Engineered for maximum optical clarity, hydrophobic self-cleaning properties,
-                and long-term surface resilience.
-              </p>
-              <div className={styles.cardActions}>
-                <Link href={`/services/${service.slug}`} className="btn btn-secondary btn-full">
-                  Full Details & Warranty
-                </Link>
-                <Link href={`/book?service=${service.id}`} className="btn btn-primary btn-full">
-                  Book Slot
-                </Link>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Custom Quote Callout */}
@@ -81,17 +109,16 @@ export default async function ServicesPage() {
               Get an Instant Quote
             </Link>
             <a
-              href="https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20have%20a%20custom%20enquiry"
+              href="https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20have%20multiple%20vehicles%20for%20detailing"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary btn-lg"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
             >
-              <Icon.WhatsApp size={18} /> WhatsApp Chat
+              WhatsApp Us
             </a>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

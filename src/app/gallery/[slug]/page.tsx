@@ -33,7 +33,7 @@ export default async function GalleryDetailPage({ params }: GalleryDetailProps) 
   }
 
   return (
-    <main className={styles.main}>
+    <div className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
           <div className={styles.breadcrumbs}>
@@ -44,11 +44,11 @@ export default async function GalleryDetailPage({ params }: GalleryDetailProps) 
             <span className={styles.currentCrumb}>{item.title}</span>
           </div>
 
-          <span className={styles.tag}>{item.serviceCategory ?? 'Transformation Project'}</span>
+          <span className={styles.tag}>{item.serviceCategory ?? 'Transformation Case Study'}</span>
           <h1 className={styles.title}>{item.title}</h1>
           <div className={styles.carInfo}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <Icon.Car size={16} color="var(--color-gold)" /> {item.vehicleBrand} {item.vehicleModel}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--color-accent)' }}>
+              <Icon.Car size={16} /> {item.vehicleBrand} {item.vehicleModel}
             </span>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default async function GalleryDetailPage({ params }: GalleryDetailProps) 
         <div className={styles.content}>
           {/* Interactive Split-Slider Comparison */}
           {item.beforeImageUrl && item.afterImageUrl && (
-            <div style={{ marginBottom: 'var(--space-8)' }}>
+            <div className={styles.compareSection}>
               <ImageCompare
                 beforeUrl={item.beforeImageUrl}
                 afterUrl={item.afterImageUrl}
@@ -96,32 +96,56 @@ export default async function GalleryDetailPage({ params }: GalleryDetailProps) 
                 )}
                 <span className={`${styles.badge} ${styles.badgeAfter}`}>STAGE 2: COMPLETED PERFECTION</span>
               </div>
-              <p className={styles.caption}>Zero swirl defects, amplified depth, metallic flake pop, and hydrophobic seal.</p>
+              <p className={styles.caption}>Zero swirl defects, amplified optical depth, metallic flake pop, and hydrophobic seal.</p>
             </div>
           </div>
 
-          {/* Project Narrative */}
-          <div className={styles.narrativeCard}>
-            <h2 className={styles.narrativeTitle}>Project Details & Scope</h2>
-            <p className={styles.narrativeText}>{item.description}</p>
+          {/* Project Scope & Case Study */}
+          <div className={styles.detailsCard}>
+            <h2 className={styles.detailsTitle}>Case Study & Treatment Scope</h2>
+            <p className={styles.detailsText}>
+              {item.description ||
+                'This vehicle underwent our rigorous multi-stage transformation process including chemical decontamination, paint depth calibration, precision machine correction, and certified surface sealing in our dust-controlled bays.'}
+            </p>
 
-            <div className={styles.tagsRow}>
-              {item.tags.map((tag, i) => (
-                <span key={i} className={styles.tagPill}>#{tag}</span>
-              ))}
+            {item.tags && item.tags.length > 0 && (
+              <div className={styles.tagsRow}>
+                {item.tags.map((tag, idx) => (
+                  <span key={idx} className={styles.tagPill}>
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Call to Action */}
+          <div className={styles.actionsBox}>
+            <div>
+              <h3 className={styles.actionsHeading}>Inspired by This Transformation?</h3>
+              <p className={styles.actionsSub}>
+                Book a bay consultation for your vehicle or get a transparent, algorithm-calculated quote.
+              </p>
             </div>
-
-            <div className={styles.actionRow}>
-              <Link href="/quote" className="btn btn-primary btn-lg">
-                Get Quote for Similar Vehicle
+            <div className={styles.actionsGroup}>
+              <Link href="/book" className="btn btn-primary btn-lg">
+                Schedule Detailing Bay
               </Link>
-              <Link href="/book" className="btn btn-secondary btn-lg">
-                Book Bay Slot
+              <Link href="/quote" className="btn btn-secondary btn-lg">
+                Get a Free Quote
               </Link>
+              <a
+                href={`https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20saw%20your%20case%20study%20on%20${encodeURIComponent(item.title)}%20and%20want%20to%20know%20more`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-lg"
+              >
+                <Icon.WhatsApp size={16} /> Chat on WhatsApp
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

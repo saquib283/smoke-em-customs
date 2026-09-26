@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PackagePageProps): Promise<Me
   }
   return {
     title: `${pkg.name} — Smoke M Customs`,
-    description: pkg.description,
+    description: pkg.description ?? 'All-inclusive vehicle protection and detailing suite.',
   };
 }
 
@@ -25,14 +25,20 @@ export const revalidate = 60;
 
 export default async function PackageDetailPage({ params }: PackagePageProps) {
   const { slug } = await params;
-  const pkg = await catalogueService.getPackageBySlug(slug);
+  const [pkg, allServices] = await Promise.all([
+    catalogueService.getPackageBySlug(slug),
+    catalogueService.listServices({ enabledOnly: true }),
+  ]);
 
   if (!pkg) {
     notFound();
   }
 
+  // Find linked services
+  const includedServices = allServices.filter((s) => pkg.serviceIds.includes(s.id));
+
   return (
-    <main className={styles.main}>
+    <div className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
           <div className={styles.breadcrumbs}>
@@ -60,115 +66,133 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
 
       <div className={styles.container}>
         <div className={styles.contentGrid}>
-          {/* Main Details */}
+          {/* Main Content */}
           <div className={styles.mainContent}>
-            {/* Description */}
+            {/* Overview */}
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Package Overview</h2>
+              <h2 className={styles.cardTitle}>Suite Overview</h2>
               <p className={styles.description}>{pkg.description}</p>
-              
+
               <div className={styles.specsRow}>
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}><Icon.Clock size={18} color="var(--color-gold)" /></span>
+                  <div className={styles.specIcon}>
+                    <Icon.Clock size={18} />
+                  </div>
                   <div>
-                    <h4 className={styles.specTitle}>Workshop Stay</h4>
-                    <span className={styles.specDesc}>~{Math.round(pkg.durationMinutes / 60)} Hours</span>
+                    <div className={styles.specTitle}>Workshop Stay</div>
+                    <div className={styles.specDesc}>~{Math.round(pkg.durationMinutes / 60)} Hours</div>
                   </div>
                 </div>
+
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}><Icon.Shield size={18} color="var(--color-gold)" /></span>
+                  <div className={styles.specIcon}>
+                    <Icon.Shield size={18} />
+                  </div>
                   <div>
-                    <h4 className={styles.specTitle}>Warranty</h4>
-                    <span className={styles.specDesc}>{pkg.warrantyText ?? 'Comprehensive Coverage'}</span>
+                    <div className={styles.specTitle}>Warranty</div>
+                    <div className={styles.specDesc}>{pkg.warrantyText ?? 'Comprehensive Coverage'}</div>
                   </div>
                 </div>
+
                 <div className={styles.spec}>
-                  <span className={styles.specIcon}><Icon.Calendar size={18} color="var(--color-gold)" /></span>
+                  <div className={styles.specIcon}>
+                    <Icon.Calendar size={18} />
+                  </div>
                   <div>
-                    <h4 className={styles.specTitle}>Validity</h4>
-                    <span className={styles.specDesc}>{pkg.validityText ?? 'Year-Round'}</span>
+                    <div className={styles.specTitle}>Validity</div>
+                    <div className={styles.specDesc}>{pkg.validityText ?? 'Year-Round'}</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Included Treatments */}
+            {/* Included Services */}
+            {includedServices.length > 0 && (
+              <div className={styles.card}>
+                <h2 className={styles.cardTitle}>Included Services in This Suite</h2>
+                <div className={styles.includedServicesList}>
+                  {includedServices.map((svc) => (
+                    <div key={svc.id} className={styles.includedServiceItem}>
+                      <div>
+                        <div className={styles.svcName}>{svc.name}</div>
+                        <div className={styles.svcCategory}>{svc.category ?? 'Detailing Treatment'}</div>
+                      </div>
+                      <Link href={`/services/${svc.slug}`} className="btn btn-secondary btn-sm">
+                        View Service &rarr;
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Benefits Checklist */}
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Complete Treatment Scope</h2>
-              <div className={styles.benefitsGrid}>
+              <h2 className={styles.cardTitle}>Comprehensive Scope of Work</h2>
+              <ul className={styles.benefitsList}>
                 {pkg.benefits.map((benefit, idx) => (
-                  <div key={idx} className={styles.benefitItem}>
-                    <span className={styles.benefitCheck} style={{ display: 'inline-flex', alignItems: 'center' }}>
-                      <Icon.Check size={12} color="var(--color-gold)" />
+                  <li key={idx} className={styles.benefitItem}>
+                    <span className={styles.checkIcon}>
+                      <Icon.Check size={16} color="var(--color-accent)" />
                     </span>
                     <span>{benefit}</span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
 
-            {/* Terms and Vehicle Care */}
+            {/* Terms & Drop-off */}
             {pkg.terms && (
               <div className={styles.card}>
-                <h2 className={styles.cardTitle}>Preparation & Drop-off Terms</h2>
-                <p className={styles.termsText}>{pkg.terms}</p>
-                <div className={styles.noteBox}>
-                  <strong>Note:</strong> We request removing personal valuables prior to drop-off.
-                  A digital vehicle condition report with high-resolution inspection photos
-                  is provided at check-in.
-                </div>
+                <h3 className={styles.cardTitle} style={{ fontSize: 'var(--text-h3)' }}>
+                  Drop-Off & Curing Guidelines
+                </h3>
+                <p className={styles.description}>{pkg.terms}</p>
               </div>
             )}
           </div>
 
-          {/* Sidebar */}
+          {/* Sticky Sidebar */}
           <aside className={styles.sidebar}>
-            <div className={styles.bookingBox}>
+            <div className={styles.bookingCard}>
               <h3 className={styles.sidebarTitle}>Reserve This Package</h3>
-              <p className={styles.sidebarText}>
-                Due to multi-stage curing and preparation requirements, bay slots are scheduled exclusively.
+              <p className={styles.sidebarDesc}>
+                Lock in your workshop slot directly for this complete treatment suite.
               </p>
 
-              <div className={styles.sidebarPrice}>
-                <span className={styles.sidebarPriceTag}>All-Inclusive</span>
-                <span className={styles.sidebarPriceNum}>
+              <div className={styles.sidebarPriceBox}>
+                <div className={styles.sidebarPriceTag}>All-Inclusive Suite Price</div>
+                <div className={styles.sidebarPriceVal}>
                   ₹{Number(pkg.price ?? pkg.startingPrice).toLocaleString('en-IN')}
-                </span>
+                </div>
               </div>
 
               <div className={styles.sidebarActions}>
                 <Link href={`/book?package=${pkg.id}`} className="btn btn-primary btn-full">
-                  Book Package Slot
+                  Book This Package
                 </Link>
-                <Link href={`/quote?package=${pkg.id}`} className="btn btn-secondary btn-full">
+                <Link href="/quote" className="btn btn-secondary btn-full">
                   Get Customized Estimate
                 </Link>
                 <a
-                  href={`https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20am%20enquiring%20about%20the%20${encodeURIComponent(pkg.name)}`}
+                  href={`https://wa.me/919876543210?text=Hi%20Smoke%20M%20Customs%2C%20I%20am%20enquiring%20about%20the%20${encodeURIComponent(pkg.name)}%20package`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.waSidebarBtn}
-                  style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+                  className={styles.sidebarWaBtn}
                 >
-                  <Icon.WhatsApp size={16} /> Inquire on WhatsApp
+                  <Icon.WhatsApp size={16} /> Ask Questions on WhatsApp
                 </a>
               </div>
 
-              <div className={styles.guarantees}>
-                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Icon.Lock size={14} color="var(--color-gold)" /> Zero Advance Booking Fee Required
-                </div>
-                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Icon.FileText size={14} color="var(--color-gold)" /> Official Warranty Certificate Included
-                </div>
-                <div className={styles.guarantee} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Icon.Car size={14} color="var(--color-gold)" /> Free Follow-up Inspection Check
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: '11px', color: 'var(--color-text-muted)', marginTop: 8 }}>
+                <span>&bull; Dedicated cleanroom bay allocation</span>
+                <span>&bull; Full manufacturer warranty certification</span>
+                <span>&bull; Complimentary 6-month inspection</span>
               </div>
             </div>
           </aside>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

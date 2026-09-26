@@ -48,11 +48,9 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
     <div className={styles.pageContainer}>
       {/* ── Interactive Action Bar (Hidden when printed) ── */}
       <div className={styles.actionBar}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          <Link href="/" style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
-            &larr; Back to Home
-          </Link>
-        </div>
+        <Link href="/" className={styles.backLink}>
+          &larr; Back to Home
+        </Link>
 
         <div className={styles.actionBtnGroup}>
           <button type="button" className={styles.btnPrint} onClick={handlePrint} id="btn-print-quote">
@@ -97,19 +95,16 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
       <div className={styles.quoteDocument} id="printable-quote-sheet">
         {/* Header */}
         <div className={styles.docHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.png"
-              alt="Smoke 'Em Customs"
-              width="64"
-              height="64"
-              className={styles.quoteLogo}
-            />
+          <div className={styles.brandWrap}>
+            <div className={styles.brandMark} aria-hidden="true">
+              S
+            </div>
             <div>
-              <div className={styles.brandLogo}>Smoke &apos;Em Customs</div>
+              <div className={styles.brandLogo}>
+                SMOKE <span className={styles.brandLogoAccent}>M</span> CUSTOMS
+              </div>
               <div className={styles.brandSubtitle}>
-                Luxury Detailing & Advanced Surface Protection Studio<br />
+                Luxury Detailing &amp; Surface Protection Atelier<br />
                 #42, Indiranagar 100ft Road, Bengaluru, Karnataka 560038<br />
                 Phone: +91 98765 43210 &bull; Email: studio@smokecustoms.com<br />
                 GSTIN: 29ABCDE1234F1Z5
@@ -125,10 +120,10 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
                 {quote.status}
               </span>
             </div>
-            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)', marginTop: 'var(--space-2)' }}>
+            <div className={styles.metaRow} style={{ marginTop: 'var(--space-1)' }}>
               Date: <strong>{dateIssuedFormatted}</strong>
             </div>
-            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-secondary)' }}>
+            <div className={styles.metaRow}>
               Valid Until: <strong>{validUntilFormatted}</strong>
             </div>
           </div>
@@ -229,8 +224,8 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
             </div>
 
             <div className={styles.grandTotalRow}>
-              <span>Total Payable:</span>
-              <span>₹{totalNum.toLocaleString('en-IN')}</span>
+              <span className={styles.grandTotalLabel}>Total Payable:</span>
+              <span className={styles.grandTotalAmount}>₹{totalNum.toLocaleString('en-IN')}</span>
             </div>
           </div>
         </div>
@@ -239,13 +234,13 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
         <div className={styles.docFooter}>
           <div className={styles.footerNotes}>
             <strong>Payment Instructions:</strong> 50% advance to confirm bay schedule via UPI/Bank Transfer.
-            Balance upon inspection during delivery. This is a computer-generated quotation document.
+            Balance upon inspection during delivery. This is an official computer-generated quotation document.
           </div>
 
           <div className={styles.signBox}>
             <div className={styles.signLine} />
             <span className={styles.signTitle}>Authorized Studio Signatory</span>
-            <span className={styles.signCompany}>Smoke M Customs Detailing</span>
+            <span className={styles.signCompany}>Smoke M Customs Atelier</span>
           </div>
         </div>
       </div>
