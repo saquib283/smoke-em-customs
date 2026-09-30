@@ -49,13 +49,17 @@ export async function POST(req: NextRequest) {
     });
 
     const isVideo = file.type.toLowerCase().startsWith('video/');
+    const isBlob =
+      uploadResult.publicUrl.includes('vercel-storage.com') ||
+      process.env.STORAGE_PROVIDER === 'vercel-blob' ||
+      Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 
     // Create database Media entity
     const media = await contentService.createMedia({
       url: uploadResult.publicUrl,
       type: isVideo ? 'VIDEO' : 'IMAGE',
       altText: file.name,
-      provider: 'local',
+      provider: isBlob ? 'vercel-blob' : 'local',
       providerKey: uploadResult.providerKey,
     });
 

@@ -41,11 +41,32 @@ export async function POST(req: NextRequest) {
     // 2. Add or find Vehicle
     let vehicleId: string | null = null;
     if (body.vehicleBrand && body.vehicleModel) {
+      const VALID_TYPES = ['HATCHBACK', 'SEDAN', 'SUV', 'MUV', 'LUXURY', 'TWO_WHEELER', 'OTHER'] as const;
+      type ValidType = typeof VALID_TYPES[number];
+      let normalizedType: ValidType | undefined = undefined;
+
+      if (body.vehicleType) {
+        const raw = String(body.vehicleType).toUpperCase().trim();
+        if (VALID_TYPES.includes(raw as ValidType)) {
+          normalizedType = raw as ValidType;
+        } else if (raw.includes('SUV')) {
+          normalizedType = 'SUV';
+        } else if (raw.includes('LUX') || raw.includes('SPORT') || raw.includes('SUPER')) {
+          normalizedType = 'LUXURY';
+        } else if (raw.includes('HATCH') || raw.includes('COMPACT')) {
+          normalizedType = 'HATCHBACK';
+        } else if (raw.includes('SEDAN')) {
+          normalizedType = 'SEDAN';
+        } else {
+          normalizedType = 'OTHER';
+        }
+      }
+
       const vehicle = await crmService.addVehicle(customer.id, {
         brand: body.vehicleBrand.trim(),
         model: body.vehicleModel.trim(),
         variant: body.vehicleVariant?.trim() || undefined,
-        vehicleType: body.vehicleType || undefined,
+        vehicleType: normalizedType,
       });
       vehicleId = vehicle.id;
     }

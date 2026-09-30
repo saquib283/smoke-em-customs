@@ -41,7 +41,7 @@ export default async function ServicesPage() {
         {/* Services Grid */}
         <div className={styles.grid}>
           {services.map((service) => {
-            const imageSrc = SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
+            const imageSrc = service.imageUrl || SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
             return (
               <div key={service.id} className={styles.card}>
                 <div className={styles.cardImageWrap}>
@@ -66,12 +66,12 @@ export default async function ServicesPage() {
                     </span>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                       <Icon.Shield size={13} color="var(--color-accent)" />
-                      {(service as any).warrantyText ? (service as any).warrantyText.split(' ')[0] + ' Warranty' : 'Certified Standard'}
+                      {service.warrantyText ? service.warrantyText.split(' ')[0] + ' Warranty' : 'Certified Standard'}
                     </span>
                   </div>
 
                   <p className={styles.desc}>
-                    {(service as any).description ||
+                    {service.description ||
                       'Engineered for maximum optical clarity, hydrophobic self-cleaning properties, and long-term surface resilience.'}
                   </p>
 
@@ -86,7 +86,7 @@ export default async function ServicesPage() {
                     <Link href={`/services/${service.slug}`} className="btn btn-secondary btn-full">
                       View Scope
                     </Link>
-                    <Link href={`/book?service=${service.id}`} className="btn btn-primary btn-full">
+                    <Link href={`/book/${service.slug}`} className="btn btn-primary btn-full">
                       Book Slot
                     </Link>
                   </div>

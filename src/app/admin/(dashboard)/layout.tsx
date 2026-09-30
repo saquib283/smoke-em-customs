@@ -22,8 +22,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <AdminShell user={session.user}>
-      {children}
-    </AdminShell>
+    <div data-theme="admin" style={{ display: 'contents' }}>
+      <AdminShell user={session.user}>
+        {children}
+      </AdminShell>
+    </div>
   );
 }

@@ -1,0 +1,1007 @@
+/**
+ * Smoke M Customs — Slot & Bay Management Hub Styles
+ * Clean atelier light design with high contrast, crisp cards, and rich timeline visuals.
+ */
+
+.container {
+  padding: 1.75rem 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+  margin-bottom: 0.35rem;
+}
+
+.breadcrumbSep {
+  color: #CBD5E1;
+}
+
+.breadcrumbCurrent {
+  color: #B45309;
+}
+
+.title {
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem 0;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #64748B;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ── Metric Cards Strip ── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.kpiCard {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.125rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.kpiIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpiIconGold {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.kpiIconGreen {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.kpiIconBlue {
+  background-color: #E0E7FF;
+  color: #4338CA;
+}
+
+.kpiIconAmber {
+  background-color: #FFEDD5;
+  color: #C2410C;
+}
+
+.kpiInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.kpiLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+}
+
+.kpiValue {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.kpiSubtext {
+  font-size: 0.75rem;
+  color: #94A3B8;
+}
+
+/* ── Tabs Navigation ── */
+.tabsNav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 2px;
+  margin-top: 0.25rem;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 6px 6px 0 0;
+}
+
+.tabBtn:hover {
+  color: #0F172A;
+  background-color: #F8FAFC;
+}
+
+.tabBtnActive {
+  color: #B45309;
+  border-bottom-color: #B45309;
+  background-color: #FFFBEB;
+}
+
+/* ── Tab Content Container ── */
+.tabContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Timeline Date Bar ── */
+.dateNavCard {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dateNavLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dateTitle {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.dateTag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background-color: #F1F5F9;
+  color: #475569;
+}
+
+.dateTagClosed {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+}
+
+.dateTagBlocked {
+  background-color: #FFEDD5;
+  color: #C2410C;
+}
+
+.dateNavControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dateInput {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #0F172A;
+  background-color: #FFFFFF;
+  outline: none;
+}
+
+/* ── Live Bay Grid Matrix ── */
+.gridWrapper {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.gridTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.gridHeaderRow th {
+  background-color: #F8FAFC;
+  padding: 0.875rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #334155;
+  border-bottom: 2px solid #E2E8F0;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.gridTimeCol {
+  width: 100px;
+  text-align: center !important;
+  border-right: 1px solid #E2E8F0;
+  background-color: #F8FAFC;
+}
+
+.bayHeaderCell {
+  border-right: 1px solid #E2E8F0;
+}
+
+.bayHeaderCell:last-child {
+  border-right: none;
+}
+
+.bayHeaderInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.bayHeaderBadge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.bayHeaderBadgeInactive {
+  background-color: #F1F5F9;
+  color: #64748B;
+}
+
+.gridRow td {
+  border-bottom: 1px solid #F1F5F9;
+  padding: 6px 10px;
+  vertical-align: top;
+  height: 60px;
+  border-right: 1px solid #F1F5F9;
+}
+
+.gridRow td:last-child {
+  border-right: none;
+}
+
+.timeCell {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748B;
+  background-color: #F8FAFC;
+  border-right: 1px solid #E2E8F0 !important;
+  vertical-align: middle !important;
+}
+
+/* ── Slot Cards ── */
+.slotCard {
+  width: 100%;
+  height: 100%;
+  min-height: 48px;
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Available */
+.slotAvailable {
+  background-color: #F8FAFC;
+  border: 1px dashed #CBD5E1;
+  color: #64748B;
+}
+
+.slotAvailable:hover {
+  background-color: #FFFBEB;
+  border-color: #B45309;
+  color: #B45309;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.08);
+}
+
+.slotAvailableText {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.slotActionHint {
+  font-size: 0.6875rem;
+  color: #B45309;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.slotAvailable:hover .slotActionHint {
+  opacity: 1;
+}
+
+/* Booked */
+.slotBooked {
+  background-color: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1E3A8A;
+}
+
+.slotBooked:hover {
+  border-color: #60A5FA;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12);
+}
+
+.bookingTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 2px;
+}
+
+.bookingClient {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1E3A8A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropoffBadge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background-color: #DBEAFE;
+  color: #1D4ED8;
+  letter-spacing: 0.03em;
+}
+
+.bookingTreatment {
+  font-size: 0.6875rem;
+  color: #3B82F6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookingVehicle {
+  font-size: 0.625rem;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Blocked */
+.slotBlocked {
+  background-color: #FFF7ED;
+  border: 1px solid #FED7AA;
+  color: #9A3412;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(251, 146, 60, 0.05),
+    rgba(251, 146, 60, 0.05) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+.slotBlocked:hover {
+  border-color: #F97316;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.12);
+}
+
+.blockTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9A3412;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.blockReason {
+  font-size: 0.6875rem;
+  color: #C2410C;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Buffer */
+.slotBuffer {
+  background-color: #F5F3FF;
+  border: 1px dashed #DDD6FE;
+  color: #6D28D9;
+  cursor: default;
+}
+
+.bufferText {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #6D28D9;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Inactive */
+.slotInactive {
+  background-color: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #94A3B8;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ── Standard Card Layout ── */
+.card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  overflow: visible;
+}
+
+.cardHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+}
+
+.cardTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.cardSubtitle {
+  font-size: 0.8125rem;
+  color: #64748B;
+  margin: 0;
+}
+
+.cardBody {
+  padding: 1.5rem;
+}
+
+/* ── Bay Manager Card Grid ── */
+.baysGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.bayCard {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.15s ease;
+}
+
+.bayCard:hover {
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.bayCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bayName {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.bayActionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #F1F5F9;
+  padding-top: 0.75rem;
+}
+
+/* ── Weekly Schedule Table ── */
+.scheduleTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.scheduleRow {
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.scheduleRow:last-child {
+  border-bottom: none;
+}
+
+.scheduleDayName {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0F172A;
+  width: 180px;
+}
+
+.scheduleControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.timeInput {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #0F172A;
+}
+
+/* ── Modal Backdrop ── */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.15s ease;
+}
+
+.modalCard {
+  background-color: #FFFFFF;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.2);
+  width: 100%;
+  max-width: 520px;
+  overflow: hidden;
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modalHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalTitle {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.modalCloseBtn {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.modalCloseBtn:hover {
+  background-color: #F1F5F9;
+  color: #334155;
+}
+
+.modalBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.modalFooter {
+  padding: 1rem 1.5rem;
+  background-color: #F8FAFC;
+  border-top: 1px solid #F1F5F9;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ── Buttons & Interactive Elements ── */
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #B45309;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(180, 83, 9, 0.15);
+}
+
+.primaryBtn:hover {
+  background-color: #92400E;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #FFFFFF;
+  color: #334155;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryBtn:hover {
+  background-color: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+
+.dangerBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dangerBtn:hover {
+  background-color: #FEE2E2;
+  border-color: #FCA5A5;
+}
+
+.iconBtn {
+  background: transparent;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748B;
+  transition: all 0.15s ease;
+}
+
+.iconBtn:hover {
+  background-color: #F8FAFC;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+
+.iconBtnDanger:hover {
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border-color: #FECACA;
+}
+
+/* ── Form Elements ── */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.formLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.formInput {
+  width: 100%;
+  padding: 0.55rem 0.875rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #0F172A;
+  background-color: #FFFFFF;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.formInput:focus {
+  border-color: #B45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
+}
+
+.formTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.55rem 0.875rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #0F172A;
+  background-color: #FFFFFF;
+  outline: none;
+  resize: vertical;
+}
+
+.formTextarea:focus {
+  border-color: #B45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.1);
+}
+
+.formHint {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+/* ── Toggle Switch ── */
+.switchLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #CBD5E1;
+  transition: 0.2s;
+  border-radius: 9999px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+  background-color: #B45309;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* ── Toast Banner ── */
+.banner {
+  padding: 0.875rem 1.25rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  animation: fadeIn 0.2s ease;
+}
+
+.bannerSuccess {
+  background-color: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
+}
+
+.bannerError {
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
+}
+
+/* ── Data Tables ── */
+.tableWrapper {
+  overflow-x: auto;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.dataTable th {
+  background-color: #F8FAFC;
+  padding: 0.75rem 1rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.dataTable td {
+  padding: 0.875rem 1rem;
+  font-size: 0.8125rem;
+  color: #1E293B;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.dataTable tr:last-child td {
+  border-bottom: none;
+}
+
+.dataTable tr:hover td {
+  background-color: #F8FAFC;
+}
+
+/* ── Empty State ── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #64748B;
+}
+
+.emptyStateTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0.75rem 0 0.25rem 0;
+}
+
+.emptyStateText {
+  font-size: 0.8125rem;
+  color: #64748B;
+  margin: 0;
+  max-width: 360px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}

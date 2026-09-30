@@ -4,7 +4,15 @@ import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './leads.module.css';
+
+const LEAD_SOURCE_OPTIONS: SelectOption[] = [
+  { value: 'ALL', label: 'All Channels', icon: <Icon.Inbox size={14} /> },
+  { value: 'public_web', label: 'Website Inquiries', icon: <Icon.Link size={14} /> },
+  { value: 'CONTACT_FORM', label: 'Contact Form', icon: <Icon.FileText size={14} /> },
+  { value: 'WHATSAPP', label: 'WhatsApp Inquiries', icon: <Icon.WhatsApp size={14} /> },
+];
 
 export interface LeadItem {
   id: string;
@@ -291,16 +299,14 @@ export function LeadsClient({ initialLeads }: LeadsClientProps) {
           </div>
 
           <div className={styles.filterMeta}>
-            <select
-              className={styles.sourceSelect}
-              value={sourceFilter}
-              onChange={(e) => setSourceFilter(e.target.value)}
-            >
-              <option value="ALL">All Acquisition Channels</option>
-              <option value="public_web">Website Inquiries</option>
-              <option value="CONTACT_FORM">Contact Form Submissions</option>
-              <option value="WHATSAPP">WhatsApp Inquiries</option>
-            </select>
+            <div style={{ minWidth: '180px' }}>
+              <Select
+                size="sm"
+                value={sourceFilter}
+                onChange={(val) => setSourceFilter(val)}
+                options={LEAD_SOURCE_OPTIONS}
+              />
+            </div>
 
             <span style={{ fontSize: '0.78125rem', color: '#64748B', whiteSpace: 'nowrap' }}>
               Showing <strong>{filteredLeads.length}</strong> of {leads.length}

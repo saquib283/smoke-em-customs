@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './offers.module.css';
 
 export interface OfferItem {
@@ -617,34 +618,28 @@ export function OffersClient({ initialOffers, services, packages }: OffersClient
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Link to Specific Service</label>
-                    <select
-                      className={styles.formSelect}
+                    <Select
+                      size="sm"
                       value={serviceId}
-                      onChange={(e) => setServiceId(e.target.value)}
-                    >
-                      <option value="">No specific service (Global Studio Offer)</option>
-                      {services.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setServiceId(val)}
+                      options={[
+                        { value: '', label: 'No specific service (Global Studio Offer)', icon: <Icon.Sparkles size={15} /> },
+                        ...services.map((s) => ({ value: s.id, label: s.name, icon: <Icon.Sparkles size={15} /> })),
+                      ]}
+                    />
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Link to Specific Package</label>
-                    <select
-                      className={styles.formSelect}
+                    <Select
+                      size="sm"
                       value={packageId}
-                      onChange={(e) => setPackageId(e.target.value)}
-                    >
-                      <option value="">No specific package</option>
-                      {packages.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setPackageId(val)}
+                      options={[
+                        { value: '', label: 'No specific package', icon: <Icon.Package size={15} /> },
+                        ...packages.map((p) => ({ value: p.id, label: p.name, icon: <Icon.Package size={15} /> })),
+                      ]}
+                    />
                   </div>
                 </div>
 

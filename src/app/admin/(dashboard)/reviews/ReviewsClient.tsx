@@ -2,7 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './reviews.module.css';
+
+const RATING_OPTIONS: SelectOption<number>[] = [
+  { value: 5, label: '5 Stars — Exceptional', icon: <Icon.Star size={15} color="var(--color-accent)" />, badge: '★★★★★' },
+  { value: 4, label: '4 Stars — Very Good', icon: <Icon.Star size={15} color="var(--color-accent)" />, badge: '★★★★☆' },
+  { value: 3, label: '3 Stars — Average', icon: <Icon.Star size={15} />, badge: '★★★☆☆' },
+  { value: 2, label: '2 Stars — Below Average', icon: <Icon.Star size={15} />, badge: '★★☆☆☆' },
+  { value: 1, label: '1 Star — Poor', icon: <Icon.Star size={15} />, badge: '★☆☆☆☆' },
+];
 
 export interface ReviewItem {
   id: string;
@@ -595,33 +604,29 @@ export function ReviewsClient({ initialReviews, services }: ReviewsClientProps) 
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Studio Treatment / Service</label>
-                    <select
-                      className={styles.formSelect}
+                    <Select
+                      size="sm"
                       value={serviceId}
-                      onChange={(e) => setServiceId(e.target.value)}
-                    >
-                      <option value="">General Detailing Inquiry</option>
-                      {services.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(val) => setServiceId(val)}
+                      options={[
+                        { value: '', label: 'General Detailing Inquiry', icon: <Icon.Sparkles size={15} /> },
+                        ...services.map((s) => ({
+                          value: s.id,
+                          label: s.name,
+                          icon: <Icon.Sparkles size={15} />,
+                        })),
+                      ]}
+                    />
                   </div>
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Star Rating (1 - 5)</label>
-                    <select
-                      className={styles.formSelect}
+                    <Select<number>
+                      size="sm"
                       value={rating}
-                      onChange={(e) => setRating(Number(e.target.value))}
-                    >
-                      <option value={5}>★★★★★ 5 Stars (Exceptional)</option>
-                      <option value={4}>★★★★☆ 4 Stars (Very Good)</option>
-                      <option value={3}>★★★☆☆ 3 Stars (Average)</option>
-                      <option value={2}>★★☆☆☆ 2 Stars (Below Average)</option>
-                      <option value={1}>★☆☆☆☆ 1 Star (Poor)</option>
-                    </select>
+                      onChange={(val) => setRating(val)}
+                      options={RATING_OPTIONS}
+                    />
                   </div>
 
                   <div className={styles.formGroup}>

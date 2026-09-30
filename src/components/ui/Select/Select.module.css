@@ -1,0 +1,609 @@
+/**
+ * Smoke M Customs — Unified Bespoke Select Component Styles
+ * Adapted for both Public Dark Luxury Theme & Admin Atelier Light Theme.
+ * High contrast, crystal-clear typography, smooth elevation, and precise alignment.
+ */
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 6px);
+  width: 100%;
+}
+
+.label {
+  font-size: var(--text-xs, 0.8125rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary, #475569);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.requiredAsterisk {
+  color: var(--color-accent, #B45309);
+}
+
+/* ────────────────── Trigger Base ────────────────── */
+
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background-color: var(--color-bg-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: var(--radius-md, 8px);
+  color: var(--color-text-primary, #0F172A);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  transition:
+    border-color var(--transition-fast, 150ms ease),
+    box-shadow var(--transition-fast, 150ms ease),
+    background-color var(--transition-fast, 150ms ease);
+}
+
+.trigger:hover:not(:disabled) {
+  border-color: var(--color-border-hover, #CBD5E1);
+  background-color: var(--color-bg-secondary, #F8FAFC);
+}
+
+.trigger:focus-visible,
+.triggerOpen {
+  outline: none;
+  border-color: var(--color-accent, #B45309) !important;
+  box-shadow: 0 0 0 3px var(--color-accent-subtle, rgba(180, 83, 9, 0.12)), 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+  background-color: var(--color-bg-surface, #FFFFFF);
+}
+
+.trigger:disabled {
+  opacity: 0.55;
+  background-color: var(--color-bg-secondary, #F1F5F9);
+  border-color: var(--color-border, #E2E8F0);
+  color: var(--color-text-muted, #94A3B8);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.triggerError {
+  border-color: var(--color-error, #EF4444) !important;
+}
+
+.triggerError:focus-visible,
+.triggerError.triggerOpen {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14), 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ────────────────── Variants & Sizes ────────────────── */
+
+.sizeSm {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.sizeMd {
+  min-height: 42px;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md, 8px);
+}
+
+.sizeLg {
+  min-height: 48px;
+  padding: 12px 16px;
+  font-size: 0.9375rem;
+  border-radius: 10px;
+}
+
+.variantCompact {
+  background-color: var(--color-bg-surface, #FFFFFF);
+  border-radius: var(--radius-pill, 9999px);
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+}
+
+.variantGhost {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.variantGhost:hover:not(:disabled) {
+  background-color: var(--color-bg-secondary, #F1F5F9);
+  border-color: var(--color-border, #E2E8F0);
+}
+
+/* ────────────────── Value Display ────────────────── */
+
+.valueWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.prefixIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent, #B45309);
+  flex-shrink: 0;
+}
+
+.valueText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.placeholder {
+  color: var(--color-text-muted, #94A3B8);
+  font-weight: 400;
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted, #94A3B8);
+  flex-shrink: 0;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), color 150ms ease;
+}
+
+.trigger:hover:not(:disabled) .chevron {
+  color: var(--color-text-secondary, #475569);
+}
+
+.triggerOpen .chevron {
+  transform: rotate(180deg);
+  color: var(--color-accent, #B45309);
+}
+
+.popover {
+  position: fixed;
+  z-index: 99999;
+  background-color: var(--color-bg-elevated, #FFFFFF);
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: 10px;
+  box-shadow:
+    0 14px 32px -4px rgba(15, 23, 42, 0.16),
+    0 4px 10px -2px rgba(15, 23, 42, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: popoverFadeIn 140ms cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.popoverFlip {
+  transform: translateY(-100%);
+}
+
+.popoverAlignRight {
+  transform: translateX(-100%);
+}
+
+.popoverFlip.popoverAlignRight {
+  transform: translate(-100%, -100%);
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ────────────────── Search Inside Popover ────────────────── */
+
+.searchContainer {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border, #E2E8F0);
+  background-color: var(--color-bg-surface, #FFFFFF);
+}
+
+.searchInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  color: var(--color-text-muted, #94A3B8);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 7px 10px 7px 30px;
+  background-color: var(--color-bg-secondary, #F8FAFC);
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: 6px;
+  color: var(--color-text-primary, #0F172A);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent, #B45309);
+  box-shadow: 0 0 0 2px var(--color-accent-subtle, rgba(180, 83, 9, 0.12));
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted, #94A3B8);
+}
+
+/* ────────────────── Options List ────────────────── */
+
+.optionsList {
+  list-style: none;
+  margin: 0;
+  padding: 5px;
+  max-height: 260px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+}
+
+/* Sleek Scrollbar */
+.optionsList::-webkit-scrollbar {
+  width: 5px;
+}
+.optionsList::-webkit-scrollbar-track {
+  background: transparent;
+}
+.optionsList::-webkit-scrollbar-thumb {
+  background: var(--color-border, #CBD5E1);
+  border-radius: 9999px;
+}
+.optionsList::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent, #B45309);
+}
+
+/* ────────────────── Option Item ────────────────── */
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 120ms ease, color 120ms ease;
+  color: var(--color-text-primary, #0F172A);
+  border-left: 2.5px solid transparent;
+}
+
+.option:hover,
+.optionHighlighted {
+  background-color: var(--color-accent-subtle, rgba(180, 83, 9, 0.08));
+  color: var(--color-text-primary, #0F172A);
+}
+
+.optionSelected {
+  background-color: var(--color-accent-subtle, rgba(180, 83, 9, 0.12));
+  border-left-color: var(--color-accent, #B45309);
+  color: var(--color-accent, #B45309);
+  font-weight: 600;
+}
+
+.optionSelected:hover,
+.optionSelected.optionHighlighted {
+  background-color: var(--color-accent-subtle, rgba(180, 83, 9, 0.16));
+  color: var(--color-accent-hover, #92400E);
+}
+
+.optionDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.optionLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.optionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent, #B45309);
+  flex-shrink: 0;
+}
+
+.optionTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.optionLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.optionSublabel {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #94A3B8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.optionRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.optionBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background-color: var(--color-bg-secondary, #F1F5F9);
+  color: var(--color-text-secondary, #475569);
+  border: 1px solid var(--color-border, #E2E8F0);
+  letter-spacing: 0.02em;
+}
+
+.optionSelected .optionBadge {
+  background-color: var(--color-accent-subtle, rgba(180, 83, 9, 0.15));
+  color: var(--color-accent, #B45309);
+  border-color: rgba(180, 83, 9, 0.25);
+}
+
+.checkmark {
+  color: var(--color-accent, #B45309);
+  display: flex;
+  align-items: center;
+}
+
+.emptyState {
+  padding: 20px 16px;
+  text-align: center;
+  color: var(--color-text-muted, #94A3B8);
+  font-size: 0.75rem;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: var(--color-error, #EF4444);
+  font-weight: 500;
+}
+
+/* ────────────────── Environment-Specific Themes ────────────────── */
+
+/* Trigger Button — Admin Light */
+.triggerAdmin {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.triggerAdmin:hover:not(:disabled) {
+  border-color: #94A3B8 !important;
+  background-color: #F8FAFC !important;
+}
+
+/* Trigger Button — Public Dark */
+.triggerPublic {
+  background-color: #191B20 !important;
+  border: 1px solid #2A2D33 !important;
+  color: #F4F5F6 !important;
+}
+
+.triggerPublic:hover:not(:disabled) {
+  border-color: #3E434D !important;
+  background-color: #16181C !important;
+}
+
+/* ── Admin Popover (Explicit Light Atelier Theme) ── */
+.popoverAdmin,
+[data-theme="admin"] .popover,
+.popover[data-theme="admin"],
+body.admin-theme .popover {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  box-shadow:
+    0 16px 36px -6px rgba(15, 23, 42, 0.16),
+    0 4px 12px -2px rgba(15, 23, 42, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+  color: #0F172A !important;
+}
+
+.popoverAdmin .searchContainer,
+[data-theme="admin"] .popover .searchContainer,
+.popover[data-theme="admin"] .searchContainer,
+body.admin-theme .popover .searchContainer {
+  background-color: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+.popoverAdmin .searchInput,
+[data-theme="admin"] .popover .searchInput,
+.popover[data-theme="admin"] .searchInput,
+body.admin-theme .popover .searchInput {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+.popoverAdmin .searchInput::placeholder,
+[data-theme="admin"] .popover .searchInput::placeholder,
+.popover[data-theme="admin"] .searchInput::placeholder,
+body.admin-theme .popover .searchInput::placeholder {
+  color: #94A3B8 !important;
+}
+
+.popoverAdmin .option,
+[data-theme="admin"] .popover .option,
+.popover[data-theme="admin"] .option,
+body.admin-theme .popover .option {
+  color: #1E293B !important;
+}
+
+.popoverAdmin .option:hover,
+.popoverAdmin .optionHighlighted,
+[data-theme="admin"] .popover .option:hover,
+[data-theme="admin"] .popover .optionHighlighted,
+.popover[data-theme="admin"] .option:hover,
+.popover[data-theme="admin"] .optionHighlighted,
+body.admin-theme .popover .option:hover,
+body.admin-theme .popover .optionHighlighted {
+  background-color: #F8FAFC !important;
+  color: #B45309 !important;
+}
+
+.popoverAdmin .optionSelected,
+[data-theme="admin"] .popover .optionSelected,
+.popover[data-theme="admin"] .optionSelected,
+body.admin-theme .popover .optionSelected {
+  background-color: #FFFBEB !important;
+  border-left-color: #B45309 !important;
+  color: #B45309 !important;
+}
+
+.popoverAdmin .optionLabel,
+[data-theme="admin"] .popover .optionLabel,
+.popover[data-theme="admin"] .optionLabel,
+body.admin-theme .popover .optionLabel {
+  color: inherit !important;
+}
+
+.popoverAdmin .optionSublabel,
+[data-theme="admin"] .popover .optionSublabel,
+.popover[data-theme="admin"] .optionSublabel,
+body.admin-theme .popover .optionSublabel {
+  color: #64748B !important;
+}
+
+.popoverAdmin .checkmark,
+[data-theme="admin"] .popover .checkmark,
+.popover[data-theme="admin"] .checkmark,
+body.admin-theme .popover .checkmark {
+  color: #B45309 !important;
+}
+
+.popoverAdmin .optionBadge,
+[data-theme="admin"] .popover .optionBadge,
+.popover[data-theme="admin"] .optionBadge,
+body.admin-theme .popover .optionBadge {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+.popoverAdmin .emptyState,
+[data-theme="admin"] .popover .emptyState,
+.popover[data-theme="admin"] .emptyState,
+body.admin-theme .popover .emptyState {
+  color: #64748B !important;
+}
+
+/* ── Public Popover (Explicit Dark Luxury Automotive Theme) ── */
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) {
+  background-color: #16181C !important;
+  border: 1px solid #2A2D33 !important;
+  box-shadow:
+    0 18px 44px -6px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(201, 162, 75, 0.15) !important;
+  color: #F4F5F6 !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .searchContainer {
+  background-color: #191B20 !important;
+  border-bottom: 1px solid #2A2D33 !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .searchInput {
+  background-color: #121418 !important;
+  border: 1px solid #2A2D33 !important;
+  color: #F4F5F6 !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .searchInput::placeholder {
+  color: #6E7480 !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .option {
+  color: #F4F5F6 !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .option:hover,
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .optionHighlighted {
+  background-color: rgba(201, 162, 75, 0.12) !important;
+  color: #C9A24B !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .optionSelected {
+  background-color: rgba(201, 162, 75, 0.18) !important;
+  border-left-color: #C9A24B !important;
+  color: #C9A24B !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .optionLabel {
+  color: inherit !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .optionSublabel {
+  color: #A6ABB3 !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .checkmark {
+  color: #C9A24B !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .optionBadge {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #A6ABB3 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.popoverDark:not(.popoverAdmin):not([data-theme="admin"]) .emptyState {
+  color: #6E7480 !important;
+}
+
+

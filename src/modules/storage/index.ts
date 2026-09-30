@@ -116,4 +116,86 @@ export class LocalStorageProvider implements StorageProvider {
   }
 }
 
-export const storageProvider: StorageProvider = new LocalStorageProvider();
+/**
+ * Vercel Blob Storage Provider — Production Cloud Storage
+ * Uses Vercel's global edge network via @vercel/blob.
+ */
+export class VercelBlobStorageProvider implements StorageProvider {
+  private token?: string;
+
+  constructor(token?: string) {
+    this.token = token || process.env.BLOB_READ_WRITE_TOKEN;
+  }
+
+  async uploadFile(file: {
+    buffer: Buffer;
+    filename: string;
+    contentType: string;
+    folder?: string;
+  }): Promise<{ publicUrl: string; providerKey: string }> {
+    const { put } = await import('@vercel/blob');
+    const ext = path.extname(file.filename);
+    const base = path.basename(file.filename, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const uniqueId = crypto.randomUUID().slice(0, 8);
+    const targetFolder = file.folder ? `${file.folder}/` : '';
+    const pathname = `${targetFolder}${Date.now()}-${uniqueId}-${base}${ext}`;
+
+    const blob = await put(pathname, file.buffer, {
+      access: 'public',
+      contentType: file.contentType,
+      token: this.token,
+    });
+
+    return {
+      publicUrl: blob.url,
+      providerKey: blob.url,
+    };
+  }
+
+  async getSignedUploadUrl(params: {
+    contentType: string;
+    sizeBytes: number;
+    folder: string;
+  }): Promise<{ uploadUrl: string; publicUrl: string; providerKey: string }> {
+    return {
+      uploadUrl: `/api/uploads`,
+      publicUrl: '',
+      providerKey: `${params.folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
+    };
+  }
+
+  async deleteObject(providerKey: string): Promise<void> {
+    try {
+      const { del } = await import('@vercel/blob');
+      await del(providerKey, { token: this.token });
+    } catch (err: any) {
+      console.warn(`Failed to delete Vercel Blob object: ${providerKey}`, err.message);
+    }
+  }
+
+  getPublicUrl(providerKey: string): string {
+    if (providerKey.startsWith('http://') || providerKey.startsWith('https://')) {
+      return providerKey;
+    }
+    return `/uploads/${providerKey}`;
+  }
+}
+
+/**
+ * Automatically creates the appropriate storage provider:
+ * - VercelBlobStorageProvider when BLOB_READ_WRITE_TOKEN is set or STORAGE_PROVIDER=vercel-blob
+ * - LocalStorageProvider for local development and offline test suites
+ */
+export function createStorageProvider(): StorageProvider {
+  const providerType = process.env.STORAGE_PROVIDER?.toLowerCase();
+  const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN;
+
+  if (providerType === 'vercel-blob' || (!providerType && hasBlobToken) || providerType === 'blob') {
+    return new VercelBlobStorageProvider();
+  }
+
+  return new LocalStorageProvider();
+}
+
+export const storageProvider: StorageProvider = createStorageProvider();
+

@@ -4,16 +4,41 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
 import { Icon } from '@/components/common/Icons';
+import { useToast, Select, type SelectOption } from '@/components/ui';
+import { downloadQuotePDF } from '@/modules/quoting/pdfGenerator';
 import type { LeadDetail } from '@/modules/crm';
 import type { CommunicationEntry } from '@/modules/notifications';
 import styles from './detail.module.css';
+
+const COMM_CHANNEL_OPTIONS: SelectOption<'WHATSAPP' | 'CALL' | 'EMAIL' | 'SMS'>[] = [
+  { value: 'WHATSAPP', label: 'WhatsApp', icon: <Icon.WhatsApp size={15} /> },
+  { value: 'CALL', label: 'Phone Call', icon: <Icon.Phone size={15} /> },
+  { value: 'EMAIL', label: 'Email', icon: <Icon.Mail size={15} /> },
+  { value: 'SMS', label: 'SMS Alert', icon: <Icon.Send size={15} /> },
+];
+
+const COMM_DIRECTION_OPTIONS: SelectOption<'OUTBOUND' | 'INBOUND'>[] = [
+  { value: 'OUTBOUND', label: 'Outbound (Studio to Client)', icon: <Icon.ArrowRight size={15} /> },
+  { value: 'INBOUND', label: 'Inbound (Client to Studio)', icon: <Icon.ArrowLeft size={15} /> },
+];
 
 interface LeadDetailProps {
   initialLead: LeadDetail | any;
   initialCommunications: CommunicationEntry[] | any[];
 }
 
+const PIPELINE_STAGES = [
+  { key: 'NEW', label: 'New Intake', step: 1 },
+  { key: 'CONTACTED', label: 'Contacted', step: 2 },
+  { key: 'QUOTE_SENT', label: 'Quote Sent', step: 3 },
+  { key: 'FOLLOW_UP', label: 'Follow Up', step: 4 },
+  { key: 'BOOKED', label: 'Booked', step: 5 },
+  { key: 'COMPLETED', label: 'Completed', step: 6 },
+  { key: 'LOST', label: 'Lost', step: 7 },
+];
+
 export function LeadDetailClient({ initialLead, initialCommunications }: LeadDetailProps) {
+  const { success, error: toastError, info } = useToast();
   const [lead, setLead] = useState<any>(initialLead);
   const [communications, setCommunications] = useState<any[]>(initialCommunications);
   const [newNote, setNewNote] = useState('');
@@ -30,17 +55,39 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
   const [directWaText, setDirectWaText] = useState('');
   const [directWaSending, setDirectWaSending] = useState(false);
 
-  const pipelineStatuses = [
-    'NEW',
-    'CONTACTED',
-    'QUOTE_SENT',
-    'FOLLOW_UP',
-    'BOOKED',
-    'COMPLETED',
-    'LOST',
-  ];
+  // Client Initials
+  const clientInitials = (() => {
+    const name = (lead.customerName || 'Lead').trim();
+    const parts = name.split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    }
+    return (name.slice(0, 2) || 'LD').toUpperCase();
+  })();
+
+  const formatStatus = (st: string) => {
+    switch (st) {
+      case 'NEW':
+        return 'New Intake';
+      case 'CONTACTED':
+        return 'Contacted';
+      case 'QUOTE_SENT':
+        return 'Quote Sent';
+      case 'FOLLOW_UP':
+        return 'Follow-Up Needed';
+      case 'BOOKED':
+        return 'Bay Slot Booked';
+      case 'COMPLETED':
+        return 'Converted & Closed';
+      case 'LOST':
+        return 'Lost / Closed';
+      default:
+        return st.replace(/_/g, ' ');
+    }
+  };
 
   const handleStatusChange = async (newStatus: string) => {
+    if (newStatus === lead.status) return;
     setActionLoading(true);
     try {
       const res = await fetch('/api/admin/leads', {
@@ -62,11 +109,12 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
             ...(prev.statusHistory || []),
           ],
         }));
+        success(`Pipeline stage transitioned to ${newStatus.replace(/_/g, ' ')}`);
       } else {
-        alert(data.error || 'Failed to update status');
+        toastError(data.error || 'Failed to update pipeline stage');
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toastError('Network error connecting to lead service');
     } finally {
       setActionLoading(false);
     }
@@ -90,9 +138,12 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
       if (data.success && data.lead) {
         setLead(data.lead);
         setNewNote('');
+        success('Internal studio note recorded');
+      } else {
+        toastError(data.error || 'Failed to save note');
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toastError('Network error saving note');
     } finally {
       setActionLoading(false);
     }
@@ -118,9 +169,12 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
       if (data.success && data.communication) {
         setCommunications((prev) => [data.communication, ...prev]);
         setCommSummary('');
+        success('Customer communication logged');
+      } else {
+        toastError(data.error || 'Failed to log communication');
       }
-    } catch (err) {
-      console.error('Failed to log communication:', err);
+    } catch {
+      toastError('Network error logging communication');
     } finally {
       setCommLoading(false);
     }
@@ -144,43 +198,50 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
       const data = await res.json();
       if (res.ok && data.success) {
         setDirectWaText('');
+        success('WhatsApp message dispatched successfully');
         fetch(`/api/admin/communications?leadId=${lead.id}`)
           .then((r) => r.json())
           .then((d) => d.success && setCommunications(d.communications || []))
           .catch(() => {});
       } else {
-        alert(data.error || 'Failed to dispatch WhatsApp message.');
+        toastError(data.error || 'Failed to dispatch WhatsApp message.');
       }
     } catch (err: any) {
-      alert(err.message || 'Error sending WhatsApp message.');
+      toastError(err.message || 'Error sending WhatsApp message.');
     } finally {
       setDirectWaSending(false);
     }
   };
 
-  const statusColorClass = `status${lead.status}`;
+  const currentStageIndex = PIPELINE_STAGES.findIndex((s) => s.key === lead.status);
 
   return (
     <div className={styles.container}>
       {/* ── Top Bar ── */}
       <div className={styles.topBar}>
-        <Link href="/admin/leads" className={styles.backBtn}>
+        <Link href="/admin/leads" className={styles.backBtn} id="btn-back-to-leads">
           <Icon.ArrowRight size={14} style={{ transform: 'rotate(180deg)' }} />
-          <span>Back to All Leads</span>
+          <span>Back to Inbound Leads</span>
         </Link>
         <div className={styles.topActions}>
           <Link
             href={`/admin/quotes/new?leadId=${lead.id}&customerId=${lead.customerId}`}
-            className="btn btn-primary btn-sm"
+            className={styles.primaryActionBtn}
+            id="btn-generate-quote"
           >
-            + Generate Formal Quote
+            <Icon.FileText size={15} />
+            <span>Generate Formal Quote</span>
           </Link>
+
           <Link
             href={`/admin/bookings?customerId=${lead.customerId}&leadId=${lead.id}`}
-            className="btn btn-secondary btn-sm"
+            className={styles.secondaryActionBtn}
+            id="btn-book-slot"
           >
-            + Book Bay Slot
+            <Icon.Calendar size={15} />
+            <span>Book Bay Slot</span>
           </Link>
+
           <WhatsAppCTA
             phone={lead.customerPhone}
             message={`Hi ${lead.customerName}, Smoke M Customs following up on quote request for your ${lead.vehicleText || 'vehicle'}.`}
@@ -193,34 +254,59 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
               summary: `Outbound WhatsApp follow-up regarding ${lead.vehicleText || 'inquiry'}`,
             }}
           />
+
+          <a href={`tel:${lead.customerPhone}`} className={styles.callBtn} title="Call Client Mobile">
+            <Icon.Phone size={14} />
+            <span>Call Mobile</span>
+          </a>
         </div>
       </div>
 
-      {/* ── Main Lead Banner ── */}
+      {/* ── Main Lead Dossier Banner ── */}
       <div className={styles.headerCard}>
         <div className={styles.headerLeft}>
-          <div className={styles.customerAvatar}>
-            {lead.customerName?.charAt(0)?.toUpperCase() ?? 'L'}
-          </div>
-          <div>
-            <span className={styles.leadTag}>LEAD PROFILE & PIPELINE</span>
+          <div className={styles.customerAvatar}>{clientInitials}</div>
+          <div className={styles.headerMeta}>
+            <div className={styles.eyebrow}>
+              <span>Studio Control</span>
+              <span className={styles.eyebrowDot} />
+              <span>Customer & CRM</span>
+              <span className={styles.eyebrowDot} />
+              <span>Lead Dossier #{lead.id.slice(-6).toUpperCase()}</span>
+            </div>
             <h1 className={styles.leadTitle}>{lead.customerName}</h1>
             <div className={styles.leadMeta}>
-              <span>Phone: <strong>{lead.customerPhone}</strong></span>
+              <span className={styles.leadMetaItem}>
+                <Icon.Phone size={13} color="#B45309" />
+                <a href={`tel:${lead.customerPhone}`} className={styles.metaLink}>
+                  {lead.customerPhone}
+                </a>
+              </span>
               <span>•</span>
-              <span>Created {new Date(lead.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <span className={styles.leadMetaItem}>
+                <Icon.Mail size={13} />
+                <span>{lead.customer?.email || 'No email provided'}</span>
+              </span>
+              <span>•</span>
+              <span>
+                Intake: {new Date(lead.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
               {lead.source && (
                 <>
                   <span>•</span>
-                  <span>Source: {lead.source}</span>
+                  <span className={styles.sourceBadge}>
+                    {lead.source === 'public_web' ? 'Website Intake' : lead.source.replace(/_/g, ' ')}
+                  </span>
                 </>
               )}
             </div>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span className={`${styles.leadStatusBadge} ${styles[statusColorClass] || ''}`} style={{ backgroundColor: '#F1F5F9', color: '#0F172A', border: '1px solid #CBD5E1' }}>
-            {lead.status.replace(/_/g, ' ')}
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <span className={`${styles.statusPill} ${styles[`status${lead.status}`] || styles.statusNEW}`}>
+            <span className={styles.statusDot} />
+            <span>{formatStatus(lead.status)}</span>
           </span>
         </div>
       </div>
@@ -245,80 +331,162 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
         </div>
       )}
 
-      {/* ── Two Column Content Grid ── */}
-      <div className={styles.contentGrid}>
-        {/* Left Column: Pipeline, Info, Direct WhatsApp & Communications */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-          {/* Status Progression */}
-          <div className={styles.sectionCard}>
-            <h2 className={styles.cardTitle}>
-              <Icon.Tag size={18} />
-              <span>Pipeline Stage Progression</span>
-            </h2>
-            <div className={styles.statusButtons}>
-              {pipelineStatuses.map((st) => (
-                <button
-                  key={st}
-                  type="button"
-                  disabled={actionLoading}
-                  className={`${styles.statusOptionBtn} ${lead.status === st ? styles.activeStatusOption : ''}`}
-                  onClick={() => handleStatusChange(st)}
-                >
-                  {st.replace(/_/g, ' ')}
-                </button>
-              ))}
+      {/* ── Executive Horizontal Pipeline Stepper ── */}
+      <div className={styles.stepperCard}>
+        <div className={styles.stepperHeader}>
+          <div className={styles.stepperTitleWrap}>
+            <div className={styles.stepperIcon}>
+              <Icon.Tag size={16} />
+            </div>
+            <div>
+              <h3 className={styles.stepperTitle}>Pipeline Stage Progression</h3>
+              <p className={styles.stepperSubtitle}>
+                Current status: <strong>{formatStatus(lead.status)}</strong>. Advance stage to track customer journey.
+              </p>
             </div>
           </div>
+        </div>
 
+        <div className={styles.stepperScroll}>
+          <div className={styles.stepperTrack}>
+            {PIPELINE_STAGES.map((st, idx) => {
+              const isActive = lead.status === st.key;
+              const isPast = currentStageIndex > idx && lead.status !== 'LOST';
+              return (
+                <button
+                  key={st.key}
+                  type="button"
+                  disabled={actionLoading}
+                  className={`${styles.stepBtn} ${isActive ? styles.stepActive : ''} ${isPast ? styles.stepCompleted : ''}`}
+                  onClick={() => handleStatusChange(st.key)}
+                  title={`Transition to ${st.label}`}
+                >
+                  <span className={styles.stepNumber}>
+                    {isPast ? '✓' : st.step}
+                  </span>
+                  <span>{st.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Two Column Content Grid ── */}
+      <div className={styles.contentGrid}>
+        {/* Left Column: Client Parameters, Photos & Direct WhatsApp */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {/* Client & Vehicle Parameters */}
           <div className={styles.sectionCard}>
-            <h2 className={styles.cardTitle}>
-              <Icon.Car size={18} />
-              <span>Client & Vehicle Parameters</span>
-            </h2>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardHeaderLeft}>
+                <div className={styles.cardHeaderIcon}>
+                  <Icon.Car size={17} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>Client & Vehicle Parameters</h3>
+                  <p className={styles.cardSubtitle}>
+                    Vehicle condition, requested treatment, and intake preferences.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.infoGrid}>
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Mobile Number</span>
-                <span className={styles.infoVal}>{lead.customerPhone}</span>
+                <span className={styles.infoLabel}>Direct Contact Mobile</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span className={styles.infoVal} style={{ fontFeatureSettings: 'tnum' }}>
+                    {lead.customerPhone}
+                  </span>
+                  <a href={`tel:${lead.customerPhone}`} className={styles.dialLink}>
+                    Dial ↗
+                  </a>
+                </div>
               </div>
+
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Email</span>
-                <span className={styles.infoVal}>{lead.customer?.email ?? 'Not provided'}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Vehicle</span>
-                <span className={styles.infoVal}>{lead.vehicleText ?? 'Not specified'}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Primary Treatment</span>
-                <span className={styles.infoVal}>{lead.serviceInterestName ?? 'General Inquiry'}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Paint Condition</span>
-                <span className={styles.infoVal}>{lead.vehicleCondition ?? 'Unspecified'}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Desired Outcome</span>
-                <span className={styles.infoVal}>{lead.desiredResult ?? 'Unspecified'}</span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Estimated Band</span>
+                <span className={styles.infoLabel}>Client Email</span>
                 <span className={styles.infoVal}>
-                  {lead.budgetRangeMin && lead.budgetRangeMax
-                    ? `₹${Number(lead.budgetRangeMin).toLocaleString('en-IN')} – ₹${Number(lead.budgetRangeMax).toLocaleString('en-IN')}`
-                    : 'Standard Evaluation'}
+                  {lead.customer?.email ? (
+                    <a href={`mailto:${lead.customer.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {lead.customer.email}
+                    </a>
+                  ) : (
+                    'Not provided'
+                  )}
                 </span>
               </div>
+
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Preferred Contact</span>
-                <span className={styles.infoVal}>{lead.customer?.preferredContactMethod ?? 'WHATSAPP'}</span>
+                <span className={styles.infoLabel}>Vehicle Model / Spec</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.1rem' }}>
+                  <Icon.Car size={15} color="#B45309" />
+                  <span className={styles.infoVal}>{lead.vehicleText ?? 'Not specified'}</span>
+                </div>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Primary Treatment Inquiry</span>
+                <span className={styles.infoVal}>{lead.serviceInterestName ?? 'General Detailing Inquiry'}</span>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Paint Surface Condition</span>
+                <span className={styles.infoVal}>{lead.vehicleCondition ?? 'Standard Inspection'}</span>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Existing Coating / PPF</span>
+                <span className={styles.infoVal}>{lead.existingCoatingOrPpf ?? 'Factory Finish'}</span>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Desired Treatment Outcome</span>
+                <span className={styles.infoVal}>{lead.desiredResult ?? 'High-Gloss Preservation'}</span>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Estimated Budget Band</span>
+                <span className={styles.infoVal}>
+                  {lead.budgetRangeMin && lead.budgetRangeMax ? (
+                    <span className={styles.budgetBadge}>
+                      ₹{Number(lead.budgetRangeMin).toLocaleString('en-IN')} – ₹{Number(lead.budgetRangeMax).toLocaleString('en-IN')}
+                    </span>
+                  ) : (
+                    'Studio Evaluation'
+                  )}
+                </span>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Preferred Schedule Slot</span>
+                <span className={styles.infoVal}>
+                  {lead.preferredDate
+                    ? new Date(lead.preferredDate).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })
+                    : 'Flexible / Earliest Open'}
+                </span>
+              </div>
+
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>CRM Customer Profile</span>
+                <Link
+                  href={`/admin/customers/${lead.customerId}`}
+                  style={{ color: '#B45309', fontSize: '0.8125rem', fontWeight: 700, textDecoration: 'none' }}
+                >
+                  View Customer Dossier &rarr;
+                </Link>
               </div>
             </div>
 
             {lead.additionalNotes && (
-              <div className={styles.notesBox} style={{ marginTop: 'var(--space-2)' }}>
-                <span className={styles.infoLabel}>Client Requirements / Notes:</span>
-                <p>{lead.additionalNotes}</p>
+              <div className={styles.notesBox}>
+                <span className={styles.infoLabel}>Client Requirements & Custom Instructions:</span>
+                <p style={{ margin: 0 }}>{lead.additionalNotes}</p>
               </div>
             )}
           </div>
@@ -326,10 +494,17 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
           {/* Attached Vehicle Photos */}
           {lead.photos && lead.photos.length > 0 && (
             <div className={styles.sectionCard}>
-              <h2 className={styles.cardTitle}>
-                <Icon.Image size={18} />
-                <span>Client Attached Photos ({lead.photos.length})</span>
-              </h2>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardHeaderLeft}>
+                  <div className={styles.cardHeaderIcon}>
+                    <Icon.Image size={17} />
+                  </div>
+                  <div>
+                    <h3 className={styles.cardTitle}>Client Attached Photos ({lead.photos.length})</h3>
+                    <p className={styles.cardSubtitle}>Visual condition uploaded during intake.</p>
+                  </div>
+                </div>
+              </div>
               <div className={styles.photosGrid}>
                 {lead.photos.map((p: any) => (
                   <div
@@ -351,7 +526,7 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
               <span className={styles.waTitle}>
                 <Icon.WhatsApp size={18} /> Direct WhatsApp Cloud Chat
               </span>
-              <span style={{ fontSize: '11px', color: '#15803D', fontWeight: 600 }}>
+              <span style={{ fontSize: '11px', color: '#15803D', fontWeight: 700 }}>
                 Meta Cloud API Active
               </span>
             </div>
@@ -417,21 +592,112 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
           </div>
         </div>
 
-        {/* Right Column: Status History, Internal Notes & Communication Logs */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-          {/* Status History Timeline */}
+        {/* Right Column: Quotes & PDF, Timeline, Staff Notes & Communications */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {/* ── Issued Studio Quotations & PDF Download Card ── */}
+          <div className={styles.sectionCard}>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardHeaderLeft}>
+                <div className={styles.cardHeaderIcon}>
+                  <Icon.FileText size={17} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>Issued Studio Quotations</h3>
+                  <p className={styles.cardSubtitle}>
+                    Formal pricing estimates and downloadable PDF sheets.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {lead.quotes && lead.quotes.length > 0 ? (
+              <div className={styles.quotesList}>
+                {lead.quotes.map((q: any) => (
+                  <div key={q.id} className={styles.quoteCardItem}>
+                    <div className={styles.quoteItemLeft}>
+                      <div className={styles.quoteRefRow}>
+                        <span className={styles.quoteRef}>QT-{q.id.slice(-6).toUpperCase()}</span>
+                        <span className={`${styles.statusPill} ${styles[`status${q.status}`] || styles.statusNEW}`}>
+                          <span className={styles.statusDot} />
+                          <span>{q.status}</span>
+                        </span>
+                      </div>
+                      <span className={styles.quoteMeta}>
+                        Issued: {new Date(q.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        {q.validUntil && ` • Valid: ${new Date(q.validUntil).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`}
+                      </span>
+                    </div>
+
+                    <div className={styles.quoteItemRight}>
+                      <span className={styles.quoteAmount}>
+                        ₹{Number(q.total || 0).toLocaleString('en-IN')}
+                      </span>
+                      <div className={styles.quoteActions}>
+                        <button
+                          type="button"
+                          className={styles.downloadPdfBtn}
+                          onClick={() => {
+                            try {
+                              downloadQuotePDF(q);
+                              success(`Quotation QT-${q.id.slice(-6).toUpperCase()} PDF downloaded!`);
+                            } catch {
+                              window.open(`/api/quotes/${q.id}/pdf`, '_blank');
+                            }
+                          }}
+                          title="Download Quote PDF"
+                        >
+                          <Icon.FileText size={13} />
+                          <span>PDF</span>
+                        </button>
+                        <Link href={`/admin/quotes/${q.id}`} className={styles.viewQuoteBtn}>
+                          <span>View &rarr;</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.emptyQuotesBox}>
+                <Icon.FileText size={28} color="#94A3B8" />
+                <div style={{ fontSize: '0.84375rem', fontWeight: 600, color: '#334155' }}>
+                  No formal quotation generated yet
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#64748B', maxWidth: 280 }}>
+                  Create an itemized treatment estimate with GST breakdown, downloadable PDF, and WhatsApp sharing.
+                </div>
+                <Link
+                  href={`/admin/quotes/new?leadId=${lead.id}&customerId=${lead.customerId}`}
+                  className={styles.primaryActionBtn}
+                  style={{ marginTop: '0.25rem' }}
+                >
+                  <Icon.Plus size={14} />
+                  <span>Create Formal Estimate</span>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Pipeline Status History Timeline */}
           {lead.statusHistory && lead.statusHistory.length > 0 && (
             <div className={styles.sectionCard}>
-              <h2 className={styles.cardTitle}>
-                <Icon.Clock size={18} />
-                <span>Pipeline Status History</span>
-              </h2>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardHeaderLeft}>
+                  <div className={styles.cardHeaderIcon}>
+                    <Icon.Clock size={17} />
+                  </div>
+                  <div>
+                    <h3 className={styles.cardTitle}>Pipeline Status History</h3>
+                    <p className={styles.cardSubtitle}>Audit trail of progression updates.</p>
+                  </div>
+                </div>
+              </div>
               <div className={styles.timeline}>
                 {lead.statusHistory.map((h: any) => (
                   <div key={h.id} className={styles.timelineItem}>
                     <span className={styles.timelineTransition}>
-                      {h.fromStatus ? `${h.fromStatus} → ` : 'Created as '}
-                      <strong>{h.toStatus}</strong>
+                      {h.fromStatus ? `${h.fromStatus.replace(/_/g, ' ')} → ` : 'Created as '}
+                      <strong>{h.toStatus.replace(/_/g, ' ')}</strong>
                     </span>
                     <span className={styles.timelineDate}>
                       {new Date(h.changedAt).toLocaleString('en-IN', {
@@ -448,12 +714,19 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
             </div>
           )}
 
-          {/* Internal Notes */}
+          {/* Internal Staff Notes */}
           <div className={styles.sectionCard}>
-            <h2 className={styles.cardTitle}>
-              <Icon.FileText size={18} />
-              <span>Internal Staff Notes</span>
-            </h2>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardHeaderLeft}>
+                <div className={styles.cardHeaderIcon}>
+                  <Icon.FileText size={17} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>Internal Staff Notes</h3>
+                  <p className={styles.cardSubtitle}>Inspection logs and private studio remarks.</p>
+                </div>
+              </div>
+            </div>
             <form onSubmit={handleAddNote} className={styles.noteForm}>
               <input
                 type="text"
@@ -465,7 +738,8 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
               <button
                 type="submit"
                 disabled={actionLoading || !newNote.trim()}
-                className="btn btn-secondary btn-sm"
+                className={styles.primaryActionBtn}
+                style={{ padding: '0.45rem 0.85rem' }}
               >
                 Post Note
               </button>
@@ -489,39 +763,44 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
                 </div>
               ))}
               {(!lead.notes || lead.notes.length === 0) && (
-                <p style={{ color: '#94A3B8', fontSize: '12px' }}>No internal notes recorded yet.</p>
+                <p style={{ color: '#94A3B8', fontSize: '12px', margin: '0.25rem 0' }}>No internal notes recorded yet.</p>
               )}
             </div>
           </div>
 
-          {/* Communication Logs */}
+          {/* Customer Communication Logs */}
           <div className={styles.sectionCard}>
-            <h2 className={styles.cardTitle}>
-              <Icon.Users size={18} />
-              <span>Customer Communication Logs</span>
-            </h2>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardHeaderLeft}>
+                <div className={styles.cardHeaderIcon}>
+                  <Icon.Users size={17} />
+                </div>
+                <div>
+                  <h3 className={styles.cardTitle}>Customer Communication Logs</h3>
+                  <p className={styles.cardSubtitle}>Multi-channel interaction records.</p>
+                </div>
+              </div>
+            </div>
             <form onSubmit={handleLogCommunication}>
               <div className={styles.commFormRow}>
-                <select
-                  className={styles.commSelect}
-                  value={commChannel}
-                  onChange={(e) => setCommChannel(e.target.value as any)}
-                >
-                  <option value="WHATSAPP">WhatsApp</option>
-                  <option value="CALL">Phone Call</option>
-                  <option value="EMAIL">Email</option>
-                  <option value="SMS">SMS</option>
-                </select>
-                <select
-                  className={styles.commSelect}
-                  value={commDirection}
-                  onChange={(e) => setCommDirection(e.target.value as any)}
-                >
-                  <option value="OUTBOUND">Outbound (Studio to Client)</option>
-                  <option value="INBOUND">Inbound (Client to Studio)</option>
-                </select>
+                <div style={{ flex: 1, minWidth: '140px' }}>
+                  <Select<'WHATSAPP' | 'CALL' | 'EMAIL' | 'SMS'>
+                    size="sm"
+                    value={commChannel}
+                    onChange={(val) => setCommChannel(val)}
+                    options={COMM_CHANNEL_OPTIONS}
+                  />
+                </div>
+                <div style={{ flex: 1, minWidth: '180px' }}>
+                  <Select<'OUTBOUND' | 'INBOUND'>
+                    size="sm"
+                    value={commDirection}
+                    onChange={(val) => setCommDirection(val)}
+                    options={COMM_DIRECTION_OPTIONS}
+                  />
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 8 }}>
+              <div style={{ display: 'flex', gap: '0.5rem', marginTop: 8 }}>
                 <input
                   type="text"
                   className={styles.noteInput}
@@ -532,14 +811,15 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
                 <button
                   type="submit"
                   disabled={commLoading || !commSummary.trim()}
-                  className="btn btn-secondary btn-sm"
+                  className={styles.secondaryActionBtn}
+                  style={{ padding: '0.45rem 0.85rem' }}
                 >
                   {commLoading ? 'Saving...' : 'Log'}
                 </button>
               </div>
             </form>
 
-            <div className={styles.commList} style={{ marginTop: 'var(--space-3)' }}>
+            <div className={styles.commList} style={{ marginTop: '0.5rem' }}>
               {communications.map((c) => (
                 <div key={c.id} className={styles.commItem}>
                   <div className={styles.commHead}>
@@ -565,7 +845,7 @@ export function LeadDetailClient({ initialLead, initialCommunications }: LeadDet
                 </div>
               ))}
               {communications.length === 0 && (
-                <p style={{ color: '#94A3B8', fontSize: '12px' }}>No direct contacts logged yet.</p>
+                <p style={{ color: '#94A3B8', fontSize: '12px', margin: '0.25rem 0' }}>No direct contacts logged yet.</p>
               )}
             </div>
           </div>

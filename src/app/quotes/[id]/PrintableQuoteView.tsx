@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { QuoteDetail } from '@/modules/quoting';
+import type { QuoteDetail } from '@/modules/quoting/types';
+import { downloadQuotePDF } from '@/modules/quoting/pdfGenerator';
 import { generateQuoteWhatsAppSummary, whatsappAdapter } from '@/modules/whatsapp';
 import { Icon } from '@/components/common/Icons';
 import styles from './quoteView.module.css';
@@ -15,6 +16,14 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
   const handlePrint = () => {
     if (typeof window !== 'undefined') {
       window.print();
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    try {
+      downloadQuotePDF(quote);
+    } catch {
+      window.open(`/api/quotes/${quote.id}/pdf`, '_blank');
     }
   };
 
@@ -53,9 +62,15 @@ export function PrintableQuoteView({ quote }: PrintableQuoteViewProps) {
         </Link>
 
         <div className={styles.actionBtnGroup}>
+          <button type="button" className={styles.btnPrint} onClick={handleDownloadPDF} id="btn-download-pdf-quote">
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <Icon.FileText size={16} /> Download PDF
+            </span>
+          </button>
+
           <button type="button" className={styles.btnPrint} onClick={handlePrint} id="btn-print-quote">
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <Icon.Printer size={16} /> Print / Save PDF
+              <Icon.Printer size={16} /> Print Sheet
             </span>
           </button>
 

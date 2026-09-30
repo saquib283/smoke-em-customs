@@ -16,8 +16,18 @@ interface QuotePageProps {
 export const revalidate = 60;
 
 export default async function QuotePage({ searchParams }: QuotePageProps) {
-  const { service: preselectedServiceId } = await searchParams;
+  const { service: preselectedServiceParam } = await searchParams;
   const services = await catalogueService.listServices({ enabledOnly: true });
+
+  let preselectedServiceId: string | undefined = undefined;
+  if (preselectedServiceParam) {
+    const matched = services.find(
+      (s) => s.id === preselectedServiceParam || s.slug === preselectedServiceParam
+    );
+    if (matched) {
+      preselectedServiceId = matched.id;
+    }
+  }
 
   const serviceOptions = services.map((s) => ({
     id: s.id,

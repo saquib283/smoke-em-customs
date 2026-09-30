@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
 import { Icon } from '@/components/common/Icons';
-import { useToast } from '@/components/ui';
-import type { QuoteDetail } from '@/modules/quoting';
+import { useToast, Select, type SelectOption } from '@/components/ui';
+import type { QuoteDetail } from '@/modules/quoting/types';
+import { downloadQuotePDF } from '@/modules/quoting/pdfGenerator';
 import { generateQuoteWhatsAppSummary } from '@/modules/whatsapp';
 import styles from './quoteDetail.module.css';
 
@@ -319,6 +320,30 @@ export function QuoteDetailClient({
         </Link>
 
         <div className={styles.topActions}>
+          <button
+            type="button"
+            className={styles.actionBtn}
+            onClick={() => {
+              try {
+                downloadQuotePDF(quote);
+                success('Quotation PDF downloaded successfully!');
+              } catch {
+                window.open(`/api/quotes/${quote.id}/pdf`, '_blank');
+              }
+            }}
+            id="btn-download-pdf-quote"
+            style={{
+              backgroundColor: '#0F172A',
+              color: '#FFFFFF',
+              borderColor: '#0F172A',
+              fontWeight: 600,
+            }}
+            title="Download formatted PDF quote"
+          >
+            <Icon.FileText size={14} />
+            <span>Download PDF Quote</span>
+          </button>
+
           <Link
             href={`/quotes/${quote.id}`}
             target="_blank"
@@ -326,7 +351,7 @@ export function QuoteDetailClient({
             id="btn-printable-quote"
           >
             <Icon.FileText size={14} />
-            <span>Open Printable Quote &rarr;</span>
+            <span>Print View &rarr;</span>
           </Link>
 
           <button
@@ -928,18 +953,16 @@ export function QuoteDetailClient({
 
                       <div>
                         <label className={styles.infoLabel}>Assigned Bay Resource</label>
-                        <select
-                          className={styles.inputField}
+                        <Select
+                          size="sm"
                           value={bookResourceId}
-                          onChange={(e) => setBookResourceId(e.target.value)}
-                          required
-                        >
-                          {resources.map((r) => (
-                            <option key={r.id} value={r.id}>
-                              {r.name}
-                            </option>
-                          ))}
-                        </select>
+                          onChange={(val) => setBookResourceId(val)}
+                          options={resources.map((r) => ({
+                            value: r.id,
+                            label: r.name,
+                            icon: <Icon.Bay size={15} />,
+                          }))}
+                        />
                       </div>
 
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>

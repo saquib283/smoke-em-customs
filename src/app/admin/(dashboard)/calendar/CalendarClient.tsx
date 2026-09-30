@@ -373,6 +373,10 @@ export function CalendarClient({
         </div>
 
         <div className={styles.headerActions}>
+          <Link href="/admin/slots" className={styles.secondaryActionBtn}>
+            <Icon.Bay size={15} />
+            <span>Slot & Bay Manager &rarr;</span>
+          </Link>
           <Link href="/admin/bookings" className={styles.secondaryActionBtn}>
             <Icon.Calendar size={15} />
             <span>Manage Bookings List &rarr;</span>

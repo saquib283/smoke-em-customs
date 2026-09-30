@@ -24,13 +24,13 @@ export default function AdminLoginPage() {
         email,
         password,
         redirect: false,
+        callbackUrl: '/admin',
       });
 
       if (result?.error) {
         setError('Invalid email or password credentials');
       } else {
-        router.push('/admin');
-        router.refresh();
+        window.location.href = '/admin';
       }
     } catch {
       setError('An unexpected transmission error occurred');
@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className={styles.container}>
+    <main className={styles.container} data-theme="admin">
       <div className={styles.card}>
         <div className={styles.header}>
           <div className={styles.logoWrapper}>

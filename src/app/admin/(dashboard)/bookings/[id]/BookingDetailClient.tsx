@@ -1,13 +1,25 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
 import { Icon } from '@/components/common/Icons';
-import { useToast } from '@/components/ui';
+import { useToast, Select, type SelectOption } from '@/components/ui';
 import type { BookingDetail } from '@/modules/booking';
 import styles from './bookingDetail.module.css';
+
+const COMM_CHANNEL_OPTIONS: SelectOption<'WHATSAPP' | 'CALL' | 'EMAIL' | 'SMS'>[] = [
+  { value: 'WHATSAPP', label: 'WhatsApp', icon: <Icon.WhatsApp size={15} /> },
+  { value: 'CALL', label: 'Phone Call', icon: <Icon.Phone size={15} /> },
+  { value: 'EMAIL', label: 'Email', icon: <Icon.Mail size={15} /> },
+  { value: 'SMS', label: 'SMS Alert', icon: <Icon.Send size={15} /> },
+];
+
+const COMM_DIRECTION_OPTIONS: SelectOption<'OUTBOUND' | 'INBOUND'>[] = [
+  { value: 'OUTBOUND', label: 'Outbound', icon: <Icon.ArrowRight size={15} /> },
+  { value: 'INBOUND', label: 'Inbound', icon: <Icon.ArrowLeft size={15} /> },
+];
 
 interface ResourceItem {
   id: string;
@@ -83,6 +95,16 @@ export function BookingDetailClient({
       })
       .catch(() => {});
   }, []);
+
+  const bayOptions = useMemo(() => {
+    return resources
+      .filter((r) => r.id !== booking.resourceId)
+      .map((r) => ({
+        value: r.id,
+        label: r.name,
+        icon: <Icon.Bay size={15} />,
+      }));
+  }, [resources, booking.resourceId]);
 
   // Status Formatter
   const formatStatus = (st: string) => {
@@ -575,27 +597,23 @@ export function BookingDetailClient({
               <form onSubmit={handleLogCommunication} className={styles.actionBox}>
                 <span className={styles.actionBoxTitle}>Log New Communication</span>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <select
-                    className={styles.inputField}
-                    style={{ flex: 1, minWidth: '130px' }}
-                    value={commChannel}
-                    onChange={(e) => setCommChannel(e.target.value as any)}
-                  >
-                    <option value="WHATSAPP">WhatsApp</option>
-                    <option value="CALL">Phone Call</option>
-                    <option value="EMAIL">Email</option>
-                    <option value="SMS">SMS Alert</option>
-                  </select>
+                  <div style={{ flex: 1, minWidth: '130px' }}>
+                    <Select<'WHATSAPP' | 'CALL' | 'EMAIL' | 'SMS'>
+                      size="sm"
+                      value={commChannel}
+                      onChange={(val) => setCommChannel(val)}
+                      options={COMM_CHANNEL_OPTIONS}
+                    />
+                  </div>
 
-                  <select
-                    className={styles.inputField}
-                    style={{ flex: 1, minWidth: '130px' }}
-                    value={commDirection}
-                    onChange={(e) => setCommDirection(e.target.value as any)}
-                  >
-                    <option value="OUTBOUND">Outbound</option>
-                    <option value="INBOUND">Inbound</option>
-                  </select>
+                  <div style={{ flex: 1, minWidth: '130px' }}>
+                    <Select<'OUTBOUND' | 'INBOUND'>
+                      size="sm"
+                      value={commDirection}
+                      onChange={(val) => setCommDirection(val)}
+                      options={COMM_DIRECTION_OPTIONS}
+                    />
+                  </div>
                 </div>
 
                 <input
@@ -967,20 +985,13 @@ export function BookingDetailClient({
                 {showReassignBox && (
                   <div className={styles.actionBox}>
                     <span className={styles.actionBoxTitle}>Reassign to Different Bay</span>
-                    <select
-                      className={styles.inputField}
+                    <Select
+                      size="sm"
+                      placeholder="Select a bay..."
                       value={selectedNewBay}
-                      onChange={(e) => setSelectedNewBay(e.target.value)}
-                    >
-                      <option value="">Select a bay...</option>
-                      {resources
-                        .filter((r) => r.id !== booking.resourceId)
-                        .map((r) => (
-                          <option key={r.id} value={r.id}>
-                            {r.name}
-                          </option>
-                        ))}
-                    </select>
+                      onChange={(val) => setSelectedNewBay(val)}
+                      options={bayOptions}
+                    />
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       <button
                         type="button"

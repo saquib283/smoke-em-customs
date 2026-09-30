@@ -171,7 +171,7 @@ export default async function HomePage() {
 
           <div className={styles.servicesGrid}>
             {services.slice(0, 6).map((service) => {
-              const imageSrc = SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
+              const imageSrc = service.imageUrl || SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
               return (
                 <div key={service.id} className={styles.serviceCard}>
                   <div className={styles.serviceImageWrap}>
@@ -189,7 +189,7 @@ export default async function HomePage() {
                   <div className={styles.serviceBody}>
                     <h3 className={styles.serviceName}>{service.name}</h3>
                     <p className={styles.serviceBenefit}>
-                      {((service as any).description ?? 'Specialized precision detailing performed inside our dust-free positive-pressure bays.').slice(0, 110)}...
+                      {(service.description ?? 'Specialized precision detailing performed inside our dust-free positive-pressure bays.').slice(0, 110)}...
                     </p>
 
                     <div className={styles.serviceMetaRow}>
@@ -206,7 +206,7 @@ export default async function HomePage() {
                       <Link href={`/services/${service.slug}`} className="btn btn-secondary btn-sm">
                         Explore Scope
                       </Link>
-                      <Link href={`/book?service=${service.id}`} className="btn btn-primary btn-sm">
+                      <Link href={`/book/${service.slug}`} className="btn btn-primary btn-sm">
                         Book Bay
                       </Link>
                     </div>
@@ -337,7 +337,7 @@ export default async function HomePage() {
                 </ul>
 
                 <div className={styles.packageActions}>
-                  <Link href={`/book?package=${pkg.id}`} className="btn btn-primary btn-full">
+                  <Link href={`/book/${pkg.slug}`} className="btn btn-primary btn-full">
                     Book This Package
                   </Link>
                   <Link href={`/packages/${pkg.slug}`} className="btn btn-secondary btn-full">

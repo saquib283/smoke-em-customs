@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Icon } from '@/components/common/Icons';
 import styles from './Footer.module.css';
@@ -23,9 +24,13 @@ export function Footer() {
           {/* Brand Col */}
           <div className={styles.colBrand}>
             <Link href="/" className={styles.logo} aria-label="Smoke M Customs Home">
-              <div className={styles.logoMark} aria-hidden="true">
-                S
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Smoke 'Em Customs Logo"
+                width={44}
+                height={44}
+                className={styles.logoImage}
+              />
               <span className={styles.wordmark}>
                 SMOKE <span className={styles.wordmarkAccent}>M</span> CUSTOMS
               </span>

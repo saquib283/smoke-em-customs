@@ -642,14 +642,14 @@
 .modalContent {
   width: 100%;
   max-width: 640px;
-  max-height: 90vh;
+  max-height: calc(100vh - 3.5rem);
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
   border-radius: 16px;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
 }
 
 .modalHeader {
@@ -659,6 +659,7 @@
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #E2E8F0;
   background-color: #F8FAFC;
+  flex-shrink: 0;
 }
 
 .modalHeader h2 {
@@ -691,6 +692,29 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+  background: #F8FAFC;
+  border-radius: 9999px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+.modalBody::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }
 
 .formGrid {
@@ -770,11 +794,13 @@
 
 .modalFooter {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
   border-top: 1px solid #E2E8F0;
   background-color: #F8FAFC;
+  flex-shrink: 0;
 }
 
 .btnSecondary {

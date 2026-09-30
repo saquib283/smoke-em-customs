@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { target, action, id, data } = body;
+    const { target, action, id, data, items } = body;
 
     if (target === 'SERVICE') {
       if (action === 'CREATE') {
@@ -44,6 +44,16 @@ export async function POST(req: NextRequest) {
           after: data,
         });
         return NextResponse.json({ success: true, service: updated });
+      }
+      if (action === 'REORDER') {
+        await catalogueService.reorderServices(items);
+        await logAudit({
+          action: 'SERVICES_REORDERED',
+          entityType: 'SERVICE',
+          entityId: 'ALL',
+          after: { items },
+        });
+        return NextResponse.json({ success: true });
       }
       if (action === 'DELETE') {
         await catalogueService.deleteService(id);
@@ -76,6 +86,16 @@ export async function POST(req: NextRequest) {
           after: data,
         });
         return NextResponse.json({ success: true, package: updated });
+      }
+      if (action === 'REORDER') {
+        await catalogueService.reorderPackages(items);
+        await logAudit({
+          action: 'PACKAGES_REORDERED',
+          entityType: 'PACKAGE',
+          entityId: 'ALL',
+          after: { items },
+        });
+        return NextResponse.json({ success: true });
       }
       if (action === 'DELETE') {
         await catalogueService.deletePackage(id);

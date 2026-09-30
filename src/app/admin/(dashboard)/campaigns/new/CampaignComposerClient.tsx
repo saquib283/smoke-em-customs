@@ -3,10 +3,17 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useToast, ConfirmModal } from '@/components/ui';
+import { useToast, ConfirmModal, Select, type SelectOption } from '@/components/ui';
 import { Icon } from '@/components/common/Icons';
 import type { CampaignAudienceType } from '@/modules/campaigns/index.ts';
 import styles from '../campaigns.module.css';
+
+const AUDIENCE_OPTIONS: SelectOption<CampaignAudienceType>[] = [
+  { value: 'ALL_CUSTOMERS', label: 'All Registered Customers', icon: <Icon.Users size={15} /> },
+  { value: 'ACTIVE_LEADS', label: 'Active Leads & Inquiries', icon: <Icon.Inbox size={15} /> },
+  { value: 'PAST_BOOKINGS', label: 'Past Booking Clients', icon: <Icon.Calendar size={15} /> },
+  { value: 'INACTIVE_CUSTOMERS', label: 'Inactive Clients (90+ Days)', icon: <Icon.Clock size={15} /> },
+];
 
 const PRESET_TEMPLATES = [
   {
@@ -413,17 +420,13 @@ export function CampaignComposerClient() {
 
           <div className={styles.formGroup}>
             <label htmlFor="camp-audience">Audience Segmentation *</label>
-            <select
+            <Select<CampaignAudienceType>
               id="camp-audience"
-              className={styles.select}
+              size="sm"
               value={audienceType}
-              onChange={(e) => setAudienceType(e.target.value as CampaignAudienceType)}
-            >
-              <option value="ALL_CUSTOMERS">All Registered Customers</option>
-              <option value="ACTIVE_LEADS">Active Leads &amp; Inquiries</option>
-              <option value="PAST_BOOKINGS">Past Booking Clients</option>
-              <option value="INACTIVE_CUSTOMERS">Inactive Clients (90+ Days)</option>
-            </select>
+              onChange={(val) => setAudienceType(val)}
+              options={AUDIENCE_OPTIONS}
+            />
             <div className={styles.audienceBadge}>
               <Icon.Users size={14} color="#B45309" />
               <span>{audienceDescriptions[audienceType]}</span>

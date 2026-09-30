@@ -6,7 +6,16 @@ import Link from 'next/link';
 import { DatePicker } from './DatePicker';
 import { SlotPicker, type TimeSlot } from './SlotPicker';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from '@/app/book/booking.module.css';
+
+const VEHICLE_SEGMENT_OPTIONS: SelectOption[] = [
+  { value: 'HATCHBACK', label: 'Hatchback / Compact', sublabel: 'Polo, i20, Mini Cooper, Altroz', icon: <Icon.Car size={16} /> },
+  { value: 'SEDAN', label: 'Executive Sedan', sublabel: 'C-Class, 3 Series, A4, City, Camry', icon: <Icon.Car size={16} /> },
+  { value: 'SUV', label: 'SUV / Crossover', sublabel: 'Creta, Seltos, Defender, Range Rover, GLS', icon: <Icon.Car size={16} /> },
+  { value: 'MUV', label: 'MUV / Multi-Purpose', sublabel: 'Innova, Carnival, Vellfire', icon: <Icon.Car size={16} /> },
+  { value: 'LUXURY', label: 'Supercar / Exotic Sports', sublabel: '911, AMG GT, Huracán, Ferrari, Urus', icon: <Icon.Crown size={16} /> },
+];
 
 interface TreatmentInfo {
   id: string;
@@ -366,18 +375,12 @@ export function BookServiceWizard({
             <label htmlFor="vehicleType" className={styles.label}>
               Vehicle Segment
             </label>
-            <select
+            <Select
               id="vehicleType"
-              className={styles.input}
               value={vehicleType}
-              onChange={(e) => setVehicleType(e.target.value)}
-            >
-              <option value="HATCHBACK">Hatchback / Compact</option>
-              <option value="SEDAN">Executive Sedan</option>
-              <option value="COMPACT_SUV">Compact SUV / Crossover</option>
-              <option value="FULL_SIZE_SUV">Full-Size Luxury SUV</option>
-              <option value="LUXURY_SPORTS">Supercar / Exotic Sports</option>
-            </select>
+              onChange={(val) => setVehicleType(val)}
+              options={VEHICLE_SEGMENT_OPTIONS}
+            />
           </div>
 
           <div className={styles.formGroup}>
@@ -442,9 +445,11 @@ export function BookServiceWizard({
               <span className={styles.sumLabel}>Allocated Detailing Bay</span>
               <span className={styles.sumVal}>
                 {selectedSlot
-                  ? `${formatDisplayTime(selectedSlot.startAt)} – ${formatDisplayTime(
-                      selectedSlot.endAt
-                    )} (${selectedSlot.resourceName})`
+                  ? (new Date(selectedSlot.endAt).getTime() - new Date(selectedSlot.startAt).getTime()) / (1000 * 60 * 60) > 9
+                    ? `Drop-off at ${formatDisplayTime(selectedSlot.startAt)} (Multi-Day Bay Hold • ${selectedSlot.resourceName})`
+                    : `${formatDisplayTime(selectedSlot.startAt)} – ${formatDisplayTime(
+                        selectedSlot.endAt
+                      )} (${selectedSlot.resourceName})`
                   : 'Slot not selected'}
               </span>
             </div>

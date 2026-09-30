@@ -2,7 +2,17 @@
 
 import React, { useState } from 'react';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './ContactForm.module.css';
+
+const CONTACT_SERVICE_OPTIONS: SelectOption[] = [
+  { value: 'Paint Protection Film (PPF)', label: 'Paint Protection Film (PPF)', sublabel: 'TPU Self-Healing Ultra Gloss / Matte', icon: <Icon.Shield size={16} /> },
+  { value: 'Ceramic Coating', label: 'Ceramic Coating', sublabel: '9H Dual-Layer Nano-Ceramic Armor', icon: <Icon.Sparkles size={16} /> },
+  { value: 'Paint Correction', label: 'Paint Correction', sublabel: 'Concourse Multi-Stage Swirl Elimination', icon: <Icon.Wrench size={16} /> },
+  { value: 'Interior Detailing', label: 'Interior Detailing', sublabel: 'Deep Sanitization & Leather Conditioner', icon: <Icon.Soap size={16} /> },
+  { value: 'Protection Packages', label: 'Protection Packages', sublabel: 'All-Inclusive Full Vehicle Protection Suite', icon: <Icon.Crown size={16} /> },
+  { value: 'General Detailing Consultation', label: 'General Detailing Consultation', sublabel: 'In-Studio Paint Inspection & Custom Quote', icon: <Icon.Question size={16} /> },
+];
 
 export function ContactForm() {
   const [name, setName] = useState('');
@@ -162,18 +172,11 @@ export function ContactForm() {
 
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>
             <label className={styles.label}>Primary Service of Interest</label>
-            <select
-              className={styles.select}
+            <Select
               value={serviceInterest}
-              onChange={(e) => setServiceInterest(e.target.value)}
-            >
-              <option value="Paint Protection Film (PPF)">Paint Protection Film (TPU Self-Healing)</option>
-              <option value="Ceramic Coating">9H Dual-Layer Nano-Ceramic Coating</option>
-              <option value="Paint Correction">Concourse Multi-Stage Swirl Elimination</option>
-              <option value="Interior Detailing">Deep Interior Sanitization & Leather Feed</option>
-              <option value="Protection Packages">All-Inclusive Protection Suite</option>
-              <option value="General Detailing Consultation">General Detailing Inspection / Custom Request</option>
-            </select>
+              onChange={(val) => setServiceInterest(val)}
+              options={CONTACT_SERVICE_OPTIONS}
+            />
           </div>
 
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>

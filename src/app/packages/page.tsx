@@ -70,7 +70,7 @@ export default async function PackagesPage() {
               </div>
 
               <div className={styles.cardActions}>
-                <Link href={`/book?package=${pkg.id}`} className="btn btn-primary btn-full">
+                <Link href={`/book/${pkg.slug}`} className="btn btn-primary btn-full">
                   Book This Package
                 </Link>
                 <Link href={`/packages/${pkg.slug}`} className="btn btn-secondary btn-full">

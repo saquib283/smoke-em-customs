@@ -248,3 +248,59 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Admin Panel Light Theme Overrides (Atelier Executive Light)
+   Applied automatically when inside /admin or on [data-theme="admin"]
+   ───────────────────────────────────────────────────────────── */
+:root[data-theme="admin"],
+html[data-theme="admin"],
+body.admin-theme,
+[data-theme="admin"] {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-bg-base: #F8FAFC;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F8FAFC;
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-elevated-2: #F1F5F9;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-muted: #E2E8F0;
+  --color-bg-subtle: #F8FAFC;
+  --color-bg-glass: rgba(255, 255, 255, 0.9);
+
+  /* Borders */
+  --color-border: #E2E8F0;
+  --color-border-hover: #CBD5E1;
+  --color-border-focus: #B45309;
+  --color-border-subtle: #F1F5F9;
+
+  /* Typography & Text */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748B;
+  --color-text-inverse: #FFFFFF;
+
+  /* Brand Accent: Gold / Amber */
+  --color-accent: #B45309;
+  --color-accent-primary: #B45309;
+  --color-accent-hover: #92400E;
+  --color-accent-active: #78350F;
+  --color-accent-contrast: #FFFFFF;
+  --color-accent-subtle: #FFFBEB;
+  --color-accent-text: #B45309;
+  --color-gold: #B45309;
+  --color-gold-light: #D97706;
+
+  /* Semantic Alerts */
+  --color-success: #15803D;
+  --color-success-subtle: #DCFCE7;
+  --color-warning: #B45309;
+  --color-warning-subtle: #FEF3C7;
+  --color-danger: #DC2626;
+  --color-error: #DC2626;
+  --color-error-subtle: #FEE2E2;
+  --color-info: #2563EB;
+  --color-info-subtle: #DBEAFE;
+}

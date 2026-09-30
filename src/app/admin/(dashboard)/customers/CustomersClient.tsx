@@ -3,7 +3,17 @@
 import React, { useState, useMemo } from 'react';
 import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './customers.module.css';
+
+const CUSTOMER_VEHICLE_TYPE_OPTIONS: SelectOption[] = [
+  { value: 'SEDAN', label: 'Sedan', icon: <Icon.Car size={15} /> },
+  { value: 'SUV', label: 'SUV', icon: <Icon.Car size={15} /> },
+  { value: 'HATCHBACK', label: 'Hatchback', icon: <Icon.Car size={15} /> },
+  { value: 'LUXURY', label: 'Supercar / Exotic', icon: <Icon.Crown size={15} /> },
+  { value: 'MUV', label: 'MUV', icon: <Icon.Car size={15} /> },
+  { value: 'TWO_WHEELER', label: 'Superbike', icon: <Icon.Zap size={15} /> },
+];
 
 export interface CustomerItem {
   id: string;
@@ -602,18 +612,14 @@ export function CustomersClient({ initialCustomers }: CustomersClientProps) {
                             value={vYear}
                             onChange={(e) => setVYear(parseInt(e.target.value) || 2024)}
                           />
-                          <select
-                            className={styles.formInput}
-                            value={vType}
-                            onChange={(e) => setVType(e.target.value)}
-                          >
-                            <option value="SEDAN">Sedan</option>
-                            <option value="SUV">SUV</option>
-                            <option value="HATCHBACK">Hatchback</option>
-                            <option value="LUXURY">Supercar / Exotic</option>
-                            <option value="MUV">MUV</option>
-                            <option value="TWO_WHEELER">Superbike</option>
-                          </select>
+                          <div style={{ flex: 1, minWidth: '130px' }}>
+                            <Select
+                              size="sm"
+                              value={vType}
+                              onChange={(val) => setVType(val)}
+                              options={CUSTOMER_VEHICLE_TYPE_OPTIONS}
+                            />
+                          </div>
                         </div>
                         <button
                           type="button"

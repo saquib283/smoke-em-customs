@@ -60,6 +60,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { href: '/admin/bookings', label: 'Bookings', icon: <Icon.Calendar size={17} /> },
       { href: '/admin/calendar', label: 'Bay Calendar', icon: <Icon.Clock size={17} /> },
+      { href: '/admin/slots', label: 'Slot & Bay Manager', icon: <Icon.Bay size={17} /> },
       { href: '/admin/quotes', label: 'Quotes', icon: <Icon.FileText size={17} /> },
     ],
   },
@@ -133,6 +134,17 @@ export function AdminShell({ user, children }: AdminShellProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'admin');
+    document.body.classList.add('admin-theme');
+    return () => {
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/admin')) {
+        document.documentElement.removeAttribute('data-theme');
+        document.body.classList.remove('admin-theme');
+      }
+    };
+  }, [pathname]);
 
   function isActive(href: string) {
     if (href === '/admin') return pathname === '/admin';
@@ -213,7 +225,7 @@ export function AdminShell({ user, children }: AdminShellProps) {
   };
 
   return (
-    <div className={styles.shell}>
+    <div className={styles.shell} data-theme="admin">
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
@@ -401,20 +413,20 @@ export function AdminShell({ user, children }: AdminShellProps) {
                               </span>
                             </div>
                             {!n.isRead && (
-                              <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--color-accent-primary)', alignSelf: 'center' }} />
+                              <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#B45309', alignSelf: 'center', flexShrink: 0 }} />
                             )}
                           </div>
                         );
                       })
                     )}
                   </div>
-                  <div style={{ padding: '0.6rem 0.75rem', borderTop: '1px solid rgba(255,255,255,0.08)', textAlign: 'center', background: 'rgba(0,0,0,0.2)' }}>
+                  <div className={styles.notificationFooter}>
                     <Link
                       href="/admin/notifications"
                       onClick={() => setNotifDropdownOpen(false)}
-                      style={{ fontSize: '0.8rem', color: 'var(--color-gold, #c5a880)', textDecoration: 'none', fontWeight: 600 }}
+                      className={styles.notificationFooterLink}
                     >
-                      View Full Notification Feed →
+                      View Full Notification Feed &rarr;
                     </Link>
                   </div>
                 </div>

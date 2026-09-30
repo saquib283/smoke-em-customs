@@ -30,7 +30,7 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
     catalogueService.listServices({ enabledOnly: true }),
   ]);
 
-  if (!pkg) {
+  if (!pkg || !pkg.isEnabled) {
     notFound();
   }
 
@@ -168,7 +168,7 @@ export default async function PackageDetailPage({ params }: PackagePageProps) {
               </div>
 
               <div className={styles.sidebarActions}>
-                <Link href={`/book?package=${pkg.id}`} className="btn btn-primary btn-full">
+                <Link href={`/book/${pkg.slug}`} className="btn btn-primary btn-full">
                   Book This Package
                 </Link>
                 <Link href="/quote" className="btn btn-secondary btn-full">

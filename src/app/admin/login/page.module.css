@@ -5,30 +5,32 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-6) var(--space-4);
-  background: radial-gradient(circle at 50% 30%, rgba(201, 162, 75, 0.09) 0%, transparent 60%), #0B0C0E;
+  background: radial-gradient(circle at 50% 15%, rgba(180, 83, 9, 0.08) 0%, transparent 65%), #F8FAFC;
   position: relative;
 }
 
 .card {
   width: 100%;
   max-width: 440px;
-  background-color: #131518;
-  border: 1px solid #2A2D33;
-  border-radius: var(--radius-xl);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(201, 162, 75, 0.08);
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-xl, 16px);
+  box-shadow:
+    0 20px 48px -8px rgba(15, 23, 42, 0.08),
+    0 1px 3px rgba(15, 23, 42, 0.04);
   overflow: hidden;
   position: relative;
 }
 
-/* Subtle top brushed-gold edge */
+/* Subtle top warm atelier gold edge */
 .card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #C9A24B, transparent);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #B45309, transparent);
 }
 
 .header {
@@ -44,35 +46,35 @@
 
 .loginLogo {
   border-radius: 50%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(201, 162, 75, 0.4);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  border: 2px solid rgba(180, 83, 9, 0.35);
 }
 
 .portalTag {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, monospace);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: var(--color-accent);
+  color: #B45309;
   text-transform: uppercase;
   display: block;
   margin-bottom: var(--space-2);
 }
 
 .title {
-  font-family: var(--font-display);
+  font-family: var(--font-display, sans-serif);
   font-size: clamp(1.8rem, 4vw, 2.2rem);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-text-primary);
+  color: #0F172A;
   line-height: 1.1;
   margin: 0;
 }
 
 .subtitle {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
+  font-size: var(--text-xs, 0.75rem);
+  color: #64748B;
   letter-spacing: 0.05em;
   margin-top: var(--space-2);
 }
@@ -91,9 +93,9 @@
 }
 
 .label {
-  font-size: var(--text-xs);
+  font-size: var(--text-xs, 0.75rem);
   font-weight: 600;
-  color: var(--color-text-secondary);
+  color: #475569;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -102,52 +104,52 @@
   width: 100%;
   min-height: 48px;
   padding: 12px 16px;
-  background-color: #1F2227;
-  border: 1px solid #2A2D33;
-  border-radius: var(--radius-md);
-  color: #F8FAFC;
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  transition: all var(--transition-fast);
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius-md, 8px);
+  color: #0F172A;
+  font-family: var(--font-body, sans-serif);
+  font-size: var(--text-sm, 0.875rem);
+  transition: all 0.15s ease;
   outline: none;
 }
 
 .input:hover:not(:disabled) {
-  border-color: #3A3E47;
+  border-color: #94A3B8;
 }
 
 .input:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 1px var(--color-accent);
-  background-color: #16181C;
+  border-color: #B45309;
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
+  background-color: #FFFFFF;
 }
 
 .input::placeholder {
-  color: var(--color-text-muted);
+  color: #94A3B8;
 }
 
-/* Chrome/Safari Autofill fix to preserve dark theme */
+/* Chrome/Safari Autofill fix for light theme */
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover,
 .input:-webkit-autofill:focus,
 .input:-webkit-autofill:active,
 .input:autofill {
-  -webkit-box-shadow: 0 0 0 1000px #1F2227 inset !important;
-  box-shadow: 0 0 0 1000px #1F2227 inset !important;
-  -webkit-text-fill-color: #F8FAFC !important;
-  color: #F8FAFC !important;
-  caret-color: #F8FAFC !important;
-  border-color: #2A2D33 !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  -webkit-text-fill-color: #0F172A !important;
+  color: #0F172A !important;
+  caret-color: #0F172A !important;
+  border-color: #CBD5E1 !important;
   transition: background-color 5000s ease-in-out 0s;
 }
 
 .error {
   padding: var(--space-3) var(--space-4);
-  background-color: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: var(--radius-md);
-  color: #EF4444;
-  font-size: var(--text-xs);
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-md, 8px);
+  color: #DC2626;
+  font-size: var(--text-xs, 0.75rem);
   text-align: center;
   font-weight: 500;
 }
@@ -156,29 +158,29 @@
   width: 100%;
   margin-top: var(--space-3);
   min-height: 48px;
-  background-color: var(--color-accent);
-  color: #0B0C0E;
-  font-family: var(--font-body);
+  background-color: #0F172A;
+  color: #FFFFFF;
+  font-family: var(--font-body, sans-serif);
   font-weight: 700;
-  font-size: var(--text-sm);
+  font-size: var(--text-sm, 0.875rem);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border: 1px solid var(--color-accent);
-  border-radius: var(--radius-md);
+  border: 1px solid #0F172A;
+  border-radius: var(--radius-md, 8px);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  transition: all var(--transition-fast);
-  box-shadow: 0 4px 16px rgba(201, 162, 75, 0.25);
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
 }
 
 .submitBtn:hover:not(:disabled) {
-  background-color: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
+  background-color: #1E293B;
+  border-color: #1E293B;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(201, 162, 75, 0.35);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22);
 }
 
 .submitBtn:disabled {
@@ -189,23 +191,23 @@
 
 .returnLink {
   margin-top: var(--space-6);
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
+  font-size: var(--text-xs, 0.75rem);
+  color: #64748B;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   letter-spacing: 0.04em;
-  transition: color var(--transition-fast);
+  transition: color 0.15s ease;
 }
 
 .returnLink:hover {
-  color: var(--color-accent);
+  color: #B45309;
 }
 
 @media (max-width: 480px) {
   .card {
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-lg, 12px);
   }
   .header {
     padding: var(--space-8) var(--space-5) var(--space-2);

@@ -56,6 +56,17 @@
   box-shadow: 0 0 12px rgba(201, 162, 75, 0.2);
 }
 
+.logoImage {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: contain;
+  box-shadow: 0 0 14px rgba(201, 162, 75, 0.25);
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  background-color: #0B0C0E;
+  flex-shrink: 0;
+}
+
 .wordmark {
   font-family: var(--font-heading);
   font-weight: 700;

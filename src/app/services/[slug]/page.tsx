@@ -40,12 +40,12 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     catalogueService.listPackages({ enabledOnly: true }),
   ]);
 
-  if (!service) {
+  if (!service || !service.isEnabled) {
     notFound();
   }
 
   const relatedPackages = allPackages.filter((pkg) => pkg.serviceIds.includes(service.id));
-  const heroImg = SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
+  const heroImg = service.imageUrl || SERVICE_IMAGES[service.slug] || '/ceramic-detail.jpg';
 
   const serviceSchema = {
     '@context': 'https://schema.org',
@@ -227,10 +227,10 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
               </div>
 
               <div className={styles.sidebarActions}>
-                <Link href={`/book?service=${service.id}`} className="btn btn-primary btn-full">
+                <Link href={`/book/${service.slug}`} className="btn btn-primary btn-full">
                   Book Slot on Calendar
                 </Link>
-                <Link href={`/quote?service=${service.id}`} className="btn btn-secondary btn-full">
+                <Link href={`/quote?service=${service.slug}`} className="btn btn-secondary btn-full">
                   Get a Free Quote for This Service
                 </Link>
                 <a

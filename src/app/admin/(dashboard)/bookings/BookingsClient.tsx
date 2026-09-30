@@ -4,9 +4,17 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { WhatsAppCTA } from '@/components/common/WhatsAppCTA';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './bookings.module.css';
 
 type DatePreset = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH';
+
+const BOOKING_SORT_OPTIONS: SelectOption<'DATE_DESC' | 'DATE_ASC' | 'NAME_ASC' | 'BAY'>[] = [
+  { value: 'DATE_DESC', label: 'Latest Slot First', icon: <Icon.Clock size={14} /> },
+  { value: 'DATE_ASC', label: 'Earliest Slot First', icon: <Icon.Clock size={14} /> },
+  { value: 'NAME_ASC', label: 'Client Name (A–Z)', icon: <Icon.User size={14} /> },
+  { value: 'BAY', label: 'Assigned Bay', icon: <Icon.Bay size={14} /> },
+];
 
 export interface BookingItem {
   id: string;
@@ -416,36 +424,36 @@ export function BookingsClient({ initialBookings }: BookingsClientProps) {
             )}
           </div>
 
-          {/* Date Quick-Filter Presets */}
-          <div className={styles.datePresets}>
-            {(['ALL', 'TODAY', 'THIS_WEEK', 'THIS_MONTH'] as DatePreset[]).map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                className={`${styles.presetBtn} ${datePreset === preset ? styles.presetBtnActive : ''}`}
-                onClick={() => setDatePreset(preset)}
-              >
-                {preset === 'ALL' ? 'All Dates' : preset === 'TODAY' ? 'Today' : preset === 'THIS_WEEK' ? 'This Week' : 'This Month'}
-              </button>
-            ))}
-          </div>
+          <div className={styles.filterControlsRight}>
+            {/* Date Quick-Filter Presets */}
+            <div className={styles.datePresets}>
+              {(['ALL', 'TODAY', 'THIS_WEEK', 'THIS_MONTH'] as DatePreset[]).map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  className={`${styles.presetBtn} ${datePreset === preset ? styles.presetBtnActive : ''}`}
+                  onClick={() => setDatePreset(preset)}
+                >
+                  {preset === 'ALL' ? 'All Dates' : preset === 'TODAY' ? 'Today' : preset === 'THIS_WEEK' ? 'This Week' : 'This Month'}
+                </button>
+              ))}
+            </div>
 
-          {/* Sort Selector */}
-          <select
-            className={styles.sortSelect}
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
-          >
-            <option value="DATE_DESC">Latest Slot First</option>
-            <option value="DATE_ASC">Earliest Slot First</option>
-            <option value="NAME_ASC">Client Name (A–Z)</option>
-            <option value="BAY">Assigned Bay</option>
-          </select>
+            {/* Sort Selector */}
+            <div className={styles.sortWrapper}>
+              <Select<'DATE_DESC' | 'DATE_ASC' | 'NAME_ASC' | 'BAY'>
+                size="sm"
+                value={sortBy}
+                onChange={(val) => setSortBy(val)}
+                options={BOOKING_SORT_OPTIONS}
+              />
+            </div>
 
-          <div className={styles.filterMeta}>
-            <span style={{ fontSize: '0.8125rem', color: '#64748B', whiteSpace: 'nowrap' }}>
-              Showing <strong>{filteredBookings.length}</strong> of {bookings.length} jobs
-            </span>
+            <div className={styles.filterMeta}>
+              <span>
+                Showing <strong>{filteredBookings.length}</strong> of {bookings.length} jobs
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -499,7 +507,7 @@ export function BookingsClient({ initialBookings }: BookingsClientProps) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th style={{ width: '40px', textAlign: 'center' }}>
+                <th style={{ width: '40px', minWidth: '40px', textAlign: 'center' }}>
                   <input
                     type="checkbox"
                     checked={paginatedBookings.length > 0 && selectedIds.length === paginatedBookings.length}
@@ -507,14 +515,14 @@ export function BookingsClient({ initialBookings }: BookingsClientProps) {
                     style={{ cursor: 'pointer' }}
                   />
                 </th>
-                <th style={{ width: '200px' }}>Customer</th>
-                <th style={{ width: '160px' }}>Vehicle</th>
-                <th style={{ width: '180px' }}>Service / Treatment</th>
-                <th style={{ width: '130px' }}>Assigned Bay</th>
-                <th style={{ width: '140px' }}>Appointment Slot</th>
-                <th style={{ width: '100px' }}>Duration</th>
-                <th style={{ width: '150px' }}>Lifecycle Status</th>
-                <th style={{ width: '200px', textAlign: 'right' }}>Workflow & Action</th>
+                <th style={{ width: '200px', minWidth: '180px' }}>Customer</th>
+                <th style={{ width: '150px', minWidth: '130px' }}>Vehicle</th>
+                <th style={{ width: '170px', minWidth: '150px' }}>Service / Treatment</th>
+                <th style={{ width: '120px', minWidth: '110px' }}>Assigned Bay</th>
+                <th style={{ width: '130px', minWidth: '120px' }}>Appointment Slot</th>
+                <th style={{ width: '90px', minWidth: '80px' }}>Duration</th>
+                <th style={{ width: '160px', minWidth: '150px' }}>Lifecycle Status</th>
+                <th style={{ width: '280px', minWidth: '280px', textAlign: 'right' }}>Workflow & Action</th>
               </tr>
             </thead>
             <tbody>
@@ -676,7 +684,7 @@ export function BookingsClient({ initialBookings }: BookingsClientProps) {
 
               {filteredBookings.length === 0 && (
                 <tr>
-                  <td colSpan={8}>
+                  <td colSpan={9}>
                     <div className={styles.emptyCard}>
                       <div className={styles.emptyIconWrap}>
                         <Icon.Calendar size={24} />

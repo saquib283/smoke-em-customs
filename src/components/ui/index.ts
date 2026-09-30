@@ -4,3 +4,5 @@ export { ToastProvider, useToast } from './Toast';
 export type { ToastType } from './Toast';
 export { ConfirmModal } from './ConfirmModal';
 export { ErrorState, FieldError } from './ErrorState';
+export { Select } from './Select';
+export type { SelectOption, SelectProps, SelectVariant, SelectSize } from './Select';

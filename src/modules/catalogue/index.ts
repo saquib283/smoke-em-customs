@@ -6,24 +6,33 @@
 
 import { db } from '@/prisma/db';
 
+export const DEFAULT_SERVICE_IMAGES: Record<string, string> = {
+  'ceramic-coating': '/ceramic-detail.jpg',
+  'paint-protection-film': '/ppf-install.jpg',
+  'interior-detailing': '/ppf-craft.jpg',
+  'exterior-detailing': '/ceramic-macro.jpg',
+  'paint-correction': '/hero-luxury-dark.jpg',
+  'windshield-coating': '/ceramic-detail.jpg',
+};
+
 export interface ServiceListItem {
   id: string;
   slug: string;
   name: string;
+  description: string;
   category: string | null;
   startingPrice: string;
   durationMinutes: number;
-  isEnabled: boolean;
-  isBookable: boolean;
-  sortOrder: number;
-}
-
-export interface ServiceDetail extends ServiceListItem {
-  description: string;
   warrantyText: string | null;
   benefits: string[];
+  isEnabled: boolean;
+  isBookable: boolean;
   bufferMinutesOverride: number | null;
+  sortOrder: number;
+  imageUrl: string | null;
 }
+
+export type ServiceDetail = ServiceListItem;
 
 export interface CreateServiceInput {
   slug: string;
@@ -37,6 +46,8 @@ export interface CreateServiceInput {
   isEnabled?: boolean;
   isBookable?: boolean;
   bufferMinutesOverride?: number;
+  sortOrder?: number;
+  imageUrl?: string;
 }
 
 export type UpdateServiceInput = Partial<CreateServiceInput>;
@@ -45,25 +56,22 @@ export interface PackageListItem {
   id: string;
   slug: string;
   name: string;
+  description: string;
   price: string | null;
   startingPrice: string | null;
   durationMinutes: number;
   benefits: string[];
   warrantyText: string | null;
+  validityText: string | null;
+  terms: string | null;
   isEnabled: boolean;
   isBookable: boolean;
   sortOrder: number;
   serviceIds: string[];
+  imageUrl: string | null;
 }
 
-export interface PackageDetail extends PackageListItem {
-  description: string;
-  benefits: string[];
-  warrantyText: string | null;
-  validityText: string | null;
-  terms: string | null;
-  serviceIds: string[];
-}
+export type PackageDetail = PackageListItem;
 
 export interface CreatePackageInput {
   slug: string;
@@ -78,7 +86,9 @@ export interface CreatePackageInput {
   terms?: string;
   isEnabled?: boolean;
   isBookable?: boolean;
+  sortOrder?: number;
   serviceIds?: string[];
+  imageUrl?: string;
 }
 
 export type UpdatePackageInput = Partial<CreatePackageInput>;
@@ -88,7 +98,6 @@ export class CatalogueService {
 
   async listServices(options?: { enabledOnly?: boolean }): Promise<ServiceListItem[]> {
     let query = db.orm.public.Service
-      .select('id', 'slug', 'name', 'category', 'startingPrice', 'durationMinutes', 'isEnabled', 'isBookable', 'sortOrder')
       .where((s) => s.deletedAt.isNull());
 
     if (options?.enabledOnly) {
@@ -97,16 +106,30 @@ export class CatalogueService {
 
     const services = await query.orderBy((s) => s.sortOrder.asc()).all();
 
+    // Fetch media associated with services
+    const mediaList = await db.orm.public.Media.all();
+    const mediaMap = new Map<string, string>();
+    for (const m of mediaList) {
+      if (m.serviceId && !mediaMap.has(m.serviceId)) {
+        mediaMap.set(m.serviceId, m.url);
+      }
+    }
+
     return services.map((s) => ({
       id: s.id,
       slug: s.slug,
       name: s.name,
+      description: s.description,
       category: s.category,
       startingPrice: String(s.startingPrice),
       durationMinutes: s.durationMinutes,
+      warrantyText: s.warrantyText,
+      benefits: [...(s.benefits ?? [])],
       isEnabled: s.isEnabled,
       isBookable: s.isBookable,
+      bufferMinutesOverride: s.bufferMinutesOverride,
       sortOrder: s.sortOrder,
+      imageUrl: mediaMap.get(s.id) || DEFAULT_SERVICE_IMAGES[s.slug] || '/ceramic-detail.jpg',
     }));
   }
 
@@ -118,6 +141,8 @@ export class CatalogueService {
 
     if (!s) return null;
 
+    const media = await db.orm.public.Media.where({ serviceId: s.id }).first();
+
     return {
       id: s.id,
       slug: s.slug,
@@ -132,6 +157,7 @@ export class CatalogueService {
       isBookable: s.isBookable,
       bufferMinutesOverride: s.bufferMinutesOverride,
       sortOrder: s.sortOrder,
+      imageUrl: media?.url || DEFAULT_SERVICE_IMAGES[s.slug] || '/ceramic-detail.jpg',
     };
   }
 
@@ -143,6 +169,8 @@ export class CatalogueService {
 
     if (!s) return null;
 
+    const media = await db.orm.public.Media.where({ serviceId: s.id }).first();
+
     return {
       id: s.id,
       slug: s.slug,
@@ -157,6 +185,7 @@ export class CatalogueService {
       isBookable: s.isBookable,
       bufferMinutesOverride: s.bufferMinutesOverride,
       sortOrder: s.sortOrder,
+      imageUrl: media?.url || DEFAULT_SERVICE_IMAGES[s.slug] || '/ceramic-detail.jpg',
     };
   }
 
@@ -173,7 +202,17 @@ export class CatalogueService {
       isEnabled: data.isEnabled ?? true,
       isBookable: data.isBookable ?? true,
       bufferMinutesOverride: data.bufferMinutesOverride ?? null,
+      sortOrder: data.sortOrder ?? 0,
     });
+
+    if (data.imageUrl) {
+      await db.orm.public.Media.create({
+        url: data.imageUrl,
+        type: 'IMAGE',
+        provider: 'local',
+        serviceId: created.id,
+      });
+    }
 
     return {
       id: created.id,
@@ -189,6 +228,7 @@ export class CatalogueService {
       isBookable: created.isBookable,
       bufferMinutesOverride: created.bufferMinutesOverride,
       sortOrder: created.sortOrder,
+      imageUrl: data.imageUrl || DEFAULT_SERVICE_IMAGES[created.slug] || '/ceramic-detail.jpg',
     };
   }
 
@@ -205,11 +245,39 @@ export class CatalogueService {
     if (data.isEnabled !== undefined) updatePayload['isEnabled'] = data.isEnabled;
     if (data.isBookable !== undefined) updatePayload['isBookable'] = data.isBookable;
     if (data.bufferMinutesOverride !== undefined) updatePayload['bufferMinutesOverride'] = data.bufferMinutesOverride;
+    if (data.sortOrder !== undefined) updatePayload['sortOrder'] = data.sortOrder;
 
-    await db.orm.public.Service.where({ id }).update(updatePayload);
+    if (Object.keys(updatePayload).length > 0) {
+      await db.orm.public.Service.where({ id }).update(updatePayload);
+    }
+
+    if (data.imageUrl !== undefined) {
+      const existingMedia = await db.orm.public.Media.where({ serviceId: id }).first();
+      if (existingMedia) {
+        if (data.imageUrl) {
+          await db.orm.public.Media.where({ id: existingMedia.id }).update({ url: data.imageUrl });
+        } else {
+          await db.orm.public.Media.where({ id: existingMedia.id }).delete();
+        }
+      } else if (data.imageUrl) {
+        await db.orm.public.Media.create({
+          url: data.imageUrl,
+          type: 'IMAGE',
+          provider: 'local',
+          serviceId: id,
+        });
+      }
+    }
+
     const updated = await this.getServiceById(id);
     if (!updated) throw new Error(`Service ${id} not found after update`);
     return updated;
+  }
+
+  async reorderServices(items: Array<{ id: string; sortOrder: number }>): Promise<void> {
+    for (const item of items) {
+      await db.orm.public.Service.where({ id: item.id }).update({ sortOrder: item.sortOrder });
+    }
   }
 
   async deleteService(id: string): Promise<void> {
@@ -225,7 +293,6 @@ export class CatalogueService {
 
   async listPackages(options?: { enabledOnly?: boolean }): Promise<PackageListItem[]> {
     let query = db.orm.public.Package
-      .select('id', 'slug', 'name', 'price', 'startingPrice', 'durationMinutes', 'benefits', 'warrantyText', 'isEnabled', 'isBookable', 'sortOrder')
       .where((p) => p.deletedAt.isNull());
 
     if (options?.enabledOnly) {
@@ -246,19 +313,31 @@ export class CatalogueService {
       linkMap.set(l.packageId, arr);
     }
 
+    const mediaList = await db.orm.public.Media.all();
+    const mediaMap = new Map<string, string>();
+    for (const m of mediaList) {
+      if (m.packageId && !mediaMap.has(m.packageId)) {
+        mediaMap.set(m.packageId, m.url);
+      }
+    }
+
     return packages.map((p) => ({
       id: p.id,
       slug: p.slug,
       name: p.name,
+      description: p.description,
       price: p.price ? String(p.price) : null,
       startingPrice: p.startingPrice ? String(p.startingPrice) : null,
       durationMinutes: p.durationMinutes,
       benefits: [...(p.benefits ?? [])],
       warrantyText: p.warrantyText,
+      validityText: p.validityText,
+      terms: p.terms,
       isEnabled: p.isEnabled,
       isBookable: p.isBookable,
       sortOrder: p.sortOrder,
       serviceIds: linkMap.get(p.id) ?? [],
+      imageUrl: mediaMap.get(p.id) || '/ppf-install.jpg',
     }));
   }
 
@@ -274,6 +353,8 @@ export class CatalogueService {
       .where({ packageId: p.id })
       .all();
 
+    const media = await db.orm.public.Media.where({ packageId: p.id }).first();
+
     return {
       id: p.id,
       slug: p.slug,
@@ -290,6 +371,7 @@ export class CatalogueService {
       isBookable: p.isBookable,
       sortOrder: p.sortOrder,
       serviceIds: links.map((l) => l.serviceId),
+      imageUrl: media?.url || '/ppf-install.jpg',
     };
   }
 
@@ -305,6 +387,8 @@ export class CatalogueService {
       .where({ packageId: p.id })
       .all();
 
+    const media = await db.orm.public.Media.where({ packageId: p.id }).first();
+
     return {
       id: p.id,
       slug: p.slug,
@@ -321,6 +405,7 @@ export class CatalogueService {
       isBookable: p.isBookable,
       sortOrder: p.sortOrder,
       serviceIds: links.map((l) => l.serviceId),
+      imageUrl: media?.url || '/ppf-install.jpg',
     };
   }
 
@@ -338,7 +423,17 @@ export class CatalogueService {
       terms: data.terms ?? null,
       isEnabled: data.isEnabled ?? true,
       isBookable: data.isBookable ?? true,
+      sortOrder: data.sortOrder ?? 0,
     });
+
+    if (data.imageUrl) {
+      await db.orm.public.Media.create({
+        url: data.imageUrl,
+        type: 'IMAGE',
+        provider: 'local',
+        packageId: created.id,
+      });
+    }
 
     if (data.serviceIds && data.serviceIds.length > 0) {
       for (const serviceId of data.serviceIds) {
@@ -365,6 +460,7 @@ export class CatalogueService {
       isBookable: created.isBookable,
       sortOrder: created.sortOrder,
       serviceIds: data.serviceIds ?? [],
+      imageUrl: data.imageUrl || '/ppf-install.jpg',
     };
   }
 
@@ -382,8 +478,29 @@ export class CatalogueService {
     if (data.terms !== undefined) updatePayload['terms'] = data.terms;
     if (data.isEnabled !== undefined) updatePayload['isEnabled'] = data.isEnabled;
     if (data.isBookable !== undefined) updatePayload['isBookable'] = data.isBookable;
+    if (data.sortOrder !== undefined) updatePayload['sortOrder'] = data.sortOrder;
 
-    await db.orm.public.Package.where({ id }).update(updatePayload);
+    if (Object.keys(updatePayload).length > 0) {
+      await db.orm.public.Package.where({ id }).update(updatePayload);
+    }
+
+    if (data.imageUrl !== undefined) {
+      const existingMedia = await db.orm.public.Media.where({ packageId: id }).first();
+      if (existingMedia) {
+        if (data.imageUrl) {
+          await db.orm.public.Media.where({ id: existingMedia.id }).update({ url: data.imageUrl });
+        } else {
+          await db.orm.public.Media.where({ id: existingMedia.id }).delete();
+        }
+      } else if (data.imageUrl) {
+        await db.orm.public.Media.create({
+          url: data.imageUrl,
+          type: 'IMAGE',
+          provider: 'local',
+          packageId: id,
+        });
+      }
+    }
 
     if (data.serviceIds !== undefined) {
       // Re-link services
@@ -399,6 +516,12 @@ export class CatalogueService {
     const updated = await this.getPackageById(id);
     if (!updated) throw new Error(`Package ${id} not found after update`);
     return updated;
+  }
+
+  async reorderPackages(items: Array<{ id: string; sortOrder: number }>): Promise<void> {
+    for (const item of items) {
+      await db.orm.public.Package.where({ id: item.id }).update({ sortOrder: item.sortOrder });
+    }
   }
 
   async deletePackage(id: string): Promise<void> {

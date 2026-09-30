@@ -49,10 +49,16 @@ export default async function BookPage({ searchParams }: BookPageProps) {
   }
 
   if (queryService) {
-    redirect(`/book/${queryService}`);
+    let target = queryService;
+    const s = (await catalogueService.getServiceById(queryService)) || (await catalogueService.getServiceBySlug(queryService));
+    if (s) target = s.slug;
+    redirect(`/book/${target}`);
   }
   if (queryPackage) {
-    redirect(`/book/${queryPackage}`);
+    let target = queryPackage;
+    const p = (await catalogueService.getPackageById(queryPackage)) || (await catalogueService.getPackageBySlug(queryPackage));
+    if (p) target = p.slug;
+    redirect(`/book/${target}`);
   }
 
   const [services, packages] = await Promise.all([

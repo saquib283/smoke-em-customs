@@ -1,9 +1,34 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useToast } from '@/components/ui';
+import { useToast, Select, type SelectOption } from '@/components/ui';
 import { Icon } from '@/components/common/Icons';
 import styles from './settings.module.css';
+
+const BUFFER_OPTIONS: SelectOption<number>[] = [
+  { value: 0, label: '0 mins (No buffer)' },
+  { value: 15, label: '15 mins (Standard turnaround)' },
+  { value: 30, label: '30 mins (Extended wash)' },
+  { value: 45, label: '45 mins (Deep sterilize)' },
+];
+
+const LEAD_TIME_OPTIONS: SelectOption<number>[] = [
+  { value: 1, label: '1 hour' },
+  { value: 2, label: '2 hours (Standard)' },
+  { value: 4, label: '4 hours' },
+  { value: 24, label: '24 hours (Advance only)' },
+];
+
+const GRANULARITY_OPTIONS: SelectOption<number>[] = [
+  { value: 30, label: 'Every 30 mins' },
+  { value: 60, label: 'Every 60 mins (On the hour)' },
+];
+
+const EMAIL_PROVIDER_OPTIONS: SelectOption<'SIMULATED' | 'SMTP' | 'RESEND'>[] = [
+  { value: 'SIMULATED', label: 'Simulated / Local Sandbox (Zero setup, preview links)', icon: <Icon.Shield size={15} /> },
+  { value: 'SMTP', label: 'Custom SMTP (Brevo, Gmail, SES, Mailgun)', icon: <Icon.Mail size={15} /> },
+  { value: 'RESEND', label: 'Resend Cloud API', icon: <Icon.Send size={15} /> },
+];
 
 interface Resource {
   id: string;
@@ -71,7 +96,7 @@ export function SettingsClient({
 
   // ── Email Automation & Provider States ──
   const [emailConfig, setEmailConfig] = useState({
-    providerType: 'SIMULATED',
+    providerType: 'SIMULATED' as 'SIMULATED' | 'SMTP' | 'RESEND',
     smtpHost: 'smtp-relay.brevo.com',
     smtpPort: 587,
     smtpSecure: false,
@@ -852,16 +877,14 @@ export function SettingsClient({
                     Disinfection and bay preparation time added after every completed service.
                   </div>
                 </div>
-                <select
-                  value={rules.bufferMinutes}
-                  onChange={(e) => setRules({ ...rules, bufferMinutes: Number(e.target.value) })}
-                  className={styles.selectField}
-                >
-                  <option value={0}>0 mins (No buffer)</option>
-                  <option value={15}>15 mins (Standard turnaround)</option>
-                  <option value={30}>30 mins (Extended wash)</option>
-                  <option value={45}>45 mins (Deep sterilize)</option>
-                </select>
+                <div style={{ minWidth: '200px' }}>
+                  <Select<number>
+                    size="sm"
+                    value={rules.bufferMinutes}
+                    onChange={(val) => setRules({ ...rules, bufferMinutes: val })}
+                    options={BUFFER_OPTIONS}
+                  />
+                </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #F1F5F9' }}>
@@ -873,16 +896,14 @@ export function SettingsClient({
                     Minimum hours in advance a customer must book before arrival.
                   </div>
                 </div>
-                <select
-                  value={rules.minLeadTimeHours}
-                  onChange={(e) => setRules({ ...rules, minLeadTimeHours: Number(e.target.value) })}
-                  className={styles.selectField}
-                >
-                  <option value={1}>1 hour</option>
-                  <option value={2}>2 hours (Standard)</option>
-                  <option value={4}>4 hours</option>
-                  <option value={24}>24 hours (Advance only)</option>
-                </select>
+                <div style={{ minWidth: '200px' }}>
+                  <Select<number>
+                    size="sm"
+                    value={rules.minLeadTimeHours}
+                    onChange={(val) => setRules({ ...rules, minLeadTimeHours: val })}
+                    options={LEAD_TIME_OPTIONS}
+                  />
+                </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0' }}>
@@ -894,14 +915,14 @@ export function SettingsClient({
                     Time increments presented in the public booking scheduler calendar.
                   </div>
                 </div>
-                <select
-                  value={rules.slotGranularityMinutes}
-                  onChange={(e) => setRules({ ...rules, slotGranularityMinutes: Number(e.target.value) })}
-                  className={styles.selectField}
-                >
-                  <option value={30}>Every 30 mins</option>
-                  <option value={60}>Every 60 mins (On the hour)</option>
-                </select>
+                <div style={{ minWidth: '200px' }}>
+                  <Select<number>
+                    size="sm"
+                    value={rules.slotGranularityMinutes}
+                    onChange={(val) => setRules({ ...rules, slotGranularityMinutes: val })}
+                    options={GRANULARITY_OPTIONS}
+                  />
+                </div>
               </div>
 
               <button
@@ -982,15 +1003,12 @@ export function SettingsClient({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Active Dispatch Engine</label>
-                <select
-                  className={styles.selectField}
+                <Select<'SIMULATED' | 'SMTP' | 'RESEND'>
+                  size="sm"
                   value={emailConfig.providerType}
-                  onChange={(e) => setEmailConfig({ ...emailConfig, providerType: e.target.value as any })}
-                >
-                  <option value="SIMULATED">Simulated / Local Sandbox (Zero setup, preview links)</option>
-                  <option value="SMTP">Custom SMTP (Brevo 300 free/day, Gmail, SES, Mailgun)</option>
-                  <option value="RESEND">Resend Cloud API</option>
-                </select>
+                  onChange={(val) => setEmailConfig({ ...emailConfig, providerType: val })}
+                  options={EMAIL_PROVIDER_OPTIONS}
+                />
               </div>
 
               {emailConfig.providerType === 'SIMULATED' && (

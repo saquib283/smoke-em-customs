@@ -2,7 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './gallery.module.css';
+
+const GALLERY_CATEGORY_OPTIONS: SelectOption[] = [
+  { value: 'Paint Protection Film', label: 'Paint Protection Film', icon: <Icon.Shield size={15} /> },
+  { value: 'Ceramic Coating', label: 'Ceramic Coating', icon: <Icon.Sparkles size={15} /> },
+  { value: 'Paint Correction', label: 'Paint Correction', icon: <Icon.Wrench size={15} /> },
+  { value: 'Interior Detailing', label: 'Interior Detailing', icon: <Icon.Soap size={15} /> },
+  { value: 'Custom Detailing', label: 'Custom Detailing', icon: <Icon.Crown size={15} /> },
+];
 
 export interface GalleryItem {
   id: string;
@@ -720,17 +729,12 @@ export function GalleryClient({ initialGallery }: GalleryClientProps) {
 
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>Service Category</label>
-                    <select
-                      className={styles.formSelect}
+                    <Select
+                      size="sm"
                       value={serviceCategory}
-                      onChange={(e) => setServiceCategory(e.target.value)}
-                    >
-                      <option value="Paint Protection Film">Paint Protection Film</option>
-                      <option value="Ceramic Coating">Ceramic Coating</option>
-                      <option value="Paint Correction">Paint Correction</option>
-                      <option value="Interior Detailing">Interior Detailing</option>
-                      <option value="Custom Detailing">Custom Detailing</option>
-                    </select>
+                      onChange={(val) => setServiceCategory(val)}
+                      options={GALLERY_CATEGORY_OPTIONS}
+                    />
                   </div>
 
                   <div className={styles.formGroup}>

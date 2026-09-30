@@ -4,7 +4,18 @@ import React, { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { POPULAR_VEHICLE_BRANDS, getModelsForBrand, detectVehicleType } from '@/lib/vehicles';
 import { Icon } from '@/components/common/Icons';
+import { Select, type SelectOption } from '@/components/ui';
 import styles from './quote.module.css';
+
+const QUOTE_VEHICLE_OPTIONS: SelectOption[] = [
+  { value: 'HATCHBACK', label: 'Hatchback', sublabel: 'Polo, i20, Altroz', icon: <Icon.Car size={16} /> },
+  { value: 'SEDAN', label: 'Sedan', sublabel: 'City, 3 Series, C-Class, A4', icon: <Icon.Car size={16} /> },
+  { value: 'SUV', label: 'SUV / Compact SUV', sublabel: 'Creta, Thar, Defender, X5', icon: <Icon.Car size={16} /> },
+  { value: 'MUV', label: 'MUV / Luxury Van', sublabel: 'Innova Hycross, Carnival, Vellfire', icon: <Icon.Car size={16} /> },
+  { value: 'LUXURY', label: 'Supercar / Ultra Luxury', sublabel: '911, S-Class, Urus, AMG GT', icon: <Icon.Crown size={16} /> },
+  { value: 'TWO_WHEELER', label: 'Superbike / Motorcycle', sublabel: 'Ducati, BMW Motorrad, Triumph', icon: <Icon.Zap size={16} /> },
+  { value: 'OTHER', label: 'Other Custom Vehicle', sublabel: 'Vintage, exotic or modified', icon: <Icon.Wrench size={16} /> },
+];
 
 interface ServiceOption {
   id: string;
@@ -77,6 +88,17 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
       updateField('vehicleType', models[0].type);
     }
   };
+
+  // Service options for custom Select
+  const serviceOptions = useMemo(() => {
+    return services.map((s) => ({
+      value: s.id,
+      label: s.name,
+      badge: `From ₹${Number(s.startingPrice).toLocaleString('en-IN')}`,
+      icon: <Icon.Sparkles size={15} />,
+      sublabel: s.category ? `Category: ${s.category.replace(/_/g, ' ')}` : undefined,
+    }));
+  }, [services]);
 
   // Real-time rules-based estimate calculation
   const liveEstimate = useMemo(() => {
@@ -535,20 +557,12 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
                 <label htmlFor="vehicleType" className={styles.label}>
                   Vehicle Body Style / Segment
                 </label>
-                <select
+                <Select
                   id="vehicleType"
-                  className={styles.select}
                   value={formData.vehicleType}
-                  onChange={(e) => updateField('vehicleType', e.target.value)}
-                >
-                  <option value="HATCHBACK">Hatchback (e.g. Polo, i20, Altroz)</option>
-                  <option value="SEDAN">Sedan (e.g. City, 3 Series, C-Class)</option>
-                  <option value="SUV">SUV / Compact SUV (e.g. Creta, Thar, Defender)</option>
-                  <option value="MUV">MUV / Van (e.g. Innova Hycross, Carnival)</option>
-                  <option value="LUXURY">Supercar / Ultra Luxury (e.g. 911, S-Class, Urus)</option>
-                  <option value="TWO_WHEELER">Superbike / Motorcycle</option>
-                  <option value="OTHER">Other Vehicle</option>
-                </select>
+                  onChange={(val) => updateField('vehicleType', val)}
+                  options={QUOTE_VEHICLE_OPTIONS}
+                />
               </div>
             </div>
 
@@ -573,18 +587,14 @@ export function QuoteForm({ services, preselectedServiceId }: QuoteFormProps) {
               <label htmlFor="serviceInterestId" className={styles.label}>
                 Primary Treatment of Interest
               </label>
-              <select
+              <Select
                 id="serviceInterestId"
-                className={styles.select}
                 value={formData.serviceInterestId}
-                onChange={(e) => updateField('serviceInterestId', e.target.value)}
-              >
-                {services.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} (From ₹{Number(s.startingPrice).toLocaleString('en-IN')})
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => updateField('serviceInterestId', val)}
+                options={serviceOptions}
+                searchable={serviceOptions.length > 5}
+                searchPlaceholder="Search detailing treatments..."
+              />
             </div>
 
             <div className={styles.formGroup}>

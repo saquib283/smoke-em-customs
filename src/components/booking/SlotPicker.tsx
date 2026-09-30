@@ -57,6 +57,15 @@ export function SlotPicker({
     return `${displayHour}:${displayMin} ${ampm}`;
   };
 
+  const formatSlotLabel = (slot: TimeSlot) => {
+    const durationHrs = (new Date(slot.endAt).getTime() - new Date(slot.startAt).getTime()) / (1000 * 60 * 60);
+    if (durationHrs > 9) {
+      const days = Math.max(2, Math.round(durationHrs / 8));
+      return `Drop-off at ${formatSlotTime(slot.startAt)} • ~${days} Days Bay Hold`;
+    }
+    return `${formatSlotTime(slot.startAt)} – ${formatSlotTime(slot.endAt)}`;
+  };
+
   if (loading) {
     return (
       <div className={styles.slotPickerContainer}>
@@ -107,6 +116,8 @@ export function SlotPicker({
               const isSelected =
                 selectedSlot?.startAt === slot.startAt &&
                 selectedSlot?.resourceId === slot.resourceId;
+              const durationHrs = (new Date(slot.endAt).getTime() - new Date(slot.startAt).getTime()) / (1000 * 60 * 60);
+              const isMultiDay = durationHrs > 9;
 
               return (
                 <button
@@ -118,12 +129,14 @@ export function SlotPicker({
                   onClick={() => onSelectSlot(slot)}
                 >
                   <div className={styles.slotTimeRange}>
-                    {formatSlotTime(slot.startAt)} – {formatSlotTime(slot.endAt)}
+                    {formatSlotLabel(slot)}
                   </div>
                   <div className={styles.slotBayTag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                     <Icon.Bay size={14} color="var(--color-gold)" /> {slot.resourceName}
                   </div>
-                  <span className={styles.slotBadge}>Bay Reserved for Treatment</span>
+                  <span className={styles.slotBadge}>
+                    {isMultiDay ? 'Dedicated Multi-Day Bay Hold' : 'Bay Reserved for Treatment'}
+                  </span>
                 </button>
               );
             })}
@@ -141,6 +154,8 @@ export function SlotPicker({
               const isSelected =
                 selectedSlot?.startAt === slot.startAt &&
                 selectedSlot?.resourceId === slot.resourceId;
+              const durationHrs = (new Date(slot.endAt).getTime() - new Date(slot.startAt).getTime()) / (1000 * 60 * 60);
+              const isMultiDay = durationHrs > 9;
 
               return (
                 <button
@@ -152,12 +167,14 @@ export function SlotPicker({
                   onClick={() => onSelectSlot(slot)}
                 >
                   <div className={styles.slotTimeRange}>
-                    {formatSlotTime(slot.startAt)} – {formatSlotTime(slot.endAt)}
+                    {formatSlotLabel(slot)}
                   </div>
                   <div className={styles.slotBayTag} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                     <Icon.Bay size={14} color="var(--color-gold)" /> {slot.resourceName}
                   </div>
-                  <span className={styles.slotBadge}>Bay Reserved for Treatment</span>
+                  <span className={styles.slotBadge}>
+                    {isMultiDay ? 'Dedicated Multi-Day Bay Hold' : 'Bay Reserved for Treatment'}
+                  </span>
                 </button>
               );
             })}

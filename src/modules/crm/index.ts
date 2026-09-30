@@ -117,6 +117,7 @@ export interface LeadDetail extends LeadListItem {
     toStatus: string;
     changedAt: string;
   }>;
+  quotes?: any[];
 }
 
 export interface CreateLeadInput {
@@ -677,6 +678,46 @@ export class CRMService {
       }
     }
 
+    // Fetch linked quotes
+    const dbQuotes = await db.orm.public.Quote
+      .where({ leadId: id })
+      .orderBy((q) => q.createdAt.desc())
+      .all();
+
+    const quotes = [];
+    for (const q of dbQuotes) {
+      const items = await db.orm.public.QuoteItem.where({ quoteId: q.id }).all();
+      quotes.push({
+        id: q.id,
+        customerId: q.customerId,
+        customerName: customer?.name ?? 'Client',
+        customerPhone: customer?.phone ?? '',
+        customerEmail: customer?.email ?? null,
+        vehicleId: q.vehicleId ?? null,
+        vehicleText: vehicle ? `${vehicle.brand} ${vehicle.model}` : null,
+        status: q.status,
+        total: String(q.total),
+        subtotal: String(q.subtotal),
+        discount: String(q.discount),
+        tax: String(q.tax),
+        itemCount: items.length,
+        validUntil: q.validUntil,
+        createdAt: q.createdAt,
+        notes: q.notes ?? null,
+        terms: q.terms ?? null,
+        items: items.map((it) => ({
+          id: it.id,
+          serviceId: it.serviceId ?? null,
+          packageId: it.packageId ?? null,
+          description: it.description,
+          quantity: it.quantity,
+          unitPrice: String(it.unitPrice),
+          lineTotal: String(it.lineTotal),
+        })),
+        linkedBookingId: null,
+      });
+    }
+
     // Follow-up & duplicate flags
     const isClosed = ['BOOKED', 'COMPLETED', 'LOST'].includes(lead.status);
     const lastActivity = new Date(lead.updatedAt || lead.createdAt).getTime();
@@ -742,6 +783,7 @@ export class CRMService {
         toStatus: h.toStatus,
         changedAt: h.changedAt,
       })),
+      quotes,
     };
   }
 

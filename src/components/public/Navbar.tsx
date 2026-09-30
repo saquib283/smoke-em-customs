@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   WhatsAppIcon,
@@ -61,9 +62,14 @@ export function Navbar() {
         <div className={styles.container}>
           {/* Brand Wordmark Treatment (DESIGN.md §2 & Prompt §5) */}
           <Link href="/" className={styles.logo} aria-label="Smoke M Customs Home" onClick={closeMenu}>
-            <div className={styles.logoMark} aria-hidden="true">
-              S
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Smoke 'Em Customs Logo"
+              width={44}
+              height={44}
+              priority
+              className={styles.logoImage}
+            />
             <span className={styles.wordmark}>
               SMOKE <span className={styles.wordmarkAccent}>M</span> CUSTOMS
             </span>
@@ -139,7 +145,13 @@ export function Navbar() {
         <div className={styles.mobileDrawer} role="dialog" aria-modal="true" aria-label="Mobile Navigation">
           <div className={styles.mobileDrawerHeader}>
             <Link href="/" className={styles.logo} onClick={closeMenu}>
-              <div className={styles.logoMark} aria-hidden="true">S</div>
+              <Image
+                src="/logo.png"
+                alt="Smoke 'Em Customs Logo"
+                width={38}
+                height={38}
+                className={styles.logoImage}
+              />
               <span className={styles.wordmark}>
                 SMOKE <span className={styles.wordmarkAccent}>M</span> CUSTOMS
               </span>

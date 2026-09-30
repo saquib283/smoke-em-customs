@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useToast } from '@/components/ui';
+import { useToast, Select, type SelectOption } from '@/components/ui';
 import { Icon } from '@/components/common/Icons';
 import styles from './newQuote.module.css';
 
@@ -88,6 +88,15 @@ export function NewQuoteClient({
   }, [initialLeadId, leads]);
 
   const [targetLeadId, setTargetLeadId] = useState<string>(initialSelectedLeadId);
+
+  const leadOptions = useMemo(() => {
+    return leads.map((l) => ({
+      value: l.id,
+      label: l.customerName,
+      sublabel: `${l.customerPhone || 'No Phone'} • ${l.vehicleText || 'Vehicle not specified'}`,
+      icon: <Icon.User size={15} />,
+    }));
+  }, [leads]);
   const [lineItems, setLineItems] = useState<LineItemState[]>(() => {
     const defaultService = services[0];
     return [
@@ -345,18 +354,13 @@ export function NewQuoteClient({
                   <span>Select Active Lead / Client</span>
                   <span className={styles.labelHelper}>{leads.length} active leads available</span>
                 </label>
-                <select
-                  className={styles.selectInput}
+                <Select
                   value={targetLeadId}
-                  onChange={(e) => setTargetLeadId(e.target.value)}
-                  id="select-target-lead"
-                >
-                  {leads.map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.customerName} ({l.customerPhone || 'No Phone'}) — {l.vehicleText || 'Vehicle not specified'}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => setTargetLeadId(val)}
+                  options={leadOptions}
+                  searchable={leadOptions.length > 5}
+                  searchPlaceholder="Search active clients or vehicles..."
+                />
               </div>
 
               {selectedLead && (
@@ -413,43 +417,40 @@ export function NewQuoteClient({
               <div className={styles.presetsBar}>
                 <div className={styles.presetDropdownGroup}>
                   {services.length > 0 && (
-                    <select
-                      className={styles.presetSelect}
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          handleAddServicePreset(e.target.value);
-                          e.target.value = '';
-                        }
-                      }}
-                      id="select-service-preset"
-                    >
-                      <option value="">+ Add Service Preset...</option>
-                      {services.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name} (₹{Number(s.startingPrice).toLocaleString('en-IN')})
-                        </option>
-                      ))}
-                    </select>
+                    <div style={{ minWidth: '220px' }}>
+                      <Select
+                        size="sm"
+                        placeholder="+ Add Service Preset..."
+                        value=""
+                        onChange={(val) => {
+                          if (val) handleAddServicePreset(val);
+                        }}
+                        options={services.map((s) => ({
+                          value: s.id,
+                          label: s.name,
+                          badge: `₹${Number(s.startingPrice).toLocaleString('en-IN')}`,
+                          icon: <Icon.Sparkles size={14} />,
+                        }))}
+                      />
+                    </div>
                   )}
 
                   {packages.length > 0 && (
-                    <select
-                      className={styles.presetSelect}
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          handleAddPackagePreset(e.target.value);
-                          e.target.value = '';
-                        }
-                      }}
-                      id="select-package-preset"
-                    >
-                      <option value="">+ Add Package Suite...</option>
-                      {packages.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div style={{ minWidth: '220px' }}>
+                      <Select
+                        size="sm"
+                        placeholder="+ Add Package Suite..."
+                        value=""
+                        onChange={(val) => {
+                          if (val) handleAddPackagePreset(val);
+                        }}
+                        options={packages.map((p) => ({
+                          value: p.id,
+                          label: p.name,
+                          icon: <Icon.Package size={14} />,
+                        }))}
+                      />
+                    </div>
                   )}
                 </div>
               </div>
